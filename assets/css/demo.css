@@ -3,6 +3,26 @@
 * File include item demo only specific css only
 ******************************************************************************/
 
+:root,
+[data-bs-theme='light'] {
+  --brand-primary: #126e51;
+  --brand-primary-rgb: 18, 110, 81;
+  --bs-primary: var(--brand-primary);
+  --bs-primary-rgb: var(--brand-primary-rgb);
+  --bs-link-color: var(--brand-primary);
+  --bs-link-color-rgb: var(--brand-primary-rgb);
+  --bs-link-hover-color: #0f5a42;
+  --bs-link-hover-color-rgb: 15, 90, 66;
+  --bs-body-bg: #f2faf6;
+  --bs-border-color: #d5e7df;
+  --bs-heading-color: #0f4432;
+  --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.3);
+}
+
+body {
+  background-color: var(--bs-body-bg);
+}
+
 .menu .app-brand.demo {
   height: 64px;
   margin-top: 12px;
@@ -110,6 +130,74 @@
 .layout-demo-info {
   text-align: center;
   margin-top: 1rem;
+}
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #126e51;
+  --bs-btn-border-color: #126e51;
+  --bs-btn-hover-bg: #0f5a42;
+  --bs-btn-hover-border-color: #0f5a42;
+  --bs-btn-focus-shadow-rgb: 18, 110, 81;
+  --bs-btn-active-bg: #0d4c39;
+  --bs-btn-active-border-color: #0d4c39;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: #126e51;
+  --bs-btn-border-color: #126e51;
+  --bs-btn-hover-bg: #126e51;
+  --bs-btn-hover-border-color: #126e51;
+  --bs-btn-focus-shadow-rgb: 18, 110, 81;
+  --bs-btn-active-bg: #0f5a42;
+  --bs-btn-active-border-color: #0f5a42;
+}
+
+nav.bg-body-tertiary {
+  background-color: #e6f3ed !important;
+  border-color: rgba(18, 110, 81, 0.2) !important;
+}
+
+.bg-navbar-theme {
+  background: linear-gradient(90deg, #126e51 0%, #0f5a42 100%) !important;
+  color: #fff;
+  box-shadow: 0 0.5rem 1.25rem rgba(18, 110, 81, 0.2);
+}
+.bg-navbar-theme .navbar-brand,
+.bg-navbar-theme .nav-link,
+.bg-navbar-theme .dropdown-item,
+.bg-navbar-theme .dropdown-toggle,
+.bg-navbar-theme .input-group-text {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+.bg-navbar-theme .nav-link:hover,
+.bg-navbar-theme .nav-link:focus,
+.bg-navbar-theme .nav-link.active,
+.bg-navbar-theme .dropdown-item:hover,
+.bg-navbar-theme .dropdown-item:focus {
+  color: #fff !important;
+}
+.bg-navbar-theme .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.bg-navbar-theme .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.nav-pills .nav-link {
+  color: #0f5a42;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.nav-pills .nav-link.active,
+.nav-pills .nav-link.active:focus,
+.nav-pills .nav-link.active:hover {
+  color: #fff;
+  background-color: #126e51;
+  box-shadow: 0 0.5rem 1rem rgba(18, 110, 81, 0.15);
+}
+.nav-pills .nav-link:hover {
+  color: #126e51;
 }
 
 /* Ads grid */
