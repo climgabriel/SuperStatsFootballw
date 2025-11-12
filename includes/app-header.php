@@ -157,3 +157,44 @@
           </div>
         </nav>
         <!-- / Functional Navbar -->
+
+        <!-- Ads Promo Bar -->
+        <div class="bg-body-tertiary border-bottom ads-promo-bar">
+          <div class="container-xxl">
+            <div class="ads-section-wrapper">
+              <!-- Top League Section -->
+              <div class="ads-top-league">
+                <h6 class="ads-top-league-title">TOP League</h6>
+                <div class="ads-league-grid">
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">I</div>
+                    <div class="ads-league-cell-content">Top 1 ad</div>
+                  </div>
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">II</div>
+                    <div class="ads-league-cell-content">Top 2 ad</div>
+                  </div>
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">III</div>
+                    <div class="ads-league-cell-content">Top 3 ad</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Other Ads Section -->
+              <div class="ads-other-section">
+                <div class="ads-other-grid">
+                  <div class="ads-grid-item ads-cell">ad 4</div>
+                  <div class="ads-grid-item ads-cell">ad 5</div>
+                  <div class="ads-grid-item ads-cell">ad 6</div>
+                  <div class="ads-grid-item ads-cell">ad 7</div>
+                  <div class="ads-grid-item ads-cell">ad 8</div>
+                  <div class="ads-grid-item ads-cell">ad 9</div>
+                  <div class="ads-grid-item ads-cell">ad 10</div>
+                  <div class="ads-grid-item ads-cell">ad 11</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / Ads Promo Bar -->

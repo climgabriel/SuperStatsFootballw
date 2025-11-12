@@ -15,7 +15,7 @@
   --bs-link-color-rgb: var(--brand-primary-rgb);
   --bs-link-hover-color: #0f5a42;
   --bs-link-hover-color-rgb: 15, 90, 66;
-  --bs-body-bg: #f2faf6;
+  --bs-body-bg: #E6F3ED;
   --bs-border-color: #d5e7df;
   --bs-heading-color: #0f4432;
   --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.3);
@@ -23,6 +23,11 @@
 
 body {
   background-color: var(--bs-body-bg);
+}
+
+/* Navbar background color override */
+.bg-navbar-theme {
+  background-color: #E6F3ED !important;
 }
 
 .menu .app-brand.demo {
@@ -221,8 +226,8 @@ nav.bg-body-tertiary {
 
 /* Ads grid */
 .ads-promo-bar .container-xxl {
-  padding-top: 1.5rem !important;
-  padding-bottom: 1.5rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
 }
 
 .ads-grid {
@@ -234,18 +239,99 @@ nav.bg-body-tertiary {
 }
 
 .ads-grid-item {
-  flex: 1 1 0;
-  aspect-ratio: 4 / 1;
-  border-radius: 0.75rem;
+  border-radius: 0.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   background-color: #f7fdfb;
-  min-width: 120px;
+  font-size: 0.85rem;
   color: #0f5a42;
   border: 1px solid rgba(18, 110, 81, 0.2);
   box-shadow: inset 0 0 0 1px rgba(18, 110, 81, 0.08);
+}
+
+/* Ads section layout */
+.ads-section-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* TOP League section */
+.ads-top-league {
+  background-color: var(--brand-accent);
+  border: 3px solid #106147;
+  border-radius: 10px;
+  padding: 16px 16px 18px 16px;
+  flex: 0 0 auto;
+  min-width: 550px;
+}
+
+.ads-top-league-title {
+  color: #106147;
+  font-weight: 900;
+  margin-bottom: 8px;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 1rem;
+}
+
+.ads-league-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ads-league-cell {
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 58px;
+}
+
+.ads-league-cell-number {
+  background: #106147;
+  color: white;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.ads-league-cell-content {
+  background: #F7FDFB;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #106147;
+}
+
+/* Other ads section */
+.ads-other-section {
+  background-color: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px;
+  flex: 1;
+}
+
+.ads-other-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.ads-cell {
+  height: 48px;
+  font-size: 0.8rem;
 }
 
 /* Fix dropdown menu visibility */
