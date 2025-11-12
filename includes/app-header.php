@@ -7,9 +7,9 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>1X2 Statistics - Super Stats Football</title>
+  <title><?php echo isset($pageTitle) ? $pageTitle : 'Super Stats Football'; ?></title>
 
-  <meta name="description" content="1X2 Statistics - Super Stats Football" />
+  <meta name="description" content="<?php echo isset($pageDescription) ? $pageDescription : 'Super Stats Football - Football Statistics Dashboard'; ?>" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="./assets/img/favicon/SuperStatsFootballLogo0.png" />
@@ -49,7 +49,7 @@
           id="layout-navbar">
           <div class="container-fluid">
             <!-- Brand -->
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index.php">
               <img src="./assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football Logo" height="40"
                 class="app-brand-logo" />
               <span class="app-brand-text demo menu-text fw-bold ms-2">Super Stats Football</span>
@@ -60,10 +60,10 @@
               <!-- Navigation Menu -->
               <ul class="navbar-nav flex-row align-items-center ms-auto">
                 <li class="nav-item">
-                  <a class="nav-link fs-5" href="index.html">Super</a>
+                  <a class="nav-link fs-5" href="index.php">Super</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link fs-5" href="tables.html">Plans</a>
+                  <a class="nav-link fs-5" href="tables.php">Plans</a>
                 </li>
                 <!-- User Dropdown -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown ms-3">
@@ -89,17 +89,17 @@
                       <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="login.html">
+                      <a class="dropdown-item" href="login.php">
                         <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="register.html">
+                      <a class="dropdown-item" href="register.php">
                         <i class="icon-base bx bx-user-plus icon-md me-3"></i><span>Register</span>
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="forgot-password.html">
+                      <a class="dropdown-item" href="forgot-password.php">
                         <i class="icon-base bx bx-key icon-md me-3"></i><span>Forgot Password</span>
                       </a>
                     </li>
@@ -107,7 +107,7 @@
                       <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="account-settings.html">
+                      <a class="dropdown-item" href="account-settings.php">
                         <i class="icon-base bx bx-user icon-md me-3"></i><span>Account Settings</span>
                       </a>
                     </li>
@@ -133,89 +133,27 @@
           <div class="container-xxl">
             <ul class="nav nav-pills nav-fill py-3">
               <li class="nav-item">
-                <a class="nav-link active" href="1x2.html">1X2</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == '1x2') ? ' active' : ''; ?>" href="1x2.php">1X2</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="goals.html">GOALS</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'goals') ? ' active' : ''; ?>" href="goals.php">GOALS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="corners.html">CORNERS</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'corners') ? ' active' : ''; ?>" href="corners.php">CORNERS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="cards.html">CARDS</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'cards') ? ' active' : ''; ?>" href="cards.php">CARDS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="shots.html">SHOTS</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'shots') ? ' active' : ''; ?>" href="shots.php">SHOTS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="faults.html">FAULTS</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'faults') ? ' active' : ''; ?>" href="faults.php">FAULTS</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="offsides.html">OFFSIDES</a>
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'offsides') ? ' active' : ''; ?>" href="offsides.php">OFFSIDES</a>
               </li>
             </ul>
           </div>
         </nav>
         <!-- / Functional Navbar -->
-
-        <!-- Content wrapper -->
-        <div class="content-wrapper">
-          <!-- Content -->
-          <div class="container-xxl flex-grow-1 container-p-y">
-            <h4 class="py-3 mb-4">1X2 Statistics</h4>
-
-            <!-- Placeholder Content -->
-            <div class="row">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">1X2 Match Predictions</h5>
-                    <p class="card-text">
-                      This section will display 1X2 (Home Win - Draw - Away Win) statistics and predictions for football
-                      matches.
-                    </p>
-                    <p class="text-muted">Content coming soon...</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <!-- / Content -->
-
-          <!-- Footer -->
-          <footer class="content-footer footer bg-footer-theme">
-            <div class="container-xxl">
-              <div
-                class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-                <div class="mb-2 mb-md-0">
-                  &#169;
-                  <script>
-                    document.write(new Date().getFullYear());
-                  </script>
-                  Super Stats Football
-                </div>
-              </div>
-            </div>
-          </footer>
-          <!-- / Footer -->
-
-          <div class="content-backdrop fade"></div>
-        </div>
-        <!-- Content wrapper -->
-      </div>
-      <!-- / Layout page -->
-    </div>
-  </div>
-  <!-- / Layout wrapper -->
-
-  <!-- Core JS -->
-  <script src="./assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="./assets/vendor/libs/popper/popper.js"></script>
-  <script src="./assets/vendor/js/bootstrap.js"></script>
-  <script src="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="./assets/vendor/js/menu.js"></script>
-  <script src="./assets/js/main.js"></script>
-</body>
-
-</html>

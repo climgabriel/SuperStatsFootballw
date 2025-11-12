@@ -1,45 +1,9 @@
-<!doctype html>
+<?php
+$pageTitle = "Login - Super Stats Football";
+$pageDescription = "Login to Super Stats Football Dashboard";
+include 'includes/auth-header.php';
+?>
 
-<html lang="en" class="layout-wide customizer-hide" data-assets-path="./assets/"
-  data-template="vertical-menu-template-free">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-
-  <title>Login - Super Stats Football</title>
-
-  <meta name="description" content="Login to Super Stats Football Dashboard" />
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="./assets/img/favicon/SuperStatsFootballLogo0.png" />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-    rel="stylesheet" />
-
-  <link rel="stylesheet" href="./assets/vendor/fonts/iconify-icons.css" />
-
-  <!-- Core CSS -->
-  <link rel="stylesheet" href="./assets/vendor/css/core.css" />
-  <link rel="stylesheet" href="./assets/css/demo.css" />
-
-  <!-- Vendors CSS -->
-  <link rel="stylesheet" href="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-
-  <!-- Page CSS -->
-  <link rel="stylesheet" href="./assets/vendor/css/pages/page-auth.css" />
-
-  <!-- Helpers -->
-  <script src="./assets/vendor/js/helpers.js"></script>
-  <script src="./assets/js/config.js"></script>
-</head>
-
-<body>
   <!-- Content -->
 
   <div class="container-xxl">
@@ -50,7 +14,7 @@
           <div class="card-body">
             <!-- Logo -->
             <div class="app-brand justify-content-center">
-              <a href="index.html" class="app-brand-link gap-2">
+              <a href="index.php" class="app-brand-link gap-2">
                 <img src="./assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football Logo" height="40"
                   class="app-brand-logo" />
                 <span class="app-brand-text demo text-heading fw-bold">Super Stats Football</span>
@@ -60,7 +24,7 @@
             <h4 class="mb-1 text-center">Welcome to Super Stats Football!</h4>
             <p class="mb-6">Please sign-in to your account to access football statistics</p>
 
-            <form id="formAuthentication" class="mb-6" action="index.html">
+            <form id="formAuthentication" class="mb-6" action="index.php">
               <div class="mb-6">
                 <label for="email" class="form-label">Email or Username</label>
                 <input type="text" class="form-control" id="email" name="email-username"
@@ -81,7 +45,7 @@
                     <input class="form-check-input" type="checkbox" id="remember-me" />
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
-                  <a href="forgot-password.html">
+                  <a href="forgot-password.php">
                     <span>Forgot Password?</span>
                   </a>
                 </div>
@@ -93,7 +57,7 @@
 
             <p class="text-center">
               <span>New on our platform?</span>
-              <a href="register.html">
+              <a href="register.php">
                 <span>Create an account</span>
               </a>
             </p>
@@ -106,13 +70,4 @@
 
   <!-- / Content -->
 
-  <!-- Core JS -->
-  <script src="./assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="./assets/vendor/libs/popper/popper.js"></script>
-  <script src="./assets/vendor/js/bootstrap.js"></script>
-  <script src="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="./assets/vendor/js/menu.js"></script>
-  <script src="./assets/js/main.js"></script>
-</body>
-
-</html>
+<?php include 'includes/auth-footer.php'; ?>
