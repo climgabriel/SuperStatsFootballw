@@ -43,10 +43,12 @@ body {
 .layout-navbar-fixed .layout-wrapper:not(.layout-horizontal):not(.layout-without-menu) .layout-page {
   padding-top: 74px !important;
 }
+
 /* Default navbar */
 .layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
   padding-top: 64px !important;
 }
+
 .docs-page .layout-navbar-fixed.layout-wrapper:not(.layout-without-menu) .layout-page,
 .docs-page .layout-menu-fixed.layout-wrapper:not(.layout-without-menu) .layout-page {
   padding-top: 62px !important;
@@ -61,36 +63,39 @@ body {
 * Content
 ******************************************************************************/
 
-.demo-blocks > * {
+.demo-blocks>* {
   display: block !important;
 }
 
-.demo-inline-spacing > * {
+.demo-inline-spacing>* {
   margin: 1rem 0.375rem 0 0 !important;
 }
 
 /* ? .demo-vertical-spacing class is used to have vertical margins between elements. To remove margin-top from the first-child, use .demo-only-element class with .demo-vertical-spacing class. For example, we have used this class in forms-input-groups.html file. */
-.demo-vertical-spacing > * {
+.demo-vertical-spacing>* {
   margin-top: 1rem !important;
   margin-bottom: 0 !important;
 }
-.demo-vertical-spacing.demo-only-element > :first-child {
+
+.demo-vertical-spacing.demo-only-element> :first-child {
   margin-top: 0 !important;
 }
 
-.demo-vertical-spacing-lg > * {
+.demo-vertical-spacing-lg>* {
   margin-top: 1.875rem !important;
   margin-bottom: 0 !important;
 }
-.demo-vertical-spacing-lg.demo-only-element > :first-child {
+
+.demo-vertical-spacing-lg.demo-only-element> :first-child {
   margin-top: 0 !important;
 }
 
-.demo-vertical-spacing-xl > * {
+.demo-vertical-spacing-xl>* {
   margin-top: 5rem !important;
   margin-bottom: 0 !important;
 }
-.demo-vertical-spacing-xl.demo-only-element > :first-child {
+
+.demo-vertical-spacing-xl.demo-only-element> :first-child {
   margin-top: 0 !important;
 }
 
@@ -100,6 +105,7 @@ body {
     width: 231px;
     position: relative;
   }
+
   #dropdown-variation-demo .btn-group .text-truncate::after {
     position: absolute;
     top: 45%;
@@ -124,9 +130,11 @@ body {
   flex-direction: column;
   margin-top: 1rem;
 }
+
 .layout-demo-placeholder img {
   width: 900px;
 }
+
 .layout-demo-info {
   text-align: center;
   margin-top: 1rem;
@@ -163,6 +171,7 @@ nav.bg-body-tertiary {
   color: #fff;
   box-shadow: 0 0.5rem 1.25rem rgba(18, 110, 81, 0.2);
 }
+
 .bg-navbar-theme .navbar-brand,
 .bg-navbar-theme .nav-link,
 .bg-navbar-theme .dropdown-item,
@@ -170,6 +179,7 @@ nav.bg-body-tertiary {
 .bg-navbar-theme .input-group-text {
   color: rgba(255, 255, 255, 0.85) !important;
 }
+
 .bg-navbar-theme .nav-link:hover,
 .bg-navbar-theme .nav-link:focus,
 .bg-navbar-theme .nav-link.active,
@@ -177,9 +187,11 @@ nav.bg-body-tertiary {
 .bg-navbar-theme .dropdown-item:focus {
   color: #fff !important;
 }
+
 .bg-navbar-theme .navbar-toggler {
   border-color: rgba(255, 255, 255, 0.6);
 }
+
 .bg-navbar-theme .navbar-toggler-icon {
   filter: invert(1);
 }
@@ -189,6 +201,7 @@ nav.bg-body-tertiary {
   border-radius: 999px;
   font-weight: 600;
 }
+
 .nav-pills .nav-link.active,
 .nav-pills .nav-link.active:focus,
 .nav-pills .nav-link.active:hover {
@@ -196,6 +209,7 @@ nav.bg-body-tertiary {
   background-color: #126e51;
   box-shadow: 0 0.5rem 1rem rgba(18, 110, 81, 0.15);
 }
+
 .nav-pills .nav-link:hover {
   color: #126e51;
 }
@@ -205,6 +219,7 @@ nav.bg-body-tertiary {
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
 }
+
 .ads-grid {
   display: flex;
   gap: 1rem;
@@ -212,6 +227,7 @@ nav.bg-body-tertiary {
   width: 100%;
   overflow-x: auto;
 }
+
 .ads-grid-item {
   flex: 1 1 0;
   aspect-ratio: 4 / 1;
