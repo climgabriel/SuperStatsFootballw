@@ -7,6 +7,8 @@
 [data-bs-theme='light'] {
   --brand-primary: #126e51;
   --brand-primary-rgb: 18, 110, 81;
+  --brand-accent: #FFE418;
+  --brand-accent-rgb: 255, 228, 24;
   --bs-primary: var(--brand-primary);
   --bs-primary-rgb: var(--brand-primary-rgb);
   --bs-link-color: var(--brand-primary);
@@ -182,10 +184,13 @@ nav.bg-body-tertiary {
 
 .bg-navbar-theme .nav-link:hover,
 .bg-navbar-theme .nav-link:focus,
-.bg-navbar-theme .nav-link.active,
+.bg-navbar-theme .nav-link.active {
+  color: #FFE418 !important;
+}
+
 .bg-navbar-theme .dropdown-item:hover,
 .bg-navbar-theme .dropdown-item:focus {
-  color: #fff !important;
+  color: #126e51 !important;
 }
 
 .bg-navbar-theme .navbar-toggler {
