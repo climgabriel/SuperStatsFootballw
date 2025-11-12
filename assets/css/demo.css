@@ -221,8 +221,8 @@ nav.bg-body-tertiary {
 
 /* Ads grid */
 .ads-promo-bar .container-xxl {
-  padding-top: 0.5rem !important;
-  padding-bottom: 0.5rem !important;
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
 }
 
 .ads-grid {
@@ -241,7 +241,6 @@ nav.bg-body-tertiary {
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  text-transform: uppercase;
   background-color: #f7fdfb;
   min-width: 120px;
   color: #0f5a42;

@@ -25,7 +25,7 @@
 
   <!-- Core CSS -->
   <link rel="stylesheet" href="./assets/vendor/css/core.css" />
-  <link rel="stylesheet" href="./assets/css/demo.css" />
+  <link rel="stylesheet" href="./assets/css/demo.css?v=<?php echo time(); ?>" />
 
   <!-- Vendors CSS -->
   <link rel="stylesheet" href="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
