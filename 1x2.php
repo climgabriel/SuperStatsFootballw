@@ -83,6 +83,116 @@ include 'includes/app-header.php';
                     border-right-width: 2px !important;
                   }
 
+                  /* Half Time True Odds section - 2px left/right borders */
+                  .stats-table td:nth-child(11) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(13) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(11),
+                  .stats-table thead tr:nth-child(2) th:nth-child(11) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(13),
+                  .stats-table thead tr:nth-child(2) th:nth-child(13) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(7) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(9) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Full Time Bookmaker Odds section - 2px left/right borders */
+                  .stats-table td:nth-child(14) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(16) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(14),
+                  .stats-table thead tr:nth-child(2) th:nth-child(14) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(16),
+                  .stats-table thead tr:nth-child(2) th:nth-child(16) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(10) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(12) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Full Time Probability section - 2px left/right borders */
+                  .stats-table td:nth-child(17) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(19) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(17),
+                  .stats-table thead tr:nth-child(2) th:nth-child(17) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(19),
+                  .stats-table thead tr:nth-child(2) th:nth-child(19) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(13) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(15) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Draw No Bet Half Time section - 2px left/right borders */
+                  .stats-table td:nth-child(23) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(24) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(23),
+                  .stats-table thead tr:nth-child(2) th:nth-child(23) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(24),
+                  .stats-table thead tr:nth-child(2) th:nth-child(24) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(19) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(20) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Double Chance Half Time section - 2px left/right borders */
+                  .stats-table td:nth-child(27) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(29) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(27),
+                  .stats-table thead tr:nth-child(2) th:nth-child(27) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(29),
+                  .stats-table thead tr:nth-child(2) th:nth-child(29) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(23) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(25) {
+                    border-right-width: 2px !important;
+                  }
+
                   .stats-table th.league-col { min-width: 180px; }
                   .stats-table td.league-col { text-align: center; }
                   .stats-table th.date-col { min-width: 90px; }
