@@ -21,19 +21,82 @@ include 'includes/app-header.php';
             <div class="card">
               <div class="card-body">
                 <style>
+                  .stats-table {
+                    border-color: #555555 !important;
+                    border-width: 2px !important;
+                    border-style: solid !important;
+                  }
+                  /* Ensure exterior borders are 2px on all sides */
+                  .stats-table thead tr:first-child th {
+                    border-top-width: 2px !important;
+                  }
+                  .stats-table tbody tr:last-child td {
+                    border-bottom-width: 2px !important;
+                  }
+                  .stats-table th:first-child,
+                  .stats-table td:first-child {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table th:last-child,
+                  .stats-table td:last-child {
+                    border-right-width: 2px !important;
+                  }
                   .stats-table th, .stats-table td {
                     white-space: nowrap;
                     text-align: center;
                     vertical-align: middle;
                     padding: 0.5rem;
+                    border-color: #555555 !important;
                   }
                   .stats-table th.league-col { min-width: 180px; }
-                  .stats-table td.league-col { text-align: left; }
+                  .stats-table td.league-col { text-align: center; }
                   .stats-table th.date-col { min-width: 90px; }
                   .stats-table th.team-col { min-width: 120px; }
-                  .stats-table td.team-col { text-align: left; font-weight: 600; }
+                  .stats-table td.team-col { text-align: center; font-weight: 600; }
                   .stats-table th.data-col { min-width: 60px; }
                   .stats-table td.data-col { text-align: center; }
+
+                  /* Header row colors */
+                  .stats-table thead tr {
+                    color: #FFFFFF !important;
+                  }
+                  .stats-table thead th {
+                    color: #FFFFFF !important;
+                    border-color: #555555 !important;
+                  }
+                  /* Thicker borders between category sections */
+                  .stats-table thead tr:first-child th {
+                    border-width: 2px !important;
+                  }
+                  /* Apply thicker right borders to category dividers for entire columns */
+                  .stats-table th:nth-child(4),
+                  .stats-table td:nth-child(4) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table th:nth-child(13),
+                  .stats-table td:nth-child(13) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table th:nth-child(22),
+                  .stats-table td:nth-child(22) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table th:nth-child(26),
+                  .stats-table td:nth-child(26) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Alternating row colors - Green theme */
+                  .stats-table tbody tr:nth-child(odd) {
+                    background-color: #E8F5E9;
+                  }
+                  .stats-table tbody tr:nth-child(even) {
+                    background-color: #F1F8F4;
+                  }
+                  .stats-table tbody tr:hover {
+                    background-color: #C8E6D0;
+                    transition: background-color 0.2s ease;
+                  }
                 </style>
                 <div class="table-responsive">
                   <table class="table table-bordered table-hover stats-table" style="font-size: 0.85rem;">
