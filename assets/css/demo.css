@@ -5,19 +5,19 @@
 
 :root,
 [data-bs-theme='light'] {
-  --brand-primary: #126e51;
-  --brand-primary-rgb: 18, 110, 81;
+  --brand-primary: #106147;
+  --brand-primary-rgb: 16, 97, 71;
   --brand-accent: #FFE418;
   --brand-accent-rgb: 255, 228, 24;
   --bs-primary: var(--brand-primary);
   --bs-primary-rgb: var(--brand-primary-rgb);
   --bs-link-color: var(--brand-primary);
   --bs-link-color-rgb: var(--brand-primary-rgb);
-  --bs-link-hover-color: #0f5a42;
-  --bs-link-hover-color-rgb: 15, 90, 66;
+  --bs-link-hover-color: #0d4d39;
+  --bs-link-hover-color-rgb: 13, 77, 57;
   --bs-body-bg: #E6F3ED;
   --bs-border-color: #d5e7df;
-  --bs-heading-color: #0f4432;
+  --bs-heading-color: #0a3828;
   --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.3);
 }
 
@@ -70,55 +70,7 @@ body {
 * Content
 ******************************************************************************/
 
-.demo-blocks>* {
-  display: block !important;
-}
 
-.demo-inline-spacing>* {
-  margin: 1rem 0.375rem 0 0 !important;
-}
-
-/* ? .demo-vertical-spacing class is used to have vertical margins between elements. To remove margin-top from the first-child, use .demo-only-element class with .demo-vertical-spacing class. For example, we have used this class in forms-input-groups.html file. */
-.demo-vertical-spacing>* {
-  margin-top: 1rem !important;
-  margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing.demo-only-element> :first-child {
-  margin-top: 0 !important;
-}
-
-.demo-vertical-spacing-lg>* {
-  margin-top: 1.875rem !important;
-  margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing-lg.demo-only-element> :first-child {
-  margin-top: 0 !important;
-}
-
-.demo-vertical-spacing-xl>* {
-  margin-top: 5rem !important;
-  margin-bottom: 0 !important;
-}
-
-.demo-vertical-spacing-xl.demo-only-element> :first-child {
-  margin-top: 0 !important;
-}
-
-/* Dropdown buttons going out of small screens */
-@media (max-width: 576px) {
-  #dropdown-variation-demo .btn-group .text-truncate {
-    width: 231px;
-    position: relative;
-  }
-
-  #dropdown-variation-demo .btn-group .text-truncate::after {
-    position: absolute;
-    top: 45%;
-    right: 0.65rem;
-  }
-}
 
 /*
 * Layout demo
@@ -216,12 +168,12 @@ nav.bg-body-tertiary {
 .nav-pills .nav-link.active:focus,
 .nav-pills .nav-link.active:hover {
   color: #fff;
-  background-color: #126e51;
-  box-shadow: 0 0.5rem 1rem rgba(18, 110, 81, 0.15);
+  background-color: var(--brand-primary);
+  box-shadow: 0 0.5rem 1rem rgba(var(--brand-primary-rgb), 0.15);
 }
 
 .nav-pills .nav-link:hover {
-  color: #126e51;
+  color: var(--brand-primary);
 }
 
 /* Ads grid */
@@ -261,7 +213,7 @@ nav.bg-body-tertiary {
 /* TOP League section */
 .ads-top-league {
   background-color: var(--brand-accent);
-  border: 3px solid #106147;
+  border: 3px solid var(--brand-primary);
   border-radius: 10px;
   padding: 16px 16px 18px 16px;
   flex: 0 0 auto;
@@ -269,7 +221,7 @@ nav.bg-body-tertiary {
 }
 
 .ads-top-league-title {
-  color: #106147;
+  color: var(--brand-primary);
   font-weight: 900;
   margin-bottom: 8px;
   margin-top: 0;
@@ -292,7 +244,7 @@ nav.bg-body-tertiary {
 }
 
 .ads-league-cell-number {
-  background: #106147;
+  background: var(--brand-primary);
   color: white;
   width: 42px;
   display: flex;
@@ -310,7 +262,7 @@ nav.bg-body-tertiary {
   justify-content: center;
   font-weight: 600;
   font-size: 0.85rem;
-  color: #106147;
+  color: var(--brand-primary);
 }
 
 /* Other ads section */
@@ -337,7 +289,7 @@ nav.bg-body-tertiary {
 /* Fix dropdown menu visibility */
 .dropdown-menu {
   background-color: #fff;
-  border: 1px solid rgba(18, 110, 81, 0.15);
+  border: 1px solid rgba(var(--brand-primary-rgb), 0.15);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
@@ -347,10 +299,10 @@ nav.bg-body-tertiary {
 
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus {
-  background-color: #e6f3ed;
-  color: #126e51 !important;
+  background-color: var(--bs-body-bg);
+  color: var(--brand-primary) !important;
 }
 
 .dropdown-menu .dropdown-divider {
-  border-color: rgba(18, 110, 81, 0.1);
+  border-color: rgba(var(--brand-primary-rgb), 0.1);
 }

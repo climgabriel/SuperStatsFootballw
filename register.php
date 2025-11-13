@@ -12,15 +12,7 @@ include 'includes/auth-header.php';
         <!-- Register Card -->
         <div class="card px-sm-6 px-0">
           <div class="card-body">
-            <!-- Logo -->
-            <div class="app-brand justify-content-center">
-              <a href="index.php" class="app-brand-link gap-2">
-                <img src="./assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football Logo" height="40"
-                  class="app-brand-logo" />
-                <span class="app-brand-text demo text-heading fw-bold">Super Stats Football</span>
-              </a>
-            </div>
-            <!-- /Logo -->
+            <?php include 'includes/auth-logo.php'; ?>
             <h4 class="mb-1 text-center">Create your account</h4>
             <p class="mb-6">Join Super Stats Football to access premium football statistics</p>
 

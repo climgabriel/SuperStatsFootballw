@@ -63,7 +63,7 @@
                   <a class="nav-link fs-5" href="index.php">Super</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link fs-5" href="tables.php">Plans</a>
+                  <a class="nav-link fs-5" href="plans.php">Plans</a>
                 </li>
                 <!-- User Dropdown -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown ms-3">
