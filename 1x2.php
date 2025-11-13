@@ -60,6 +60,29 @@ include 'includes/app-header.php';
                     border-right-width: 2px !important;
                   }
 
+                  /* Half Time Probability section - 2px left/right borders */
+                  .stats-table td:nth-child(8) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table td:nth-child(10) {
+                    border-right-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(8),
+                  .stats-table thead tr:nth-child(2) th:nth-child(8) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(1) th:nth-child(10),
+                  .stats-table thead tr:nth-child(2) th:nth-child(10) {
+                    border-right-width: 2px !important;
+                  }
+                  /* For header row 3 (no rowspan, different child numbering) */
+                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
+                    border-left-width: 2px !important;
+                  }
+                  .stats-table thead tr:nth-child(3) th:nth-child(6) {
+                    border-right-width: 2px !important;
+                  }
+
                   .stats-table th.league-col { min-width: 180px; }
                   .stats-table td.league-col { text-align: center; }
                   .stats-table th.date-col { min-width: 90px; }
