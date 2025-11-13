@@ -9,13 +9,140 @@ include 'includes/app-header.php';
         <div class="content-wrapper">
           <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <h4 class="py-3 mb-4">1X2 Statistics</h4>
+            <div class="d-flex justify-content-between align-items-center py-3 mb-4">
+              <h4 class="mb-0">1X2 Statistics</h4>
+              <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#filterModal" style="background-color: #106147; border-color: #106147;">
+                <i class="bx bx-filter me-1"></i> Filter
+              </button>
+            </div>
 
             <?php
             // Load JSON data
             $jsonData = file_get_contents('1x2_data.json');
             $matches = json_decode($jsonData, true);
             ?>
+
+            <!-- Filter Modal -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color: #106147; color: white;">
+                    <h5 class="modal-title" id="filterModalLabel">
+                      <i class="bx bx-filter me-2"></i>Filter Options
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- Leagues Filter -->
+                    <div class="mb-4">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-trophy me-2" style="color: #106147;"></i>Leagues
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="league1" id="league1">
+                            <label class="form-check-label" for="league1">League 1</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="league2" id="league2">
+                            <label class="form-check-label" for="league2">League 2</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="league3" id="league3">
+                            <label class="form-check-label" for="league3">League 3</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="league4" id="league4">
+                            <label class="form-check-label" for="league4">League 4</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Season Filter -->
+                    <div class="mb-4">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-calendar me-2" style="color: #106147;"></i>Season
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-season" type="checkbox" value="current" id="seasonCurrent">
+                            <label class="form-check-label" for="seasonCurrent">Current Season</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-season" type="checkbox" value="last1" id="seasonLast1">
+                            <label class="form-check-label" for="seasonLast1">Last Season 1</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-season" type="checkbox" value="last2" id="seasonLast2">
+                            <label class="form-check-label" for="seasonLast2">Last Season 2</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-season" type="checkbox" value="last3" id="seasonLast3">
+                            <label class="form-check-label" for="seasonLast3">Last Season 3</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-season" type="checkbox" value="last4" id="seasonLast4">
+                            <label class="form-check-label" for="seasonLast4">Last Season 4</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Analytics Model Filter -->
+                    <div class="mb-3">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-bar-chart-alt-2 me-2" style="color: #106147;"></i>Analytics Model
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-model" type="checkbox" value="model1" id="model1">
+                            <label class="form-check-label" for="model1">Model 1</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-model" type="checkbox" value="model2" id="model2">
+                            <label class="form-check-label" for="model2">Model 2</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-model" type="checkbox" value="model3" id="model3">
+                            <label class="form-check-label" for="model3">Model 3</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-model" type="checkbox" value="model4" id="model4">
+                            <label class="form-check-label" for="model4">Model 4</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-model" type="checkbox" value="model5" id="model5">
+                            <label class="form-check-label" for="model5">Model 5</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="clearFilters">
+                      <i class="bx bx-x me-1"></i>Clear All
+                    </button>
+                    <button type="button" class="btn btn-primary" id="applyFilters" style="background-color: #106147; border-color: #106147;">
+                      <i class="bx bx-check me-1"></i>Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- Single Comprehensive Table -->
             <div class="card">
@@ -339,4 +466,5 @@ include 'includes/app-header.php';
           </div>
           <!-- / Content -->
 
+<script src="assets/js/1x2-filter.js"></script>
 <?php include 'includes/app-footer.php'; ?>

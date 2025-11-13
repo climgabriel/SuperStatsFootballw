@@ -215,7 +215,7 @@ nav.bg-body-tertiary {
   background-color: var(--brand-accent);
   border: 3px solid var(--brand-primary);
   border-radius: 10px;
-  padding: 16px 16px 18px 16px;
+  padding: 8px 16px 18px 16px;
   flex: 0 0 auto;
   min-width: 550px;
 }
@@ -227,7 +227,7 @@ nav.bg-body-tertiary {
   margin-top: 0;
   padding-top: 0;
   padding-bottom: 0;
-  font-size: 1rem;
+  font-size: 1.35rem;
 }
 
 .ads-league-grid {
@@ -240,7 +240,7 @@ nav.bg-body-tertiary {
   display: flex;
   border-radius: 10px;
   overflow: hidden;
-  height: 58px;
+  height: 70px;
 }
 
 .ads-league-cell-number {
