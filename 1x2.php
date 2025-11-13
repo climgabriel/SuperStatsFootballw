@@ -21,12 +21,20 @@ include 'includes/app-header.php';
             <div class="card">
               <div class="card-body">
                 <style>
+                  /* Updated: 2025-01-13 - Simplified borders */
                   .stats-table {
-                    border-color: #555555 !important;
-                    border-width: 2px !important;
-                    border-style: solid !important;
+                    border-collapse: collapse !important;
                   }
-                  /* Ensure exterior borders are 2px on all sides */
+
+                  .stats-table th, .stats-table td {
+                    white-space: nowrap;
+                    text-align: center;
+                    vertical-align: middle;
+                    padding: 0.5rem;
+                    border: 1px solid #555555 !important;
+                  }
+
+                  /* Exterior borders 2px */
                   .stats-table thead tr:first-child th {
                     border-top-width: 2px !important;
                   }
@@ -41,13 +49,17 @@ include 'includes/app-header.php';
                   .stats-table td:last-child {
                     border-right-width: 2px !important;
                   }
-                  .stats-table th, .stats-table td {
-                    white-space: nowrap;
-                    text-align: center;
-                    vertical-align: middle;
-                    padding: 0.5rem;
-                    border-color: #555555 !important;
+
+                  /* Team columns borders - Column 3 (1) left side and Column 4 (2) right side */
+                  .stats-table th:nth-child(3),
+                  .stats-table td:nth-child(3) {
+                    border-left-width: 2px !important;
                   }
+                  .stats-table th:nth-child(4),
+                  .stats-table td:nth-child(4) {
+                    border-right-width: 2px !important;
+                  }
+
                   .stats-table th.league-col { min-width: 180px; }
                   .stats-table td.league-col { text-align: center; }
                   .stats-table th.date-col { min-width: 90px; }
@@ -62,28 +74,6 @@ include 'includes/app-header.php';
                   }
                   .stats-table thead th {
                     color: #FFFFFF !important;
-                    border-color: #555555 !important;
-                  }
-                  /* Thicker borders between category sections */
-                  .stats-table thead tr:first-child th {
-                    border-width: 2px !important;
-                  }
-                  /* Apply thicker right borders to category dividers for entire columns */
-                  .stats-table th:nth-child(4),
-                  .stats-table td:nth-child(4) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table th:nth-child(13),
-                  .stats-table td:nth-child(13) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table th:nth-child(22),
-                  .stats-table td:nth-child(22) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table th:nth-child(26),
-                  .stats-table td:nth-child(26) {
-                    border-right-width: 2px !important;
                   }
 
                   /* Alternating row colors - Green theme */
