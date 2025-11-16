@@ -331,6 +331,37 @@ $goalsData = [
                     border: 1px solid #555555 !important;
                   }
 
+                  /* Sticky header row for vertical scrolling - only 3rd row */
+                  .goals-table thead tr:nth-child(3) {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                  }
+
+                  /* Sticky columns for horizontal scrolling - only team columns (3 & 4) */
+                  .goals-table th:nth-child(3),
+                  .goals-table td:nth-child(3) {
+                    position: sticky;
+                    left: 0;
+                    z-index: 5;
+                    background-color: inherit;
+                    border-right: 1px solid #555555 !important;
+                  }
+
+                  .goals-table th:nth-child(4),
+                  .goals-table td:nth-child(4) {
+                    position: sticky;
+                    left: 120px;
+                    z-index: 5;
+                    background-color: inherit;
+                  }
+
+                  /* Higher z-index for sticky header cells that are also in sticky columns */
+                  .goals-table thead th:nth-child(3),
+                  .goals-table thead th:nth-child(4) {
+                    z-index: 15;
+                  }
+
                   /* Exterior borders 2px */
                   .goals-table thead tr:first-child th {
                     border-top-width: 2px !important;
@@ -423,7 +454,6 @@ $goalsData = [
                   }
 
                   .league-col {
-                    text-align: left !important;
                     min-width: 180px;
                   }
 
@@ -433,37 +463,81 @@ $goalsData = [
 
                   .team-col {
                     min-width: 120px;
-                    text-align: left !important;
                   }
 
                   .data-col {
                     min-width: 60px;
                     font-size: 0.85rem;
                   }
+
+                  /* Alternating row colors - Green theme */
+                  .goals-table tbody tr:nth-child(odd) {
+                    background-color: #E8F5E9;
+                  }
+                  .goals-table tbody tr:nth-child(even) {
+                    background-color: #F1F8F4;
+                  }
+                  .goals-table tbody tr:hover {
+                    background-color: #C8E6D0;
+                    transition: background-color 0.2s ease;
+                  }
+
+                  /* Background colors for sticky cells to match row colors */
+                  .goals-table tbody tr:nth-child(odd) td:nth-child(3),
+                  .goals-table tbody tr:nth-child(odd) td:nth-child(4) {
+                    background-color: #E8F5E9;
+                  }
+
+                  .goals-table tbody tr:nth-child(even) td:nth-child(3),
+                  .goals-table tbody tr:nth-child(even) td:nth-child(4) {
+                    background-color: #F1F8F4;
+                  }
+
+                  .goals-table tbody tr:hover td:nth-child(3),
+                  .goals-table tbody tr:hover td:nth-child(4) {
+                    background-color: #C8E6D0;
+                  }
+
+                  /* Ensure sticky header cells maintain their background colors */
+                  .goals-table thead tr:nth-child(1) th:nth-child(3),
+                  .goals-table thead tr:nth-child(1) th:nth-child(4) {
+                    background-color: #005440;
+                  }
+
+                  .goals-table thead tr:nth-child(2) th:nth-child(3),
+                  .goals-table thead tr:nth-child(2) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .goals-table thead tr:nth-child(3) th:nth-child(3),
+                  .goals-table thead tr:nth-child(3) th:nth-child(4) {
+                    background-color: #1a8a6b;
+                  }
+
+                  /* Force white text for all header rows */
+                  .goals-table thead th {
+                    color: #FFFFFF !important;
+                  }
                 </style>
 
                 <div class="table-responsive">
                   <table class="table table-sm goals-table">
                     <thead>
-                      <tr style="background-color: #106147; color: white; font-weight: 700;">
+                      <tr style="background-color: #005440; color: white; font-weight: 700;">
                         <th rowspan="3" class="align-middle league-col">LEAGUE</th>
                         <th rowspan="3" class="align-middle date-col">DATE</th>
                         <th rowspan="3" class="align-middle team-col">1</th>
                         <th rowspan="3" class="align-middle team-col">2</th>
                         <th colspan="4" class="text-center">BTS</th>
-                        <th colspan="12" class="text-center">GOALS</th>
-                        <th colspan="2" class="text-center">Bookmaker odds</th>
-                        <th colspan="2" class="text-center">True odds</th>
+                        <th colspan="16" class="text-center">GOALS</th>
                       </tr>
                       <tr style="background-color: #106147; color: white; font-weight: 600;">
                         <th colspan="2" class="text-center">Half Time</th>
                         <th colspan="2" class="text-center">Full Time</th>
                         <th colspan="6" class="text-center">Half Time</th>
                         <th colspan="6" class="text-center">Full Time</th>
-                        <th rowspan="2" class="data-col align-middle">U 2.5</th>
-                        <th rowspan="2" class="data-col align-middle">O 2.5</th>
-                        <th rowspan="2" class="data-col align-middle">U 2.5</th>
-                        <th rowspan="2" class="data-col align-middle">O 2.5</th>
+                        <th colspan="2" class="text-center">BOOKMAKER ODDS</th>
+                        <th colspan="2" class="text-center">TRUE ODDS</th>
                       </tr>
                       <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
                         <th class="data-col">YES</th>
@@ -482,6 +556,10 @@ $goalsData = [
                         <th class="data-col">O 1.5</th>
                         <th class="data-col">O 2.5</th>
                         <th class="data-col">O 3.5</th>
+                        <th class="data-col">U 2.5</th>
+                        <th class="data-col">O 2.5</th>
+                        <th class="data-col">U 2.5</th>
+                        <th class="data-col">O 2.5</th>
                       </tr>
                     </thead>
                     <tbody>
