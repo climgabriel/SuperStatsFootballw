@@ -318,6 +318,16 @@ nav.bg-body-tertiary {
   padding-bottom: 2.5rem !important;
 }
 
+.bg-footer-custom .footer-container {
+  block-size: auto !important;
+  height: auto !important;
+  min-height: auto !important;
+}
+
+.footer-copyright {
+  font-size: 0.95rem;
+}
+
 .footer-link {
   text-decoration: none;
   transition: all 0.3s ease;
