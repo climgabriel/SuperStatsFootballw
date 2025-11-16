@@ -250,6 +250,37 @@ $cardsData = [
                     border: 1px solid #555555 !important;
                   }
 
+                  /* Sticky header row for vertical scrolling - only 3rd row */
+                  .cards-table thead tr:nth-child(3) {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                  }
+
+                  /* Sticky columns for horizontal scrolling - only team columns (3 & 4) */
+                  .cards-table th:nth-child(3),
+                  .cards-table td:nth-child(3) {
+                    position: sticky;
+                    left: 0;
+                    z-index: 5;
+                    background-color: inherit;
+                    border-right: 1px solid #555555 !important;
+                  }
+
+                  .cards-table th:nth-child(4),
+                  .cards-table td:nth-child(4) {
+                    position: sticky;
+                    left: 120px;
+                    z-index: 5;
+                    background-color: inherit;
+                  }
+
+                  /* Higher z-index for sticky header cells that are also in sticky columns */
+                  .cards-table thead th:nth-child(3),
+                  .cards-table thead th:nth-child(4) {
+                    z-index: 15;
+                  }
+
                   /* Exterior borders 2px */
                   .cards-table thead tr:first-child th {
                     border-top-width: 2px !important;
@@ -313,12 +344,94 @@ $cardsData = [
 
                   .team-col {
                     min-width: 120px;
-                    text-align: left !important;
                   }
 
                   .data-col {
                     min-width: 60px;
                     font-size: 0.85rem;
+                  }
+
+                  /* Alternating row colors - Green theme */
+                  .cards-table tbody tr:nth-child(odd) {
+                    background-color: #E8F5E9;
+                  }
+                  .cards-table tbody tr:nth-child(even) {
+                    background-color: #F1F8F4;
+                  }
+                  .cards-table tbody tr:hover {
+                    background-color: #C8E6D0;
+                    transition: background-color 0.2s ease;
+                  }
+
+                  /* Background colors for sticky cells to match row colors */
+                  .cards-table tbody tr:nth-child(odd) td:nth-child(3),
+                  .cards-table tbody tr:nth-child(odd) td:nth-child(4) {
+                    background-color: #E8F5E9;
+                  }
+
+                  .cards-table tbody tr:nth-child(even) td:nth-child(3),
+                  .cards-table tbody tr:nth-child(even) td:nth-child(4) {
+                    background-color: #F1F8F4;
+                  }
+
+                  .cards-table tbody tr:hover td:nth-child(3),
+                  .cards-table tbody tr:hover td:nth-child(4) {
+                    background-color: #C8E6D0;
+                  }
+
+                  /* Ensure sticky header cells maintain their background colors */
+                  .cards-table thead tr:nth-child(1) th:nth-child(3),
+                  .cards-table thead tr:nth-child(1) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .cards-table thead tr:nth-child(2) th:nth-child(3),
+                  .cards-table thead tr:nth-child(2) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .cards-table thead tr:nth-child(3) th:nth-child(3),
+                  .cards-table thead tr:nth-child(3) th:nth-child(4) {
+                    background-color: #1a8a6b;
+                  }
+
+                  /* Force white text for all header rows */
+                  .cards-table thead th {
+                    color: #FFFFFF !important;
+                  }
+
+                  /* Force section borders - Separate O columns from U columns in Half Time */
+                  /* Left border before O 0.5 (column 8 in table, 4th th in row 3) */
+                  .cards-table thead tr:nth-child(3) th:nth-child(4) {
+                    border-left: 2px solid #555555 !important;
+                  }
+                  .cards-table tbody tr td:nth-child(8) {
+                    border-left: 2px solid #555555 !important;
+                  }
+
+                  /* Right border after O 2.5 (column 10 in table, 6th th in row 3) */
+                  .cards-table thead tr:nth-child(3) th:nth-child(6) {
+                    border-right: 2px solid #555555 !important;
+                  }
+                  .cards-table tbody tr td:nth-child(10) {
+                    border-right: 2px solid #555555 !important;
+                  }
+
+                  /* Force section borders - Separate O columns from U columns in Full Time */
+                  /* Left border before O 2.5 (column 16 in table, 12th th in row 3) */
+                  .cards-table thead tr:nth-child(3) th:nth-child(12) {
+                    border-left: 2px solid #555555 !important;
+                  }
+                  .cards-table tbody tr td:nth-child(16) {
+                    border-left: 2px solid #555555 !important;
+                  }
+
+                  /* Right border after O 6.5 (column 20 in table, 16th th in row 3) */
+                  .cards-table thead tr:nth-child(3) th:nth-child(16) {
+                    border-right: 2px solid #555555 !important;
+                  }
+                  .cards-table tbody tr td:nth-child(20) {
+                    border-right: 2px solid #555555 !important;
                   }
                 </style>
 
@@ -326,10 +439,10 @@ $cardsData = [
                   <table class="table table-sm cards-table">
                     <thead>
                       <tr style="background-color: #106147; color: white; font-weight: 700;">
-                        <th rowspan="2" class="align-middle league-col">LEAGUE</th>
-                        <th rowspan="2" class="align-middle date-col">DATE</th>
-                        <th rowspan="2" class="align-middle team-col">1</th>
-                        <th rowspan="2" class="align-middle team-col">2</th>
+                        <th rowspan="3" class="align-middle league-col">LEAGUE</th>
+                        <th rowspan="3" class="align-middle date-col">DATE</th>
+                        <th rowspan="3" class="align-middle team-col">1</th>
+                        <th rowspan="3" class="align-middle team-col">2</th>
                         <th colspan="16" class="text-center">CARDS</th>
                       </tr>
                       <tr style="background-color: #106147; color: white; font-weight: 600;">
@@ -337,10 +450,6 @@ $cardsData = [
                         <th colspan="10" class="text-center">Full Time</th>
                       </tr>
                       <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
-                        <th class="league-col">LEAGUE</th>
-                        <th class="date-col">DATE</th>
-                        <th class="team-col">1</th>
-                        <th class="team-col">2</th>
                         <th class="data-col">U 0.5</th>
                         <th class="data-col">U 1.5</th>
                         <th class="data-col">U 2.5</th>

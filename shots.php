@@ -30,7 +30,138 @@ $shotsData = [
         'sot_ht' => ['u25' => '56.0%', 'u35' => '63.3%', 'u45' => '75.9%', 'o25' => '86.0%', 'o35' => '74.1%', 'o45' => '63.3%'],
         'sot_ft_ou' => ['u65' => '75.9%', 'u75' => '86.0%', 'u85' => '70.9%', 'u95' => '56.0%', 'u105' => '63.3%', 'o65' => '75.9%', 'o75' => '86.0%', 'o85' => '74.1%', 'o95' => '63.3%', 'o105' => '63.3%']
     ],
-    // Add remaining data - showing structure for first 2 matches, can add all 27
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '27-07-2019',
+        'team1' => 'Holstein Kiel',
+        'team2' => 'Sandhausen',
+        'total_shots_ft' => ['1' => '74.1%', 'x' => '48.6%', '2' => '74.1%'],
+        'sot_ft' => ['1' => '48.6%', 'x' => '74.1%', '2' => '48.6%'],
+        'total_shots_ht' => ['u95' => '74.1%', 'u105' => '48.6%', 'u115' => '74.1%', 'u125' => '48.6%', 'o95' => '74.1%', 'o105' => '48.6%', 'o115' => '74.1%', 'o125' => '48.6%'],
+        'total_shots_ft_ou' => ['u225' => '74.1%', 'u235' => '48.6%', 'u245' => '48.6%', 'u255' => '74.1%', 'u265' => '48.6%', 'o225' => '74.1%', 'o235' => '48.6%', 'o245' => '74.1%', 'o255' => '48.6%', 'o265' => '48.6%'],
+        'sot_ht' => ['u25' => '74.1%', 'u35' => '48.6%', 'u45' => '74.1%', 'o25' => '48.6%', 'o35' => '74.1%', 'o45' => '48.6%'],
+        'sot_ft_ou' => ['u65' => '74.1%', 'u75' => '48.6%', 'u85' => '48.6%', 'u95' => '74.1%', 'u105' => '48.6%', 'o65' => '74.1%', 'o75' => '48.6%', 'o85' => '74.1%', 'o95' => '48.6%', 'o105' => '74.1%']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '27-07-2019',
+        'team1' => 'Osnabruck',
+        'team2' => 'Heidenheim',
+        'total_shots_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'sot_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'total_shots_ht' => ['u95' => '-', 'u105' => '-', 'u115' => '-', 'u125' => '-', 'o95' => '-', 'o105' => '-', 'o115' => '-', 'o125' => '-'],
+        'total_shots_ft_ou' => ['u225' => '-', 'u235' => '-', 'u245' => '-', 'u255' => '-', 'u265' => '-', 'o225' => '-', 'o235' => '-', 'o245' => '-', 'o255' => '-', 'o265' => '-'],
+        'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
+        'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '28-07-2019',
+        'team1' => 'Greuther Furth',
+        'team2' => 'Erzgebirge Aue',
+        'total_shots_ft' => ['1' => '63.3%', 'x' => '63.3%', '2' => '63.3%'],
+        'sot_ft' => ['1' => '74.1%', 'x' => '63.3%', '2' => '70.9%'],
+        'total_shots_ht' => ['u95' => '78.6%', 'u105' => '86.3%', 'u115' => '94.0%', 'u125' => '48.6%', 'o95' => '74.1%', 'o105' => '94.0%', 'o115' => '94.0%', 'o125' => '48.6%'],
+        'total_shots_ft_ou' => ['u225' => '74.1%', 'u235' => '94.0%', 'u245' => '86.3%', 'u255' => '94.0%', 'u265' => '48.6%', 'o225' => '74.1%', 'o235' => '94.0%', 'o245' => '94.0%', 'o255' => '48.6%', 'o265' => '74.1%'],
+        'sot_ht' => ['u25' => '94.0%', 'u35' => '86.3%', 'u45' => '94.0%', 'o25' => '48.6%', 'o35' => '74.1%', 'o45' => '94.0%'],
+        'sot_ft_ou' => ['u65' => '94.0%', 'u75' => '48.6%', 'u85' => '74.1%', 'u95' => '94.0%', 'u105' => '86.3%', 'o65' => '94.0%', 'o75' => '48.6%', 'o85' => '74.1%', 'o95' => '94.0%', 'o105' => '94.0%']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '28-07-2019',
+        'team1' => 'Hamburg',
+        'team2' => 'Darmstadt',
+        'total_shots_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'sot_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'total_shots_ht' => ['u95' => '-', 'u105' => '-', 'u115' => '-', 'u125' => '-', 'o95' => '-', 'o105' => '-', 'o115' => '-', 'o125' => '-'],
+        'total_shots_ft_ou' => ['u225' => '-', 'u235' => '-', 'u245' => '-', 'u255' => '-', 'u265' => '-', 'o225' => '-', 'o235' => '-', 'o245' => '-', 'o255' => '-', 'o265' => '-'],
+        'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
+        'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '28-07-2019',
+        'team1' => 'Regensburg',
+        'team2' => 'Bochum',
+        'total_shots_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'sot_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'total_shots_ht' => ['u95' => '-', 'u105' => '-', 'u115' => '-', 'u125' => '-', 'o95' => '-', 'o105' => '-', 'o115' => '-', 'o125' => '-'],
+        'total_shots_ft_ou' => ['u225' => '-', 'u235' => '-', 'u245' => '-', 'u255' => '-', 'u265' => '-', 'o225' => '-', 'o235' => '-', 'o245' => '-', 'o255' => '-', 'o265' => '-'],
+        'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
+        'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '28-07-2019',
+        'team1' => 'Wehen',
+        'team2' => 'Karlsruhe',
+        'total_shots_ft' => ['1' => '51.0%', 'x' => '86.5%', '2' => '75.9%'],
+        'sot_ft' => ['1' => '86.0%', 'x' => '32.0%', '2' => '86.0%'],
+        'total_shots_ht' => ['u95' => '86.0%', 'u105' => '86.0%', 'u115' => '86.0%', 'u125' => '63.3%', 'o95' => '70.9%', 'o105' => '86.0%', 'o115' => '86.0%', 'o125' => '63.3%'],
+        'total_shots_ft_ou' => ['u225' => '70.9%', 'u235' => '86.0%', 'u245' => '86.0%', 'u255' => '86.0%', 'u265' => '63.3%', 'o225' => '70.9%', 'o235' => '86.0%', 'o245' => '86.0%', 'o255' => '63.3%', 'o265' => '70.9%'],
+        'sot_ht' => ['u25' => '86.0%', 'u35' => '86.0%', 'u45' => '86.0%', 'o25' => '63.3%', 'o35' => '70.9%', 'o45' => '86.0%'],
+        'sot_ft_ou' => ['u65' => '86.0%', 'u75' => '63.3%', 'u85' => '70.9%', 'u95' => '86.0%', 'u105' => '86.0%', 'o65' => '86.0%', 'o75' => '63.3%', 'o85' => '70.9%', 'o95' => '86.0%', 'o105' => '86.0%']
+    ],
+    [
+        'league' => 'Germany - Bundesliga 2',
+        'date' => '28-07-2019',
+        'team1' => 'Bielefeld',
+        'team2' => 'St Pauli',
+        'total_shots_ft' => ['1' => '70.6%', 'x' => '69.5%', '2' => '48.6%'],
+        'sot_ft' => ['1' => '50.0%', 'x' => '73.3%', '2' => '50.0%'],
+        'total_shots_ht' => ['u95' => '86.0%', 'u105' => '75.9%', 'u115' => '86.0%', 'u125' => '63.3%', 'o95' => '70.9%', 'o105' => '32.0%', 'o115' => '86.0%', 'o125' => '63.3%'],
+        'total_shots_ft_ou' => ['u225' => '70.9%', 'u235' => '86.0%', 'u245' => '75.9%', 'u255' => '86.0%', 'u265' => '63.3%', 'o225' => '70.9%', 'o235' => '32.0%', 'o245' => '86.0%', 'o255' => '63.3%', 'o265' => '70.9%'],
+        'sot_ht' => ['u25' => '86.0%', 'u35' => '75.9%', 'u45' => '86.0%', 'o25' => '63.3%', 'o35' => '70.9%', 'o45' => '32.0%'],
+        'sot_ft_ou' => ['u65' => '86.0%', 'u75' => '63.3%', 'u85' => '70.9%', 'u95' => '86.0%', 'u105' => '75.9%', 'o65' => '86.0%', 'o75' => '63.3%', 'o85' => '70.9%', 'o95' => '32.0%', 'o105' => '86.0%']
+    ],
+    [
+        'league' => 'French - Ligue 2',
+        'date' => '26-07-2019',
+        'team1' => 'Ajaccio',
+        'team2' => 'Le Havre',
+        'total_shots_ft' => ['1' => '70.2%', 'x' => '37.5%', '2' => '70.2%'],
+        'sot_ft' => ['1' => '54.1%', 'x' => '79.7%', '2' => '53.8%'],
+        'total_shots_ht' => ['u95' => '79.7%', 'u105' => '43.9%', 'u115' => '50.0%', 'u125' => '63.3%', 'o95' => '70.9%', 'o105' => '73.3%', 'o115' => '50.0%', 'o125' => '63.3%'],
+        'total_shots_ft_ou' => ['u225' => '70.9%', 'u235' => '86.0%', 'u245' => '43.9%', 'u255' => '50.0%', 'u265' => '63.3%', 'o225' => '70.9%', 'o235' => '73.3%', 'o245' => '50.0%', 'o255' => '63.3%', 'o265' => '70.9%'],
+        'sot_ht' => ['u25' => '86.0%', 'u35' => '43.9%', 'u45' => '50.0%', 'o25' => '63.3%', 'o35' => '70.9%', 'o45' => '73.3%'],
+        'sot_ft_ou' => ['u65' => '50.0%', 'u75' => '63.3%', 'u85' => '70.9%', 'u95' => '86.0%', 'u105' => '43.9%', 'o65' => '50.0%', 'o75' => '63.3%', 'o85' => '70.9%', 'o95' => '73.3%', 'o105' => '50.0%']
+    ],
+    [
+        'league' => 'French - Ligue 2',
+        'date' => '26-07-2019',
+        'team1' => 'Chambly',
+        'team2' => 'Valenciennes',
+        'total_shots_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'sot_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'total_shots_ht' => ['u95' => '-', 'u105' => '-', 'u115' => '-', 'u125' => '-', 'o95' => '-', 'o105' => '-', 'o115' => '-', 'o125' => '-'],
+        'total_shots_ft_ou' => ['u225' => '-', 'u235' => '-', 'u245' => '-', 'u255' => '-', 'u265' => '-', 'o225' => '-', 'o235' => '-', 'o245' => '-', 'o255' => '-', 'o265' => '-'],
+        'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
+        'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
+    ],
+    [
+        'league' => 'French - Ligue 2',
+        'date' => '26-07-2019',
+        'team1' => 'Clermont',
+        'team2' => 'Chateauroux',
+        'total_shots_ft' => ['1' => '79.7%', 'x' => '53.8%', '2' => '79.7%'],
+        'sot_ft' => ['1' => '43.9%', 'x' => '43.9%', '2' => '35.8%'],
+        'total_shots_ht' => ['u95' => '27.6%', 'u105' => '19.5%', 'u115' => '86.5%', 'u125' => '63.3%', 'o95' => '70.9%', 'o105' => '51.0%', 'o115' => '75.9%', 'o125' => '63.3%'],
+        'total_shots_ft_ou' => ['u225' => '70.9%', 'u235' => '75.9%', 'u245' => '19.5%', 'u255' => '86.5%', 'u265' => '63.3%', 'o225' => '70.9%', 'o235' => '51.0%', 'o245' => '75.9%', 'o255' => '63.3%', 'o265' => '70.9%'],
+        'sot_ht' => ['u25' => '75.9%', 'u35' => '19.5%', 'u45' => '86.5%', 'o25' => '63.3%', 'o35' => '70.9%', 'o45' => '51.0%'],
+        'sot_ft_ou' => ['u65' => '75.9%', 'u75' => '63.3%', 'u85' => '70.9%', 'u95' => '75.9%', 'u105' => '19.5%', 'o65' => '86.5%', 'o75' => '63.3%', 'o85' => '70.9%', 'o95' => '51.0%', 'o105' => '75.9%']
+    ],
+    [
+        'league' => 'French - Ligue 2',
+        'date' => '26-07-2019',
+        'team1' => 'Guingamp',
+        'team2' => 'Grenoble',
+        'total_shots_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'sot_ft' => ['1' => '-', 'x' => '-', '2' => '-'],
+        'total_shots_ht' => ['u95' => '-', 'u105' => '-', 'u115' => '-', 'u125' => '-', 'o95' => '-', 'o105' => '-', 'o115' => '-', 'o125' => '-'],
+        'total_shots_ft_ou' => ['u225' => '-', 'u235' => '-', 'u245' => '-', 'u255' => '-', 'u265' => '-', 'o225' => '-', 'o235' => '-', 'o245' => '-', 'o255' => '-', 'o265' => '-'],
+        'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
+        'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
+    ]
 ];
 ?>
 
@@ -58,6 +189,37 @@ $shotsData = [
                     vertical-align: middle;
                     padding: 0.4rem 0.3rem;
                     border: 1px solid #555555 !important;
+                  }
+
+                  /* Sticky header row for vertical scrolling - only 3rd row */
+                  .shots-table thead tr:nth-child(3) {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                  }
+
+                  /* Sticky columns for horizontal scrolling - only team columns (3 & 4) */
+                  .shots-table th:nth-child(3),
+                  .shots-table td:nth-child(3) {
+                    position: sticky;
+                    left: 0;
+                    z-index: 5;
+                    background-color: inherit;
+                    border-right: 1px solid #555555 !important;
+                  }
+
+                  .shots-table th:nth-child(4),
+                  .shots-table td:nth-child(4) {
+                    position: sticky;
+                    left: 120px;
+                    z-index: 5;
+                    background-color: inherit;
+                  }
+
+                  /* Higher z-index for sticky header cells that are also in sticky columns */
+                  .shots-table thead th:nth-child(3),
+                  .shots-table thead th:nth-child(4) {
+                    z-index: 15;
                   }
 
                   /* Exterior borders 2px */
@@ -102,9 +264,48 @@ $shotsData = [
                     border-left-width: 2px !important;
                   }
 
+                  /* Treat columns 15-18 (O 9.5 to O 12.5) as one big section with 2px borders */
+                  .shots-table td:nth-child(15),
+                  .shots-table thead tr th:nth-child(15) {
+                    border-left-width: 2px !important;
+                  }
+
+                  .shots-table td:nth-child(18),
+                  .shots-table thead tr th:nth-child(18) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Treat columns 24-28 (O 22.5 to O 26.5) as one big section with 2px borders */
+                  .shots-table td:nth-child(24),
+                  .shots-table thead tr th:nth-child(24) {
+                    border-left-width: 2px !important;
+                  }
+
+                  .shots-table td:nth-child(28),
+                  .shots-table thead tr th:nth-child(28) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Treat columns 29-31 (U 2.5, U 3.5, U 4.5) as one big section with 2px borders */
                   .shots-table td:nth-child(29),
                   .shots-table thead tr th:nth-child(29) {
                     border-left-width: 2px !important;
+                  }
+
+                  .shots-table td:nth-child(31),
+                  .shots-table thead tr th:nth-child(31) {
+                    border-right-width: 2px !important;
+                  }
+
+                  /* Treat columns 35-39 (U 6.5 to U 10.5) as one big section with 2px borders */
+                  .shots-table td:nth-child(35),
+                  .shots-table thead tr th:nth-child(35) {
+                    border-left-width: 2px !important;
+                  }
+
+                  .shots-table td:nth-child(39),
+                  .shots-table thead tr th:nth-child(39) {
+                    border-right-width: 2px !important;
                   }
 
                   .league-col {
@@ -118,12 +319,60 @@ $shotsData = [
 
                   .team-col {
                     min-width: 100px;
-                    text-align: left !important;
                   }
 
                   .data-col-sm {
                     min-width: 45px;
                     font-size: 0.7rem;
+                  }
+
+                  /* Alternating row colors - Green theme */
+                  .shots-table tbody tr:nth-child(odd) {
+                    background-color: #E8F5E9;
+                  }
+                  .shots-table tbody tr:nth-child(even) {
+                    background-color: #F1F8F4;
+                  }
+                  .shots-table tbody tr:hover {
+                    background-color: #C8E6D0;
+                    transition: background-color 0.2s ease;
+                  }
+
+                  /* Background colors for sticky cells to match row colors */
+                  .shots-table tbody tr:nth-child(odd) td:nth-child(3),
+                  .shots-table tbody tr:nth-child(odd) td:nth-child(4) {
+                    background-color: #E8F5E9;
+                  }
+
+                  .shots-table tbody tr:nth-child(even) td:nth-child(3),
+                  .shots-table tbody tr:nth-child(even) td:nth-child(4) {
+                    background-color: #F1F8F4;
+                  }
+
+                  .shots-table tbody tr:hover td:nth-child(3),
+                  .shots-table tbody tr:hover td:nth-child(4) {
+                    background-color: #C8E6D0;
+                  }
+
+                  /* Ensure sticky header cells maintain their background colors */
+                  .shots-table thead tr:nth-child(1) th:nth-child(3),
+                  .shots-table thead tr:nth-child(1) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .shots-table thead tr:nth-child(2) th:nth-child(3),
+                  .shots-table thead tr:nth-child(2) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .shots-table thead tr:nth-child(3) th:nth-child(3),
+                  .shots-table thead tr:nth-child(3) th:nth-child(4) {
+                    background-color: #1a8a6b;
+                  }
+
+                  /* Force white text for all header rows */
+                  .shots-table thead th {
+                    color: #FFFFFF !important;
                   }
                 </style>
 
