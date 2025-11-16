@@ -303,6 +303,14 @@ include 'includes/app-header.php';
                   .stats-table thead tr:nth-child(3) th:nth-child(6) {
                     border-right-width: 2px !important;
                   }
+                  /* Custom 1px border for Halftime Bookmaker "2" cell */
+                  .stats-table thead tr:nth-child(3) th:nth-child(3) {
+                    border-left: 1px solid #555555 !important;
+                  }
+                  /* Custom 1px border for Halftime Probability "1" cell */
+                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
+                    border-right: 1px solid #555555 !important;
+                  }
 
                   /* Half Time True Odds section - 2px left/right borders */
                   .stats-table td:nth-child(11) {
