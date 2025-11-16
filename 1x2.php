@@ -17,9 +17,103 @@ include 'includes/app-header.php';
             </div>
 
             <?php
-            // Load JSON data
-            $jsonData = file_get_contents('1x2_data.json');
-            $matches = json_decode($jsonData, true);
+            // Load data from Railway API
+            $apiUrl = 'https://superstatsfootball-production.up.railway.app/api/v1/odds/upcoming?days_ahead=7&limit=100';
+
+            // Initialize matches array
+            $matches = [];
+
+            try {
+                // Fetch data from API with timeout
+                $context = stream_context_create([
+                    'http' => [
+                        'timeout' => 10,  // 10 second timeout
+                        'header' => 'Accept: application/json'
+                    ]
+                ]);
+
+                $apiResponse = @file_get_contents($apiUrl, false, $context);
+
+                if ($apiResponse === false) {
+                    throw new Exception('Failed to fetch data from API');
+                }
+
+                $apiData = json_decode($apiResponse, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception('Invalid JSON response from API');
+                }
+
+                // Transform API response to match expected format
+                if (isset($apiData['fixtures']) && is_array($apiData['fixtures'])) {
+                    foreach ($apiData['fixtures'] as $fixture) {
+                        $match = [
+                            'league' => $fixture['league_name'] ?? 'Unknown League',
+                            'date' => isset($fixture['match_date']) ? date('d-m-Y', strtotime($fixture['match_date'])) : '',
+                            'team1' => $fixture['home_team'] ?? '',
+                            'team2' => $fixture['away_team'] ?? '',
+                            'half_time' => [
+                                'bookmaker_odds' => [
+                                    '1' => $fixture['odds_halftime']['home'] ?? '-',
+                                    'X' => $fixture['odds_halftime']['draw'] ?? '-',
+                                    '2' => $fixture['odds_halftime']['away'] ?? '-'
+                                ],
+                                'probability' => [
+                                    '1' => '-',  // TODO: Calculate from ML predictions
+                                    'X' => '-',
+                                    '2' => '-'
+                                ],
+                                'true_odds' => [
+                                    '1' => '-',  // TODO: Calculate from ML predictions
+                                    'X' => '-',
+                                    '2' => '-'
+                                ]
+                            ],
+                            'full_time' => [
+                                'bookmaker_odds' => [
+                                    '1' => $fixture['odds_1x2']['home'] ?? '-',
+                                    'X' => $fixture['odds_1x2']['draw'] ?? '-',
+                                    '2' => $fixture['odds_1x2']['away'] ?? '-'
+                                ],
+                                'probability' => [
+                                    '1' => '-',  // TODO: Calculate from ML predictions
+                                    'X' => '-',
+                                    '2' => '-'
+                                ],
+                                'true_odds' => [
+                                    '1' => '-',  // TODO: Calculate from ML predictions
+                                    'X' => '-',
+                                    '2' => '-'
+                                ]
+                            ],
+                            'draw_no_bet' => [
+                                'half_time' => ['1_dnb' => '-', '2_dnb' => '-'],
+                                'full_time' => ['1_dnb' => '-', '2_dnb' => '-']
+                            ],
+                            'double_chance' => [
+                                'half_time' => ['1X' => '-', 'X2' => '-', '12' => '-'],
+                                'full_time' => ['1X' => '-', 'X2' => '-', '12' => '-']
+                            ]
+                        ];
+
+                        $matches[] = $match;
+                    }
+                }
+
+                // Fallback to static JSON if API returns no data
+                if (empty($matches) && file_exists('1x2_data.json')) {
+                    $jsonData = file_get_contents('1x2_data.json');
+                    $matches = json_decode($jsonData, true);
+                }
+
+            } catch (Exception $e) {
+                // Fallback to static JSON file on error
+                error_log('API Error: ' . $e->getMessage());
+                if (file_exists('1x2_data.json')) {
+                    $jsonData = file_get_contents('1x2_data.json');
+                    $matches = json_decode($jsonData, true) ?? [];
+                }
+            }
             ?>
 
             <!-- Filter Modal -->
