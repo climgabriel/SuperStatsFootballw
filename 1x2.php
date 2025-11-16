@@ -255,6 +255,37 @@ include 'includes/app-header.php';
                     border: 1px solid #555555 !important;
                   }
 
+                  /* Sticky header row for vertical scrolling - only 3rd row */
+                  .stats-table thead tr:nth-child(3) {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                  }
+
+                  /* Sticky columns for horizontal scrolling - only team columns (3 & 4) */
+                  .stats-table th:nth-child(3),
+                  .stats-table td:nth-child(3) {
+                    position: sticky;
+                    left: 0;
+                    z-index: 5;
+                    background-color: inherit;
+                    border-right: 1px solid #555555 !important;
+                  }
+
+                  .stats-table th:nth-child(4),
+                  .stats-table td:nth-child(4) {
+                    position: sticky;
+                    left: 120px;
+                    z-index: 5;
+                    background-color: inherit;
+                  }
+
+                  /* Higher z-index for sticky header cells that are also in sticky columns */
+                  .stats-table thead th:nth-child(3),
+                  .stats-table thead th:nth-child(4) {
+                    z-index: 15;
+                  }
+
                   /* Exterior borders 2px */
                   .stats-table thead tr:first-child th {
                     border-top-width: 2px !important;
@@ -448,6 +479,38 @@ include 'includes/app-header.php';
                   .stats-table tbody tr:hover {
                     background-color: #C8E6D0;
                     transition: background-color 0.2s ease;
+                  }
+
+                  /* Background colors for sticky cells to match row colors */
+                  .stats-table tbody tr:nth-child(odd) td:nth-child(3),
+                  .stats-table tbody tr:nth-child(odd) td:nth-child(4) {
+                    background-color: #E8F5E9;
+                  }
+
+                  .stats-table tbody tr:nth-child(even) td:nth-child(3),
+                  .stats-table tbody tr:nth-child(even) td:nth-child(4) {
+                    background-color: #F1F8F4;
+                  }
+
+                  .stats-table tbody tr:hover td:nth-child(3),
+                  .stats-table tbody tr:hover td:nth-child(4) {
+                    background-color: #C8E6D0;
+                  }
+
+                  /* Ensure sticky header cells maintain their background colors */
+                  .stats-table thead tr:nth-child(1) th:nth-child(3),
+                  .stats-table thead tr:nth-child(1) th:nth-child(4) {
+                    background-color: #005440;
+                  }
+
+                  .stats-table thead tr:nth-child(2) th:nth-child(3),
+                  .stats-table thead tr:nth-child(2) th:nth-child(4) {
+                    background-color: #106147;
+                  }
+
+                  .stats-table thead tr:nth-child(3) th:nth-child(3),
+                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
+                    background-color: #1a8a6b;
                   }
                 </style>
                 <div class="table-responsive">
