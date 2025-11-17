@@ -2,10 +2,65 @@
 $pageTitle = "Corners Statistics - Super Stats Football";
 $pageDescription = "Corners Statistics and Analysis";
 $activePage = "corners";
-include 'includes/app-header.php';
 
-// Sample corners data
-$cornersData = [
+// Include API helper and authentication
+require_once 'includes/api-helper.php';
+require_once 'includes/auth-middleware.php';
+
+// Try demo authentication for seamless UX
+tryDemoAuth();
+
+// Get filter parameters from URL
+$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
+$dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
+
+// Calculate days ahead from date range
+$daysAhead = 7; // Default
+if ($dateTo) {
+    $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
+}
+
+// Fetch data from backend API
+$apiResponse = getCornersStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+
+// Process API response
+$cornersData = [];
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
+        $cornersData[] = [
+            'league' => $fixture['league_name'] ?? '-',
+            'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
+            'team1' => $fixture['home_team'] ?? '-',
+            'team2' => $fixture['away_team'] ?? '-',
+            'corners_ht' => [
+                'u35' => isset($fixture['corners_ht_u35']) ? round($fixture['corners_ht_u35'] * 100, 1) . '%' : '-',
+                'u45' => isset($fixture['corners_ht_u45']) ? round($fixture['corners_ht_u45'] * 100, 1) . '%' : '-',
+                'u55' => isset($fixture['corners_ht_u55']) ? round($fixture['corners_ht_u55'] * 100, 1) . '%' : '-',
+                'o35' => isset($fixture['corners_ht_o35']) ? round($fixture['corners_ht_o35'] * 100, 1) . '%' : '-',
+                'o45' => isset($fixture['corners_ht_o45']) ? round($fixture['corners_ht_o45'] * 100, 1) . '%' : '-',
+                'o55' => isset($fixture['corners_ht_o55']) ? round($fixture['corners_ht_o55'] * 100, 1) . '%' : '-'
+            ],
+            'corners_ft' => [
+                'u85' => isset($fixture['corners_ft_u85']) ? round($fixture['corners_ft_u85'] * 100, 1) . '%' : '-',
+                'u95' => isset($fixture['corners_ft_u95']) ? round($fixture['corners_ft_u95'] * 100, 1) . '%' : '-',
+                'u105' => isset($fixture['corners_ft_u105']) ? round($fixture['corners_ft_u105'] * 100, 1) . '%' : '-',
+                'u115' => isset($fixture['corners_ft_u115']) ? round($fixture['corners_ft_u115'] * 100, 1) . '%' : '-',
+                'u125' => isset($fixture['corners_ft_u125']) ? round($fixture['corners_ft_u125'] * 100, 1) . '%' : '-',
+                'o85' => isset($fixture['corners_ft_o85']) ? round($fixture['corners_ft_o85'] * 100, 1) . '%' : '-',
+                'o95' => isset($fixture['corners_ft_o95']) ? round($fixture['corners_ft_o95'] * 100, 1) . '%' : '-',
+                'o105' => isset($fixture['corners_ft_o105']) ? round($fixture['corners_ft_o105'] * 100, 1) . '%' : '-',
+                'o115' => isset($fixture['corners_ft_o115']) ? round($fixture['corners_ft_o115'] * 100, 1) . '%' : '-',
+                'o125' => isset($fixture['corners_ft_o125']) ? round($fixture['corners_ft_o125'] * 100, 1) . '%' : '-'
+            ]
+        ];
+    }
+}
+
+// Fallback to sample data if API fails or returns no data
+if (empty($cornersData)) {
+    $cornersData = [
     [
         'league' => 'Belgium - Jupiler League',
         'date' => '26-07-2019',
@@ -223,6 +278,8 @@ $cornersData = [
         'corners_ft' => ['u85' => '20.4%', 'u95' => '63.3%', 'u105' => '74.1%', 'u115' => '70.2%', 'u125' => '54.1%', 'o85' => '63.3%', 'o95' => '70.9%', 'o105' => '70.2%', 'o115' => '54.1%', 'o125' => '70.9%']
     ]
 ];
+
+include 'includes/app-header.php';
 ?>
 
         <!-- Content wrapper -->
@@ -466,5 +523,8 @@ $cornersData = [
 
           </div>
           <!-- / Content -->
+
+          <!-- Include filter JavaScript -->
+          <script src="assets/js/statistics-filter.js"></script>
 
 <?php include 'includes/app-footer.php'; ?>

@@ -2,10 +2,75 @@
 $pageTitle = "Goals Statistics - Super Stats Football";
 $pageDescription = "Goals Statistics and Analysis";
 $activePage = "goals";
-include 'includes/app-header.php';
 
-// Sample goals data
-$goalsData = [
+// Include API helper and authentication
+require_once 'includes/api-helper.php';
+require_once 'includes/auth-middleware.php';
+
+// Try demo authentication for seamless UX
+tryDemoAuth();
+
+// Get filter parameters from URL
+$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
+$dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
+
+// Calculate days ahead from date range
+$daysAhead = 7; // Default
+if ($dateTo) {
+    $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
+}
+
+// Fetch data from backend API
+$apiResponse = getGoalsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+
+// Process API response
+$goalsData = [];
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
+        $goalsData[] = [
+            'league' => $fixture['league_name'] ?? '-',
+            'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
+            'team1' => $fixture['home_team'] ?? '-',
+            'team2' => $fixture['away_team'] ?? '-',
+            'bts' => [
+                'ht_yes' => isset($fixture['bts_ht_yes']) ? round($fixture['bts_ht_yes'] * 100, 1) . '%' : '-',
+                'ht_no' => isset($fixture['bts_ht_no']) ? round($fixture['bts_ht_no'] * 100, 1) . '%' : '-',
+                'ft_yes' => isset($fixture['bts_ft_yes']) ? round($fixture['bts_ft_yes'] * 100, 1) . '%' : '-',
+                'ft_no' => isset($fixture['bts_ft_no']) ? round($fixture['bts_ft_no'] * 100, 1) . '%' : '-'
+            ],
+            'goals_ht' => [
+                'u05' => isset($fixture['goals_ht_u05']) ? round($fixture['goals_ht_u05'] * 100, 1) . '%' : '-',
+                'u15' => isset($fixture['goals_ht_u15']) ? round($fixture['goals_ht_u15'] * 100, 1) . '%' : '-',
+                'u25' => isset($fixture['goals_ht_u25']) ? round($fixture['goals_ht_u25'] * 100, 1) . '%' : '-',
+                'o05' => isset($fixture['goals_ht_o05']) ? round($fixture['goals_ht_o05'] * 100, 1) . '%' : '-',
+                'o15' => isset($fixture['goals_ht_o15']) ? round($fixture['goals_ht_o15'] * 100, 1) . '%' : '-',
+                'o25' => isset($fixture['goals_ht_o25']) ? round($fixture['goals_ht_o25'] * 100, 1) . '%' : '-'
+            ],
+            'goals_ft' => [
+                'u15' => isset($fixture['goals_ft_u15']) ? round($fixture['goals_ft_u15'] * 100, 1) . '%' : '-',
+                'u25' => isset($fixture['goals_ft_u25']) ? round($fixture['goals_ft_u25'] * 100, 1) . '%' : '-',
+                'u35' => isset($fixture['goals_ft_u35']) ? round($fixture['goals_ft_u35'] * 100, 1) . '%' : '-',
+                'o15' => isset($fixture['goals_ft_o15']) ? round($fixture['goals_ft_o15'] * 100, 1) . '%' : '-',
+                'o25' => isset($fixture['goals_ft_o25']) ? round($fixture['goals_ft_o25'] * 100, 1) . '%' : '-',
+                'o35' => isset($fixture['goals_ft_o35']) ? round($fixture['goals_ft_o35'] * 100, 1) . '%' : '-'
+            ],
+            'bookmaker' => [
+                'u25' => $fixture['bookmaker_u25'] ?? '-',
+                'o25' => $fixture['bookmaker_o25'] ?? '-'
+            ],
+            'true_odds' => [
+                'u25' => $fixture['true_odds_u25'] ?? '-',
+                'o25' => $fixture['true_odds_o25'] ?? '-'
+            ]
+        ];
+    }
+}
+
+// Fallback to sample data if API fails or returns no data
+if (empty($goalsData)) {
+    $goalsData = [
     [
         'league' => 'Belgium - Jupiler League',
         'date' => '26-07-2019',
@@ -304,6 +369,8 @@ $goalsData = [
         'true_odds' => ['u25' => '2.92', 'o25' => '2.88']
     ]
 ];
+
+include 'includes/app-header.php';
 ?>
 
         <!-- Content wrapper -->
@@ -601,5 +668,8 @@ $goalsData = [
 
           </div>
           <!-- / Content -->
+
+          <!-- Include filter JavaScript -->
+          <script src="assets/js/statistics-filter.js"></script>
 
 <?php include 'includes/app-footer.php'; ?>

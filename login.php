@@ -1,6 +1,31 @@
 <?php
 $pageTitle = "Login - Super Stats Football";
 $pageDescription = "Login to Super Stats Football Dashboard";
+
+require_once 'includes/api-helper.php';
+
+// Handle login form submission
+$loginError = '';
+$loginSuccess = false;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    $response = loginUser($email, $password);
+
+    if ($response['success']) {
+        $loginSuccess = true;
+        // Redirect to intended page or dashboard
+        $redirectTo = $_SESSION['redirect_after_login'] ?? 'index.php';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirectTo);
+        exit;
+    } else {
+        $loginError = $response['error'] ?? 'Invalid email or password';
+    }
+}
+
 include 'includes/auth-header.php';
 ?>
 
@@ -16,7 +41,14 @@ include 'includes/auth-header.php';
             <h4 class="mb-1 text-center">Welcome to Super Stats Football!</h4>
             <p class="mb-6">Please sign-in to your account to access football statistics</p>
 
-            <form id="formAuthentication" class="mb-6" action="index.php">
+            <?php if ($loginError): ?>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <strong>Login Failed!</strong> <?php echo htmlspecialchars($loginError); ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php endif; ?>
+
+            <form id="formAuthentication" class="mb-6" action="login.php" method="POST">
               <div class="mb-6">
                 <label for="email" class="form-label">Email or Username</label>
                 <input type="text" class="form-control" id="email" name="email-username"

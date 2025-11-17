@@ -2,10 +2,65 @@
 $pageTitle = "Cards Statistics - Super Stats Football";
 $pageDescription = "Yellow and Red Cards Statistics";
 $activePage = "cards";
-include 'includes/app-header.php';
 
-// Sample cards data
-$cardsData = [
+// Include API helper and authentication
+require_once 'includes/api-helper.php';
+require_once 'includes/auth-middleware.php';
+
+// Try demo authentication for seamless UX
+tryDemoAuth();
+
+// Get filter parameters from URL
+$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
+$dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
+
+// Calculate days ahead from date range
+$daysAhead = 7; // Default
+if ($dateTo) {
+    $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
+}
+
+// Fetch data from backend API
+$apiResponse = getCardsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+
+// Process API response
+$cardsData = [];
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
+        $cardsData[] = [
+            'league' => $fixture['league_name'] ?? '-',
+            'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
+            'team1' => $fixture['home_team'] ?? '-',
+            'team2' => $fixture['away_team'] ?? '-',
+            'cards_ht' => [
+                'u05' => isset($fixture['cards_ht_u05']) ? round($fixture['cards_ht_u05'] * 100, 1) . '%' : '-',
+                'u15' => isset($fixture['cards_ht_u15']) ? round($fixture['cards_ht_u15'] * 100, 1) . '%' : '-',
+                'u25' => isset($fixture['cards_ht_u25']) ? round($fixture['cards_ht_u25'] * 100, 1) . '%' : '-',
+                'o05' => isset($fixture['cards_ht_o05']) ? round($fixture['cards_ht_o05'] * 100, 1) . '%' : '-',
+                'o15' => isset($fixture['cards_ht_o15']) ? round($fixture['cards_ht_o15'] * 100, 1) . '%' : '-',
+                'o25' => isset($fixture['cards_ht_o25']) ? round($fixture['cards_ht_o25'] * 100, 1) . '%' : '-'
+            ],
+            'cards_ft' => [
+                'u25' => isset($fixture['cards_ft_u25']) ? round($fixture['cards_ft_u25'] * 100, 1) . '%' : '-',
+                'u35' => isset($fixture['cards_ft_u35']) ? round($fixture['cards_ft_u35'] * 100, 1) . '%' : '-',
+                'u45' => isset($fixture['cards_ft_u45']) ? round($fixture['cards_ft_u45'] * 100, 1) . '%' : '-',
+                'u55' => isset($fixture['cards_ft_u55']) ? round($fixture['cards_ft_u55'] * 100, 1) . '%' : '-',
+                'u65' => isset($fixture['cards_ft_u65']) ? round($fixture['cards_ft_u65'] * 100, 1) . '%' : '-',
+                'o25' => isset($fixture['cards_ft_o25']) ? round($fixture['cards_ft_o25'] * 100, 1) . '%' : '-',
+                'o35' => isset($fixture['cards_ft_o35']) ? round($fixture['cards_ft_o35'] * 100, 1) . '%' : '-',
+                'o45' => isset($fixture['cards_ft_o45']) ? round($fixture['cards_ft_o45'] * 100, 1) . '%' : '-',
+                'o55' => isset($fixture['cards_ft_o55']) ? round($fixture['cards_ft_o55'] * 100, 1) . '%' : '-',
+                'o65' => isset($fixture['cards_ft_o65']) ? round($fixture['cards_ft_o65'] * 100, 1) . '%' : '-'
+            ]
+        ];
+    }
+}
+
+// Fallback to sample data if API fails or returns no data
+if (empty($cardsData)) {
+    $cardsData = [
     [
         'league' => 'Belgium - Jupiler League',
         'date' => '26-07-2019',
@@ -223,6 +278,8 @@ $cardsData = [
         'cards_ft' => ['u25' => '20.4%', 'u35' => '63.3%', 'u45' => '74.1%', 'u55' => '70.2%', 'u65' => '54.1%', 'o25' => '63.3%', 'o35' => '70.9%', 'o45' => '70.2%', 'o55' => '54.1%', 'o65' => '70.9%']
     ]
 ];
+
+include 'includes/app-header.php';
 ?>
 
         <!-- Content wrapper -->
@@ -466,5 +523,8 @@ $cardsData = [
 
           </div>
           <!-- / Content -->
+
+          <!-- Include filter JavaScript -->
+          <script src="assets/js/statistics-filter.js"></script>
 
 <?php include 'includes/app-footer.php'; ?>
