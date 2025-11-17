@@ -124,9 +124,9 @@ class APIClient {
     public function logout() {
         $result = $this->makeRequest('POST', '/auth/logout', null, true);
 
-        // Clear session and cookies regardless of API response
+        // Clear session variables and cookies regardless of API response
+        // Note: session_destroy() is handled in logout.php to ensure proper order
         $this->clearTokens();
-        session_destroy();
 
         return $result;
     }
