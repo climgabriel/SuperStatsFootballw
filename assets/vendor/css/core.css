@@ -33,8 +33,8 @@
   --bs-gray-700: #646e78;
   --bs-gray-800: #4e5965;
   --bs-gray-900: #384551;
-  --bs-primary: #106147;
-  --bs-secondary: #106147;
+  --bs-primary: #005340;
+  --bs-secondary: #8592a3;
   --bs-success: #71dd37;
   --bs-info: #03c3ec;
   --bs-warning: #ffab00;
@@ -3952,19 +3952,19 @@ fieldset:disabled .btn {
 
 .btn-secondary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #106147;
-  --bs-btn-border-color: #106147;
+  --bs-btn-bg: #8592a3;
+  --bs-btn-border-color: #8592a3;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0f5a42;
-  --bs-btn-hover-border-color: #0d4c39;
-  --bs-btn-focus-shadow-rgb: 16, 97, 71;
+  --bs-btn-hover-bg: #788393;
+  --bs-btn-hover-border-color: #6a7582;
+  --bs-btn-focus-shadow-rgb: 151, 162, 177;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #0d4c39;
-  --bs-btn-active-border-color: #0a3828;
+  --bs-btn-active-bg: #788393;
+  --bs-btn-active-border-color: #646e7a;
   --bs-btn-active-shadow: none;
   --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #106147;
-  --bs-btn-disabled-border-color: #106147;
+  --bs-btn-disabled-bg: #8592a3;
+  --bs-btn-disabled-border-color: #8592a3;
 }
 
 .btn-success {
@@ -4104,19 +4104,19 @@ fieldset:disabled .btn {
 }
 
 .btn-outline-secondary {
-  --bs-btn-color: #106147;
-  --bs-btn-border-color: #106147;
+  --bs-btn-color: #8592a3;
+  --bs-btn-border-color: #8592a3;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #106147;
-  --bs-btn-hover-border-color: #106147;
-  --bs-btn-focus-shadow-rgb: 16, 97, 71;
+  --bs-btn-hover-bg: #8592a3;
+  --bs-btn-hover-border-color: #8592a3;
+  --bs-btn-focus-shadow-rgb: 133, 146, 163;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #106147;
-  --bs-btn-active-border-color: #106147;
+  --bs-btn-active-bg: #8592a3;
+  --bs-btn-active-border-color: #8592a3;
   --bs-btn-active-shadow: none;
-  --bs-btn-disabled-color: #106147;
+  --bs-btn-disabled-color: #8592a3;
   --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #106147;
+  --bs-btn-disabled-border-color: #8592a3;
   --bs-gradient: none;
 }
 
@@ -8631,10 +8631,10 @@ fieldset:disabled .btn {
 /* Custom colors
 ******************************************************************************* */
 :root {
-  --bs-primary: #106147;
-  --bs-primary-rgb: 16, 97, 71;
-  --bs-secondary: #106147;
-  --bs-secondary-rgb: 16, 97, 71;
+  --bs-primary: #005340;
+  --bs-primary-rgb: 0, 83, 64;
+  --bs-secondary: #8592a3;
+  --bs-secondary-rgb: 133, 146, 163;
   --bs-success: #71dd37;
   --bs-success-rgb: 113, 221, 55;
   --bs-info: #03c3ec;
