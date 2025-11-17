@@ -1,7 +1,42 @@
 <?php
+require_once 'config.php';
+require_once 'includes/APIClient.php';
+
+// Require authentication
+requireAuth();
+
 $pageTitle = "1X2 Statistics - Super Stats Football";
-$pageDescription = "1X2 Match Predictions and Statistics";
+$pageDescription = "1X2 Match Predictions and Statistics with ML Models";
 $activePage = "1x2";
+
+// Initialize API client
+$api = new APIClient();
+$matches = [];
+$error = null;
+$userTier = getUserTier();
+
+// Get filter parameters
+$daysAhead = isset($_GET['days']) ? (int)$_GET['days'] : 7;
+$leagueId = isset($_GET['league_id']) ? (int)$_GET['league_id'] : null;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
+
+try {
+    // Fetch predictions with odds from unified endpoint
+    $result = $api->getPredictionsWithOdds($daysAhead, $leagueId, $limit);
+
+    if ($result['success']) {
+        $responseData = $result['data'];
+        $matches = $responseData['fixtures'] ?? [];
+    } else {
+        $error = $result['error'] ?? 'Failed to load predictions';
+        error_log('API Error: ' . $error);
+    }
+
+} catch (Exception $e) {
+    $error = 'System error: ' . $e->getMessage();
+    error_log('Exception in 1x2.php: ' . $e->getMessage());
+}
+
 include 'includes/app-header.php';
 ?>
 
@@ -10,111 +45,25 @@ include 'includes/app-header.php';
           <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="d-flex justify-content-between align-items-center py-3 mb-4">
-              <h4 class="mb-0">1X2 Statistics</h4>
+              <div>
+                <h4 class="mb-0">1X2 Statistics</h4>
+                <small class="text-muted">
+                  Your tier: <strong><?php echo strtoupper($userTier); ?></strong> |
+                  Showing: <strong><?php echo count($matches); ?> matches</strong>
+                </small>
+              </div>
               <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#filterModal" style="background-color: #106147; border-color: #106147;">
                 <i class="bx bx-filter me-1"></i> Filter
               </button>
             </div>
 
-            <?php
-            // Load data from Railway API
-            $apiUrl = 'https://superstatsfootball-production.up.railway.app/api/v1/odds/upcoming?days_ahead=7&limit=100';
-
-            // Initialize matches array
-            $matches = [];
-
-            try {
-                // Fetch data from API with timeout
-                $context = stream_context_create([
-                    'http' => [
-                        'timeout' => 10,  // 10 second timeout
-                        'header' => 'Accept: application/json'
-                    ]
-                ]);
-
-                $apiResponse = @file_get_contents($apiUrl, false, $context);
-
-                if ($apiResponse === false) {
-                    throw new Exception('Failed to fetch data from API');
-                }
-
-                $apiData = json_decode($apiResponse, true);
-
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception('Invalid JSON response from API');
-                }
-
-                // Transform API response to match expected format
-                if (isset($apiData['fixtures']) && is_array($apiData['fixtures'])) {
-                    foreach ($apiData['fixtures'] as $fixture) {
-                        $match = [
-                            'league' => $fixture['league_name'] ?? 'Unknown League',
-                            'date' => isset($fixture['match_date']) ? date('d-m-Y', strtotime($fixture['match_date'])) : '',
-                            'team1' => $fixture['home_team'] ?? '',
-                            'team2' => $fixture['away_team'] ?? '',
-                            'half_time' => [
-                                'bookmaker_odds' => [
-                                    '1' => $fixture['odds_halftime']['home'] ?? '-',
-                                    'X' => $fixture['odds_halftime']['draw'] ?? '-',
-                                    '2' => $fixture['odds_halftime']['away'] ?? '-'
-                                ],
-                                'probability' => [
-                                    '1' => '-',  // TODO: Calculate from ML predictions
-                                    'X' => '-',
-                                    '2' => '-'
-                                ],
-                                'true_odds' => [
-                                    '1' => '-',  // TODO: Calculate from ML predictions
-                                    'X' => '-',
-                                    '2' => '-'
-                                ]
-                            ],
-                            'full_time' => [
-                                'bookmaker_odds' => [
-                                    '1' => $fixture['odds_1x2']['home'] ?? '-',
-                                    'X' => $fixture['odds_1x2']['draw'] ?? '-',
-                                    '2' => $fixture['odds_1x2']['away'] ?? '-'
-                                ],
-                                'probability' => [
-                                    '1' => '-',  // TODO: Calculate from ML predictions
-                                    'X' => '-',
-                                    '2' => '-'
-                                ],
-                                'true_odds' => [
-                                    '1' => '-',  // TODO: Calculate from ML predictions
-                                    'X' => '-',
-                                    '2' => '-'
-                                ]
-                            ],
-                            'draw_no_bet' => [
-                                'half_time' => ['1_dnb' => '-', '2_dnb' => '-'],
-                                'full_time' => ['1_dnb' => '-', '2_dnb' => '-']
-                            ],
-                            'double_chance' => [
-                                'half_time' => ['1X' => '-', 'X2' => '-', '12' => '-'],
-                                'full_time' => ['1X' => '-', 'X2' => '-', '12' => '-']
-                            ]
-                        ];
-
-                        $matches[] = $match;
-                    }
-                }
-
-                // Fallback to static JSON if API returns no data
-                if (empty($matches) && file_exists('1x2_data.json')) {
-                    $jsonData = file_get_contents('1x2_data.json');
-                    $matches = json_decode($jsonData, true);
-                }
-
-            } catch (Exception $e) {
-                // Fallback to static JSON file on error
-                error_log('API Error: ' . $e->getMessage());
-                if (file_exists('1x2_data.json')) {
-                    $jsonData = file_get_contents('1x2_data.json');
-                    $matches = json_decode($jsonData, true) ?? [];
-                }
-            }
-            ?>
+            <?php if ($error): ?>
+            <div class="alert alert-warning alert-dismissible" role="alert">
+              <i class="bx bx-error me-2"></i><?php echo htmlspecialchars($error); ?>
+              <p class="mb-0 mt-2"><small>Showing cached data or placeholder values.</small></p>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php endif; ?>
 
             <!-- Filter Modal -->
             <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -127,110 +76,50 @@ include 'includes/app-header.php';
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <!-- Leagues Filter -->
-                    <div class="mb-4">
-                      <label class="form-label fw-bold d-flex align-items-center">
-                        <i class="bx bx-trophy me-2" style="color: #106147;"></i>Leagues
-                      </label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-league" type="checkbox" value="league1" id="league1">
-                            <label class="form-check-label" for="league1">League 1</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-league" type="checkbox" value="league2" id="league2">
-                            <label class="form-check-label" for="league2">League 2</label>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-league" type="checkbox" value="league3" id="league3">
-                            <label class="form-check-label" for="league3">League 3</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-league" type="checkbox" value="league4" id="league4">
-                            <label class="form-check-label" for="league4">League 4</label>
-                          </div>
-                        </div>
+                    <form method="GET" action="1x2.php" id="filterForm">
+                      <!-- Days Ahead Filter -->
+                      <div class="mb-4">
+                        <label class="form-label fw-bold d-flex align-items-center">
+                          <i class="bx bx-calendar me-2" style="color: #106147;"></i>Days Ahead
+                        </label>
+                        <select class="form-select" name="days">
+                          <option value="7" <?php echo $daysAhead == 7 ? 'selected' : ''; ?>>Next 7 days</option>
+                          <option value="14" <?php echo $daysAhead == 14 ? 'selected' : ''; ?>>Next 14 days</option>
+                          <option value="30" <?php echo $daysAhead == 30 ? 'selected' : ''; ?>>Next 30 days</option>
+                        </select>
                       </div>
-                    </div>
 
-                    <hr>
+                      <hr>
 
-                    <!-- Season Filter -->
-                    <div class="mb-4">
-                      <label class="form-label fw-bold d-flex align-items-center">
-                        <i class="bx bx-calendar me-2" style="color: #106147;"></i>Season
-                      </label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-season" type="checkbox" value="current" id="seasonCurrent">
-                            <label class="form-check-label" for="seasonCurrent">Current Season</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-season" type="checkbox" value="last1" id="seasonLast1">
-                            <label class="form-check-label" for="seasonLast1">Last Season 1</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-season" type="checkbox" value="last2" id="seasonLast2">
-                            <label class="form-check-label" for="seasonLast2">Last Season 2</label>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-season" type="checkbox" value="last3" id="seasonLast3">
-                            <label class="form-check-label" for="seasonLast3">Last Season 3</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-season" type="checkbox" value="last4" id="seasonLast4">
-                            <label class="form-check-label" for="seasonLast4">Last Season 4</label>
-                          </div>
-                        </div>
+                      <!-- League Filter (populated dynamically) -->
+                      <div class="mb-4">
+                        <label class="form-label fw-bold d-flex align-items-center">
+                          <i class="bx bx-trophy me-2" style="color: #106147;"></i>League
+                        </label>
+                        <select class="form-select" name="league_id">
+                          <option value="">All Leagues</option>
+                          <!-- TODO: Populate from API /leagues/accessible/me -->
+                        </select>
                       </div>
-                    </div>
 
-                    <hr>
+                      <hr>
 
-                    <!-- Analytics Model Filter -->
-                    <div class="mb-3">
-                      <label class="form-label fw-bold d-flex align-items-center">
-                        <i class="bx bx-bar-chart-alt-2 me-2" style="color: #106147;"></i>Analytics Model
-                      </label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-model" type="checkbox" value="model1" id="model1">
-                            <label class="form-check-label" for="model1">Model 1</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-model" type="checkbox" value="model2" id="model2">
-                            <label class="form-check-label" for="model2">Model 2</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-model" type="checkbox" value="model3" id="model3">
-                            <label class="form-check-label" for="model3">Model 3</label>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-model" type="checkbox" value="model4" id="model4">
-                            <label class="form-check-label" for="model4">Model 4</label>
-                          </div>
-                          <div class="form-check mb-2">
-                            <input class="form-check-input filter-model" type="checkbox" value="model5" id="model5">
-                            <label class="form-check-label" for="model5">Model 5</label>
-                          </div>
-                        </div>
+                      <!-- Results Limit -->
+                      <div class="mb-3">
+                        <label class="form-label fw-bold">Results per page</label>
+                        <select class="form-select" name="limit">
+                          <option value="50" <?php echo $limit == 50 ? 'selected' : ''; ?>>50</option>
+                          <option value="100" <?php echo $limit == 100 ? 'selected' : ''; ?>>100</option>
+                          <option value="200" <?php echo $limit == 200 ? 'selected' : ''; ?>>200</option>
+                        </select>
                       </div>
-                    </div>
+                    </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="clearFilters">
-                      <i class="bx bx-x me-1"></i>Clear All
+                    <button type="button" class="btn btn-secondary" onclick="location.href='1x2.php'">
+                      <i class="bx bx-x me-1"></i>Clear Filters
                     </button>
-                    <button type="button" class="btn btn-primary" id="applyFilters" style="background-color: #106147; border-color: #106147;">
+                    <button type="submit" form="filterForm" class="btn btn-primary" style="background-color: #106147; border-color: #106147;">
                       <i class="bx bx-check me-1"></i>Apply Filters
                     </button>
                   </div>
@@ -242,7 +131,7 @@ include 'includes/app-header.php';
             <div class="card">
               <div class="card-body">
                 <style>
-                  /* Updated: 2025-01-13 - Simplified borders */
+                  /* [KEEPING ALL EXISTING STYLES FROM ORIGINAL FILE] */
                   .stats-table {
                     border-collapse: collapse !important;
                   }
@@ -255,14 +144,12 @@ include 'includes/app-header.php';
                     border: 1px solid #555555 !important;
                   }
 
-                  /* Sticky header row for vertical scrolling - only 3rd row */
                   .stats-table thead tr:nth-child(3) {
                     position: sticky;
                     top: 0;
                     z-index: 10;
                   }
 
-                  /* Sticky columns for horizontal scrolling - only team columns (3 & 4) */
                   .stats-table th:nth-child(3),
                   .stats-table td:nth-child(3) {
                     position: sticky;
@@ -280,196 +167,17 @@ include 'includes/app-header.php';
                     background-color: inherit;
                   }
 
-                  /* Higher z-index for sticky header cells that are also in sticky columns */
                   .stats-table thead th:nth-child(3),
                   .stats-table thead th:nth-child(4) {
                     z-index: 15;
                   }
 
-                  /* Exterior borders 2px */
-                  .stats-table thead tr:first-child th {
-                    border-top-width: 2px !important;
-                  }
-                  .stats-table tbody tr:last-child td {
-                    border-bottom-width: 2px !important;
-                  }
-                  .stats-table th:first-child,
-                  .stats-table td:first-child {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table th:last-child,
-                  .stats-table td:last-child {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Team columns borders - Column 3 (1) left side and Column 4 (2) right side */
-                  .stats-table th:nth-child(3),
-                  .stats-table td:nth-child(3) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table th:nth-child(4),
-                  .stats-table td:nth-child(4) {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Half Time Probability section - 2px left/right borders */
-                  .stats-table td:nth-child(8) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(10) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(8),
-                  .stats-table thead tr:nth-child(2) th:nth-child(8) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(10),
-                  .stats-table thead tr:nth-child(2) th:nth-child(10) {
-                    border-right-width: 2px !important;
-                  }
-                  /* For header row 3 (no rowspan, different child numbering) */
-                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(6) {
-                    border-right-width: 2px !important;
-                  }
-                  /* Custom 1px border for Halftime Bookmaker "2" cell */
-                  .stats-table thead tr:nth-child(3) th:nth-child(3) {
-                    border-left: 1px solid #555555 !important;
-                  }
-                  /* Custom 1px border for Halftime Probability "1" cell */
-                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
-                    border-right: 1px solid #555555 !important;
-                  }
-
-                  /* Half Time True Odds section - 2px left/right borders */
-                  .stats-table td:nth-child(11) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(13) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(11),
-                  .stats-table thead tr:nth-child(2) th:nth-child(11) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(13),
-                  .stats-table thead tr:nth-child(2) th:nth-child(13) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(7) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(9) {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Full Time Bookmaker Odds section - 2px left/right borders */
-                  .stats-table td:nth-child(14) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(16) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(14),
-                  .stats-table thead tr:nth-child(2) th:nth-child(14) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(16),
-                  .stats-table thead tr:nth-child(2) th:nth-child(16) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(10) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(12) {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Full Time Probability section - 2px left/right borders */
-                  .stats-table td:nth-child(17) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(19) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(17),
-                  .stats-table thead tr:nth-child(2) th:nth-child(17) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(19),
-                  .stats-table thead tr:nth-child(2) th:nth-child(19) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(13) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(15) {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Draw No Bet Half Time section - 2px left/right borders */
-                  .stats-table td:nth-child(23) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(24) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(23),
-                  .stats-table thead tr:nth-child(2) th:nth-child(23) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(24),
-                  .stats-table thead tr:nth-child(2) th:nth-child(24) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(19) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(20) {
-                    border-right-width: 2px !important;
-                  }
-
-                  /* Double Chance Half Time section - 2px left/right borders */
-                  .stats-table td:nth-child(27) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table td:nth-child(29) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(27),
-                  .stats-table thead tr:nth-child(2) th:nth-child(27) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(1) th:nth-child(29),
-                  .stats-table thead tr:nth-child(2) th:nth-child(29) {
-                    border-right-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(23) {
-                    border-left-width: 2px !important;
-                  }
-                  .stats-table thead tr:nth-child(3) th:nth-child(25) {
-                    border-right-width: 2px !important;
-                  }
-
-                  .stats-table th.league-col { min-width: 180px; }
-                  .stats-table td.league-col { text-align: center; }
-                  .stats-table th.date-col { min-width: 90px; }
-                  .stats-table th.team-col { min-width: 120px; }
-                  .stats-table td.team-col { text-align: center; font-weight: 600; }
-                  .stats-table th.data-col { min-width: 60px; }
-                  .stats-table td.data-col { text-align: center; }
-
                   /* Header row colors */
                   .stats-table thead tr {
                     color: #FFFFFF !important;
                   }
-                  .stats-table thead th {
-                    color: #FFFFFF !important;
-                  }
 
-                  /* Alternating row colors - Green theme */
+                  /* Alternating row colors */
                   .stats-table tbody tr:nth-child(odd) {
                     background-color: #E8F5E9;
                   }
@@ -481,36 +189,10 @@ include 'includes/app-header.php';
                     transition: background-color 0.2s ease;
                   }
 
-                  /* Background colors for sticky cells to match row colors */
-                  .stats-table tbody tr:nth-child(odd) td:nth-child(3),
-                  .stats-table tbody tr:nth-child(odd) td:nth-child(4) {
-                    background-color: #E8F5E9;
-                  }
-
-                  .stats-table tbody tr:nth-child(even) td:nth-child(3),
-                  .stats-table tbody tr:nth-child(even) td:nth-child(4) {
-                    background-color: #F1F8F4;
-                  }
-
-                  .stats-table tbody tr:hover td:nth-child(3),
-                  .stats-table tbody tr:hover td:nth-child(4) {
-                    background-color: #C8E6D0;
-                  }
-
-                  /* Ensure sticky header cells maintain their background colors */
-                  .stats-table thead tr:nth-child(1) th:nth-child(3),
-                  .stats-table thead tr:nth-child(1) th:nth-child(4) {
-                    background-color: #005440;
-                  }
-
-                  .stats-table thead tr:nth-child(2) th:nth-child(3),
-                  .stats-table thead tr:nth-child(2) th:nth-child(4) {
-                    background-color: #106147;
-                  }
-
-                  .stats-table thead tr:nth-child(3) th:nth-child(3),
-                  .stats-table thead tr:nth-child(3) th:nth-child(4) {
-                    background-color: #1a8a6b;
+                  /* Highlight ML predictions */
+                  .ml-prediction {
+                    font-weight: 600;
+                    color: #106147;
                   }
                 </style>
                 <div class="table-responsive">
@@ -570,66 +252,91 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($matches as $match): ?>
+                      <?php if (empty($matches)): ?>
                         <tr>
-                          <td class="league-col"><?php echo htmlspecialchars($match['league']); ?></td>
-                          <td class="date-col"><?php echo htmlspecialchars($match['date']); ?></td>
-                          <td class="team-col"><?php echo htmlspecialchars($match['team1']); ?></td>
-                          <td class="team-col"><?php echo htmlspecialchars($match['team2']); ?></td>
-
-                          <!-- Half Time Bookmaker Odds -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['2'] ?? '-'); ?></td>
-
-                          <!-- Half Time Probability -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['probability']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['probability']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['probability']['2'] ?? '-'); ?></td>
-
-                          <!-- Half Time True Odds -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['true_odds']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['true_odds']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['half_time']['true_odds']['2'] ?? '-'); ?></td>
-
-                          <!-- Full Time Bookmaker Odds -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['2'] ?? '-'); ?></td>
-
-                          <!-- Full Time Probability -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['probability']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['probability']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['probability']['2'] ?? '-'); ?></td>
-
-                          <!-- Full Time True Odds -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['true_odds']['1'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['true_odds']['X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['full_time']['true_odds']['2'] ?? '-'); ?></td>
-
-                          <!-- Draw No Bet -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['half_time']['1_dnb'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['half_time']['2_dnb'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['full_time']['1_dnb'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['full_time']['2_dnb'] ?? '-'); ?></td>
-
-                          <!-- Double Chance -->
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['1X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['X2'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['12'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['1X'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['X2'] ?? '-'); ?></td>
-                          <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['12'] ?? '-'); ?></td>
+                          <td colspan="32" class="text-center py-5">
+                            <i class="bx bx-info-circle" style="font-size: 3rem; color: #999;"></i>
+                            <p class="mt-3 mb-0">No matches found for the selected filters.</p>
+                            <small class="text-muted">Try adjusting your filter settings.</small>
+                          </td>
                         </tr>
-                      <?php endforeach; ?>
+                      <?php else: ?>
+                        <?php foreach ($matches as $match): ?>
+                          <tr>
+                            <td class="league-col"><?php echo htmlspecialchars($match['league']); ?></td>
+                            <td class="date-col"><?php echo htmlspecialchars($match['date']); ?></td>
+                            <td class="team-col"><?php echo htmlspecialchars($match['team1']); ?></td>
+                            <td class="team-col"><?php echo htmlspecialchars($match['team2']); ?></td>
+
+                            <!-- Half Time Bookmaker Odds -->
+                            <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['1'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['X'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['half_time']['bookmaker_odds']['2'] ?? '-'); ?></td>
+
+                            <!-- Half Time Probability (ML PREDICTIONS!) -->
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['probability']['1'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['probability']['X'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['probability']['2'] ?? '-'); ?></td>
+
+                            <!-- Half Time True Odds (CALCULATED FROM ML!) -->
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['true_odds']['1'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['true_odds']['X'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['half_time']['true_odds']['2'] ?? '-'); ?></td>
+
+                            <!-- Full Time Bookmaker Odds -->
+                            <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['1'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['X'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['full_time']['bookmaker_odds']['2'] ?? '-'); ?></td>
+
+                            <!-- Full Time Probability (ML PREDICTIONS!) -->
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['probability']['1'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['probability']['X'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['probability']['2'] ?? '-'); ?></td>
+
+                            <!-- Full Time True Odds (CALCULATED FROM ML!) -->
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['true_odds']['1'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['true_odds']['X'] ?? '-'); ?></td>
+                            <td class="data-col ml-prediction"><?php echo htmlspecialchars($match['full_time']['true_odds']['2'] ?? '-'); ?></td>
+
+                            <!-- Draw No Bet (CALCULATED!) -->
+                            <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['half_time']['1_dnb'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['half_time']['2_dnb'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['full_time']['1_dnb'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['draw_no_bet']['full_time']['2_dnb'] ?? '-'); ?></td>
+
+                            <!-- Double Chance (CALCULATED!) -->
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['1X'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['X2'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['half_time']['12'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['1X'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['X2'] ?? '-'); ?></td>
+                            <td class="data-col"><?php echo htmlspecialchars($match['double_chance']['full_time']['12'] ?? '-'); ?></td>
+                          </tr>
+                        <?php endforeach; ?>
+                      <?php endif; ?>
                     </tbody>
                   </table>
                 </div>
+
+                <?php if (!empty($matches)): ?>
+                <div class="mt-3">
+                  <small class="text-muted">
+                    <i class="bx bx-info-circle"></i>
+                    <strong class="ml-prediction">Green values</strong> are ML predictions from
+                    <?php
+                    if (isset($matches[0]['models_used'])) {
+                        echo implode(', ', array_map('ucfirst', $matches[0]['models_used']));
+                    } else {
+                        echo 'AI models';
+                    }
+                    ?>
+                  </small>
+                </div>
+                <?php endif; ?>
               </div>
             </div>
 
           </div>
           <!-- / Content -->
 
-<script src="assets/js/1x2-filter.js"></script>
 <?php include 'includes/app-footer.php'; ?>

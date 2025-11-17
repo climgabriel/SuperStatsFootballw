@@ -314,25 +314,25 @@ $faultsData = [
                     border-left-width: 2px !important;
                   }
 
-                  /* Treat columns 8-10 (O 8.5 to O 10.5) as one big section with 2px borders */
-                  .faults-table td:nth-child(8),
-                  .faults-table thead tr th:nth-child(8) {
+                  /* Treat columns 7-8 (O 1.5 to O 2.5) as one big section with 2px borders */
+                  .faults-table td:nth-child(7),
+                  .faults-table thead tr th:nth-child(7) {
                     border-left-width: 2px !important;
                   }
 
-                  .faults-table td:nth-child(10),
-                  .faults-table thead tr th:nth-child(10) {
+                  .faults-table td:nth-child(8),
+                  .faults-table thead tr th:nth-child(8) {
                     border-right-width: 2px !important;
                   }
 
-                  /* Treat columns 16-20 (O 23.5 to O 27.5) as one big section with 2px borders */
-                  .faults-table td:nth-child(16),
-                  .faults-table thead tr th:nth-child(16) {
+                  /* Treat columns 12-14 (O 2.5 to O 4.5) as one big section with 2px borders */
+                  .faults-table td:nth-child(12),
+                  .faults-table thead tr th:nth-child(12) {
                     border-left-width: 2px !important;
                   }
 
-                  .faults-table td:nth-child(20),
-                  .faults-table thead tr th:nth-child(20) {
+                  .faults-table td:nth-child(14),
+                  .faults-table thead tr th:nth-child(14) {
                     border-right-width: 2px !important;
                   }
 
@@ -412,29 +412,23 @@ $faultsData = [
                         <th rowspan="3" class="align-middle date-col">DATE</th>
                         <th rowspan="3" class="align-middle team-col">1</th>
                         <th rowspan="3" class="align-middle team-col">2</th>
-                        <th colspan="16" class="text-center">FAULTS</th>
+                        <th colspan="10" class="text-center">FAULTS</th>
                       </tr>
                       <tr style="background-color: #106147; color: white; font-weight: 600;">
-                        <th colspan="6" class="text-center">Half Time</th>
-                        <th colspan="10" class="text-center">Full Time</th>
+                        <th colspan="4" class="text-center">Half Time</th>
+                        <th colspan="6" class="text-center">Full Time</th>
                       </tr>
                       <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
-                        <th class="data-col-sm">U 8.5</th>
-                        <th class="data-col-sm">U 9.5</th>
-                        <th class="data-col-sm">U 10.5</th>
-                        <th class="data-col-sm">O 8.5</th>
-                        <th class="data-col-sm">O 9.5</th>
-                        <th class="data-col-sm">O 10.5</th>
-                        <th class="data-col-sm">U 23.5</th>
-                        <th class="data-col-sm">U 24.5</th>
-                        <th class="data-col-sm">U 25.5</th>
-                        <th class="data-col-sm">U 26.5</th>
-                        <th class="data-col-sm">U 27.5</th>
-                        <th class="data-col-sm">O 23.5</th>
-                        <th class="data-col-sm">O 24.5</th>
-                        <th class="data-col-sm">O 25.5</th>
-                        <th class="data-col-sm">O 26.5</th>
-                        <th class="data-col-sm">O 27.5</th>
+                        <th class="data-col-sm">U 1.5</th>
+                        <th class="data-col-sm">U 2.5</th>
+                        <th class="data-col-sm">O 1.5</th>
+                        <th class="data-col-sm">O 2.5</th>
+                        <th class="data-col-sm">U 2.5</th>
+                        <th class="data-col-sm">U 3.5</th>
+                        <th class="data-col-sm">U 4.5</th>
+                        <th class="data-col-sm">O 2.5</th>
+                        <th class="data-col-sm">O 3.5</th>
+                        <th class="data-col-sm">O 4.5</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -446,33 +440,24 @@ $faultsData = [
                           <td class="team-col"><?php echo htmlspecialchars($match['team2']); ?></td>
 
                           <!-- Faults Half Time -->
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['u85']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['u95']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['u105']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['o85']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['o95']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['o105']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['u15']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['u25']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['o15']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ht']['o25']); ?></td>
 
                           <!-- Faults Full Time -->
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u235']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u245']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u255']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u265']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u275']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o235']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o245']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o255']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o265']); ?></td>
-                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o275']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u25']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u35']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['u45']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o25']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o35']); ?></td>
+                          <td class="data-col-sm"><?php echo htmlspecialchars($match['faults_ft']['o45']); ?></td>
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
                   </table>
                 </div>
 
-                <div class="alert alert-info mt-3">
-                  <strong>Note:</strong> This table shows a sample of the faults statistics. Full implementation with all matches can be loaded from the database or API.
-                </div>
               </div>
             </div>
 
