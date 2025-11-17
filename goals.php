@@ -6,6 +6,7 @@ $activePage = "goals";
 // Include API helper and authentication
 require_once 'includes/api-helper.php';
 require_once 'includes/auth-middleware.php';
+require_once 'includes/UserManager.php';
 
 // Try demo authentication for seamless UX
 tryDemoAuth();
@@ -385,7 +386,9 @@ include 'includes/app-header.php';
             </div>
 
             <!-- Filter Modal -->
-            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true"
+                 data-max-leagues="<?php echo UserManager::getMaxLeagues(UserManager::getUserRole()); ?>"
+                 data-user-role="<?php echo UserManager::getUserRole(); ?>">
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                   <div class="modal-header" style="background-color: #106147; color: white;">
