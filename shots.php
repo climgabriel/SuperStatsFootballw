@@ -40,6 +40,76 @@ $shotsData = [
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="d-flex justify-content-between align-items-center py-3 mb-4">
               <h4 class="mb-0">Shots Statistics</h4>
+              <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#filterModal" style="background-color: #106147; border-color: #106147;">
+                <i class="bx bx-filter me-1"></i> Filter
+              </button>
+            </div>
+
+            <!-- Filter Modal -->
+            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color: #106147; color: white;">
+                    <h5 class="modal-title" id="filterModalLabel">
+                      <i class="bx bx-filter me-2"></i>Filter Options
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- Leagues Filter -->
+                    <div class="mb-4">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-trophy me-2" style="color: #106147;"></i>Leagues
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="Belgium - Jupiler League" id="league1">
+                            <label class="form-check-label" for="league1">Belgium - Jupiler League</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="Germany - Bundesliga 2" id="league2">
+                            <label class="form-check-label" for="league2">Germany - Bundesliga 2</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input filter-league" type="checkbox" value="French - Ligue 2" id="league3">
+                            <label class="form-check-label" for="league3">French - Ligue 2</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Date Range Filter -->
+                    <div class="mb-3">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-calendar me-2" style="color: #106147;"></i>Date Range
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label class="form-label">From</label>
+                          <input type="date" class="form-control" id="dateFrom">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">To</label>
+                          <input type="date" class="form-control" id="dateTo">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="clearFilters">
+                      <i class="bx bx-x me-1"></i>Clear All
+                    </button>
+                    <button type="button" class="btn btn-primary" id="applyFilters" style="background-color: #106147; border-color: #106147;">
+                      <i class="bx bx-check me-1"></i>Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Shots Table -->
