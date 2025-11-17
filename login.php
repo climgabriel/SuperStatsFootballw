@@ -1,51 +1,36 @@
 <?php
-require_once 'config.php';
-require_once 'includes/APIClient.php';
+$pageTitle = "Login - Super Stats Football";
+$pageDescription = "Login to Super Stats Football Dashboard";
 
-$error = '';
-$success = '';
+require_once 'includes/api-helper.php';
 
-// Redirect if already logged in
-if (isLoggedIn()) {
-    header('Location: index.php');
-    exit;
-}
+// Handle login form submission
+$loginError = '';
+$loginSuccess = false;
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate CSRF token
-    $csrfToken = $_POST['csrf_token'] ?? '';
-    if (!validateCSRFToken($csrfToken)) {
-        $error = 'Security token validation failed. Please try again.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    $response = loginUser($email, $password);
+
+    if ($response['success']) {
+        $loginSuccess = true;
+        // Redirect to intended page or dashboard
+        $redirectTo = $_SESSION['redirect_after_login'] ?? 'index.php';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirectTo);
+        exit;
     } else {
-        $email = $_POST['email-username'] ?? '';
-        $password = $_POST['password'] ?? '';
-
-        if (empty($email) || empty($password)) {
-            $error = 'Please enter both email and password';
-        } else {
-            $api = new APIClient();
-            $result = $api->login($email, $password);
-
-            if ($result['success']) {
-                // Regenerate session ID after successful login
-                session_regenerate_id(true);
-                // Login successful, redirect to dashboard
-                $success = 'Login successful! Redirecting...';
-                header('Refresh: 1; URL=index.php');
-            } else {
-                $error = $result['error'] ?? 'Invalid email or password';
-            }
-        }
+        $loginError = $response['error'] ?? 'Invalid email or password';
     }
 }
 
-$pageTitle = "Login - Super Stats Football";
-$pageDescription = "Login to Super Stats Football Dashboard";
 include 'includes/auth-header.php';
 ?>
 
   <!-- Content -->
+
   <div class="container-xxl">
     <div class="authentication-wrapper authentication-basic container-p-y">
       <div class="authentication-inner">
@@ -56,42 +41,32 @@ include 'includes/auth-header.php';
             <h4 class="mb-1 text-center">Welcome to Super Stats Football!</h4>
             <p class="mb-6">Please sign-in to your account to access football statistics</p>
 
-            <?php if ($error): ?>
+            <?php if ($loginError): ?>
             <div class="alert alert-danger alert-dismissible" role="alert">
-              <i class="bx bx-error me-2"></i><?php echo htmlspecialchars($error); ?>
+              <strong>Login Failed!</strong> <?php echo htmlspecialchars($loginError); ?>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php endif; ?>
 
-            <?php if ($success): ?>
-            <div class="alert alert-success alert-dismissible" role="alert">
-              <i class="bx bx-check me-2"></i><?php echo htmlspecialchars($success); ?>
-            </div>
-            <?php endif; ?>
-
-            <form id="formAuthentication" class="mb-6" method="POST" action="login.php">
-              <!-- CSRF Protection -->
-              <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(getCSRFToken()); ?>" />
-
+            <form id="formAuthentication" class="mb-6" action="login.php" method="POST">
               <div class="mb-6">
                 <label for="email" class="form-label">Email or Username</label>
                 <input type="text" class="form-control" id="email" name="email-username"
-                  placeholder="Enter your email or username" autofocus required
-                  value="<?php echo htmlspecialchars($_POST['email-username'] ?? ''); ?>" />
+                  placeholder="Enter your email or username" autofocus />
               </div>
               <div class="mb-6 form-password-toggle">
                 <label class="form-label" for="password">Password</label>
                 <div class="input-group input-group-merge">
                   <input type="password" id="password" class="form-control" name="password"
                     placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                    aria-describedby="password" required />
+                    aria-describedby="password" />
                   <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
                 </div>
               </div>
               <div class="mb-8">
                 <div class="d-flex justify-content-between">
                   <div class="form-check mb-0">
-                    <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me" />
+                    <input class="form-check-input" type="checkbox" id="remember-me" />
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
                   <a href="forgot-password.php">
@@ -116,6 +91,7 @@ include 'includes/auth-header.php';
       </div>
     </div>
   </div>
+
   <!-- / Content -->
 
 <?php include 'includes/auth-footer.php'; ?>

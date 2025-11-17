@@ -2,10 +2,97 @@
 $pageTitle = "Shots Statistics - Super Stats Football";
 $pageDescription = "Shots on Target Statistics";
 $activePage = "shots";
-include 'includes/app-header.php';
 
-// Sample shots data  - Due to the large amount of data, showing first few matches
-$shotsData = [
+// Include API helper and authentication
+require_once 'includes/api-helper.php';
+require_once 'includes/auth-middleware.php';
+
+// Try demo authentication for seamless UX
+tryDemoAuth();
+
+// Get filter parameters from URL
+$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
+$dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
+
+// Calculate days ahead from date range
+$daysAhead = 7; // Default
+if ($dateTo) {
+    $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
+}
+
+// Fetch data from backend API
+$apiResponse = getShotsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+
+// Process API response
+$shotsData = [];
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
+        $shotsData[] = [
+            'league' => $fixture['league_name'] ?? '-',
+            'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
+            'team1' => $fixture['home_team'] ?? '-',
+            'team2' => $fixture['away_team'] ?? '-',
+            'total_shots_ft' => [
+                '1' => isset($fixture['total_shots_ft_1']) ? round($fixture['total_shots_ft_1'] * 100, 1) . '%' : '-',
+                'x' => isset($fixture['total_shots_ft_x']) ? round($fixture['total_shots_ft_x'] * 100, 1) . '%' : '-',
+                '2' => isset($fixture['total_shots_ft_2']) ? round($fixture['total_shots_ft_2'] * 100, 1) . '%' : '-'
+            ],
+            'sot_ft' => [
+                '1' => isset($fixture['sot_ft_1']) ? round($fixture['sot_ft_1'] * 100, 1) . '%' : '-',
+                'x' => isset($fixture['sot_ft_x']) ? round($fixture['sot_ft_x'] * 100, 1) . '%' : '-',
+                '2' => isset($fixture['sot_ft_2']) ? round($fixture['sot_ft_2'] * 100, 1) . '%' : '-'
+            ],
+            'total_shots_ht' => [
+                'u95' => isset($fixture['total_shots_ht_u95']) ? round($fixture['total_shots_ht_u95'] * 100, 1) . '%' : '-',
+                'u105' => isset($fixture['total_shots_ht_u105']) ? round($fixture['total_shots_ht_u105'] * 100, 1) . '%' : '-',
+                'u115' => isset($fixture['total_shots_ht_u115']) ? round($fixture['total_shots_ht_u115'] * 100, 1) . '%' : '-',
+                'u125' => isset($fixture['total_shots_ht_u125']) ? round($fixture['total_shots_ht_u125'] * 100, 1) . '%' : '-',
+                'o95' => isset($fixture['total_shots_ht_o95']) ? round($fixture['total_shots_ht_o95'] * 100, 1) . '%' : '-',
+                'o105' => isset($fixture['total_shots_ht_o105']) ? round($fixture['total_shots_ht_o105'] * 100, 1) . '%' : '-',
+                'o115' => isset($fixture['total_shots_ht_o115']) ? round($fixture['total_shots_ht_o115'] * 100, 1) . '%' : '-',
+                'o125' => isset($fixture['total_shots_ht_o125']) ? round($fixture['total_shots_ht_o125'] * 100, 1) . '%' : '-'
+            ],
+            'total_shots_ft_ou' => [
+                'u225' => isset($fixture['total_shots_ft_u225']) ? round($fixture['total_shots_ft_u225'] * 100, 1) . '%' : '-',
+                'u235' => isset($fixture['total_shots_ft_u235']) ? round($fixture['total_shots_ft_u235'] * 100, 1) . '%' : '-',
+                'u245' => isset($fixture['total_shots_ft_u245']) ? round($fixture['total_shots_ft_u245'] * 100, 1) . '%' : '-',
+                'u255' => isset($fixture['total_shots_ft_u255']) ? round($fixture['total_shots_ft_u255'] * 100, 1) . '%' : '-',
+                'u265' => isset($fixture['total_shots_ft_u265']) ? round($fixture['total_shots_ft_u265'] * 100, 1) . '%' : '-',
+                'o225' => isset($fixture['total_shots_ft_o225']) ? round($fixture['total_shots_ft_o225'] * 100, 1) . '%' : '-',
+                'o235' => isset($fixture['total_shots_ft_o235']) ? round($fixture['total_shots_ft_o235'] * 100, 1) . '%' : '-',
+                'o245' => isset($fixture['total_shots_ft_o245']) ? round($fixture['total_shots_ft_o245'] * 100, 1) . '%' : '-',
+                'o255' => isset($fixture['total_shots_ft_o255']) ? round($fixture['total_shots_ft_o255'] * 100, 1) . '%' : '-',
+                'o265' => isset($fixture['total_shots_ft_o265']) ? round($fixture['total_shots_ft_o265'] * 100, 1) . '%' : '-'
+            ],
+            'sot_ht' => [
+                'u25' => isset($fixture['sot_ht_u25']) ? round($fixture['sot_ht_u25'] * 100, 1) . '%' : '-',
+                'u35' => isset($fixture['sot_ht_u35']) ? round($fixture['sot_ht_u35'] * 100, 1) . '%' : '-',
+                'u45' => isset($fixture['sot_ht_u45']) ? round($fixture['sot_ht_u45'] * 100, 1) . '%' : '-',
+                'o25' => isset($fixture['sot_ht_o25']) ? round($fixture['sot_ht_o25'] * 100, 1) . '%' : '-',
+                'o35' => isset($fixture['sot_ht_o35']) ? round($fixture['sot_ht_o35'] * 100, 1) . '%' : '-',
+                'o45' => isset($fixture['sot_ht_o45']) ? round($fixture['sot_ht_o45'] * 100, 1) . '%' : '-'
+            ],
+            'sot_ft_ou' => [
+                'u65' => isset($fixture['sot_ft_u65']) ? round($fixture['sot_ft_u65'] * 100, 1) . '%' : '-',
+                'u75' => isset($fixture['sot_ft_u75']) ? round($fixture['sot_ft_u75'] * 100, 1) . '%' : '-',
+                'u85' => isset($fixture['sot_ft_u85']) ? round($fixture['sot_ft_u85'] * 100, 1) . '%' : '-',
+                'u95' => isset($fixture['sot_ft_u95']) ? round($fixture['sot_ft_u95'] * 100, 1) . '%' : '-',
+                'u105' => isset($fixture['sot_ft_u105']) ? round($fixture['sot_ft_u105'] * 100, 1) . '%' : '-',
+                'o65' => isset($fixture['sot_ft_o65']) ? round($fixture['sot_ft_o65'] * 100, 1) . '%' : '-',
+                'o75' => isset($fixture['sot_ft_o75']) ? round($fixture['sot_ft_o75'] * 100, 1) . '%' : '-',
+                'o85' => isset($fixture['sot_ft_o85']) ? round($fixture['sot_ft_o85'] * 100, 1) . '%' : '-',
+                'o95' => isset($fixture['sot_ft_o95']) ? round($fixture['sot_ft_o95'] * 100, 1) . '%' : '-',
+                'o105' => isset($fixture['sot_ft_o105']) ? round($fixture['sot_ft_o105'] * 100, 1) . '%' : '-'
+            ]
+        ];
+    }
+}
+
+// Fallback to sample data if API fails or returns no data
+if (empty($shotsData)) {
+    $shotsData = [
     [
         'league' => 'Belgium - Jupiler League',
         'date' => '26-07-2019',
@@ -163,6 +250,9 @@ $shotsData = [
         'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
     ]
 ];
+}
+
+include 'includes/app-header.php';
 ?>
 
         <!-- Content wrapper -->
@@ -171,6 +261,38 @@ $shotsData = [
           <div class="container-xxl flex-grow-1 container-p-y">
             <div class="d-flex justify-content-between align-items-center py-3 mb-4">
               <h4 class="mb-0">Shots Statistics</h4>
+              <?php include 'includes/statistics-filter-modal.php'; ?>
+            </div>
+
+                    <hr>
+
+                    <!-- Date Range Filter -->
+                    <div class="mb-3">
+                      <label class="form-label fw-bold d-flex align-items-center">
+                        <i class="bx bx-calendar me-2" style="color: #106147;"></i>Date Range
+                      </label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label class="form-label">From</label>
+                          <input type="date" class="form-control" id="dateFrom">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label">To</label>
+                          <input type="date" class="form-control" id="dateTo">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="clearFilters">
+                      <i class="bx bx-x me-1"></i>Clear All
+                    </button>
+                    <button type="button" class="btn btn-primary" id="applyFilters" style="background-color: #106147; border-color: #106147;">
+                      <i class="bx bx-check me-1"></i>Apply Filters
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Shots Table -->
@@ -513,5 +635,4 @@ $shotsData = [
 
           </div>
           <!-- / Content -->
-
 <?php include 'includes/app-footer.php'; ?>
