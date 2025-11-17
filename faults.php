@@ -248,7 +248,7 @@ $faultsData = [
                     text-align: center;
                     vertical-align: middle;
                     padding: 0.4rem 0.3rem;
-                    border: 1px solid #555555 !important;
+                    border: 1px solid var(--table-border) !important;
                   }
 
                   /* Sticky header row for vertical scrolling - only 3rd row */
@@ -265,7 +265,7 @@ $faultsData = [
                     left: 0;
                     z-index: 5;
                     background-color: inherit;
-                    border-right: 1px solid #555555 !important;
+                    border-right: 1px solid var(--table-border) !important;
                   }
 
                   .faults-table th:nth-child(4),
@@ -356,46 +356,46 @@ $faultsData = [
 
                   /* Alternating row colors - Green theme */
                   .faults-table tbody tr:nth-child(odd) {
-                    background-color: #E8F5E9;
+                    background-color: var(--table-row-odd);
                   }
                   .faults-table tbody tr:nth-child(even) {
-                    background-color: #F1F8F4;
+                    background-color: var(--table-row-even);
                   }
                   .faults-table tbody tr:hover {
-                    background-color: #C8E6D0;
+                    background-color: var(--table-row-hover);
                     transition: background-color 0.2s ease;
                   }
 
                   /* Background colors for sticky cells to match row colors */
                   .faults-table tbody tr:nth-child(odd) td:nth-child(3),
                   .faults-table tbody tr:nth-child(odd) td:nth-child(4) {
-                    background-color: #E8F5E9;
+                    background-color: var(--table-row-odd);
                   }
 
                   .faults-table tbody tr:nth-child(even) td:nth-child(3),
                   .faults-table tbody tr:nth-child(even) td:nth-child(4) {
-                    background-color: #F1F8F4;
+                    background-color: var(--table-row-even);
                   }
 
                   .faults-table tbody tr:hover td:nth-child(3),
                   .faults-table tbody tr:hover td:nth-child(4) {
-                    background-color: #C8E6D0;
+                    background-color: var(--table-row-hover);
                   }
 
                   /* Ensure sticky header cells maintain their background colors */
                   .faults-table thead tr:nth-child(1) th:nth-child(3),
                   .faults-table thead tr:nth-child(1) th:nth-child(4) {
-                    background-color: #106147;
+                    background-color: var(--brand-primary-darker);
                   }
 
                   .faults-table thead tr:nth-child(2) th:nth-child(3),
                   .faults-table thead tr:nth-child(2) th:nth-child(4) {
-                    background-color: #106147;
+                    background-color: var(--brand-primary);
                   }
 
                   .faults-table thead tr:nth-child(3) th:nth-child(3),
                   .faults-table thead tr:nth-child(3) th:nth-child(4) {
-                    background-color: #1a8a6b;
+                    background-color: var(--brand-primary-light);
                   }
 
                   /* Force white text for all header rows */
@@ -407,18 +407,18 @@ $faultsData = [
                 <div class="table-responsive">
                   <table class="table table-sm faults-table">
                     <thead>
-                      <tr style="background-color: #106147; color: white; font-weight: 700;">
+                      <tr style="background-color: var(--brand-primary-darker); color: white; font-weight: 700;">
                         <th rowspan="3" class="align-middle league-col">LEAGUE</th>
                         <th rowspan="3" class="align-middle date-col">DATE</th>
                         <th rowspan="3" class="align-middle team-col">1</th>
                         <th rowspan="3" class="align-middle team-col">2</th>
                         <th colspan="10" class="text-center">FAULTS</th>
                       </tr>
-                      <tr style="background-color: #106147; color: white; font-weight: 600;">
+                      <tr style="background-color: var(--brand-primary); color: white; font-weight: 600;">
                         <th colspan="4" class="text-center">Half Time</th>
                         <th colspan="6" class="text-center">Full Time</th>
                       </tr>
-                      <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
+                      <tr style="background-color: var(--brand-primary-light); color: white; font-weight: 500;">
                         <th class="data-col-sm">U 1.5</th>
                         <th class="data-col-sm">U 2.5</th>
                         <th class="data-col-sm">O 1.5</th>

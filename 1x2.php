@@ -141,7 +141,7 @@ include 'includes/app-header.php';
                     text-align: center;
                     vertical-align: middle;
                     padding: 0.5rem;
-                    border: 1px solid #555555 !important;
+                    border: 1px solid var(--table-border) !important;
                   }
 
                   .stats-table thead tr:nth-child(3) {
@@ -156,7 +156,7 @@ include 'includes/app-header.php';
                     left: 0;
                     z-index: 5;
                     background-color: inherit;
-                    border-right: 1px solid #555555 !important;
+                    border-right: 1px solid var(--table-border) !important;
                   }
 
                   .stats-table th:nth-child(4),
@@ -179,26 +179,26 @@ include 'includes/app-header.php';
 
                   /* Alternating row colors */
                   .stats-table tbody tr:nth-child(odd) {
-                    background-color: #E8F5E9;
+                    background-color: var(--table-row-odd);
                   }
                   .stats-table tbody tr:nth-child(even) {
-                    background-color: #F1F8F4;
+                    background-color: var(--table-row-even);
                   }
                   .stats-table tbody tr:hover {
-                    background-color: #C8E6D0;
+                    background-color: var(--table-row-hover);
                     transition: background-color 0.2s ease;
                   }
 
                   /* Highlight ML predictions */
                   .ml-prediction {
                     font-weight: 600;
-                    color: #106147;
+                    color: var(--brand-primary);
                   }
                 </style>
                 <div class="table-responsive">
                   <table class="table table-bordered table-hover stats-table" style="font-size: 0.85rem;">
                     <thead>
-                      <tr style="background-color: #005440; color: white; font-weight: 600;">
+                      <tr style="background-color: var(--brand-primary-darker); color: white; font-weight: 600;">
                         <th rowspan="3" class="align-middle league-col">LEAGUE</th>
                         <th rowspan="3" class="align-middle date-col">DATE</th>
                         <th rowspan="3" class="align-middle team-col">1</th>
@@ -208,7 +208,7 @@ include 'includes/app-header.php';
                         <th colspan="4" class="text-center">DRAW NO BET</th>
                         <th colspan="6" class="text-center">DOUBLE CHANCE</th>
                       </tr>
-                      <tr style="background-color: #106147; color: white; font-weight: 600;">
+                      <tr style="background-color: var(--brand-primary); color: white; font-weight: 600;">
                         <th colspan="3" class="text-center">BOOKMAKER ODDS</th>
                         <th colspan="3" class="text-center">PROBABILITY %</th>
                         <th colspan="3" class="text-center">TRUE ODDS</th>
@@ -220,7 +220,7 @@ include 'includes/app-header.php';
                         <th colspan="3" class="text-center">Half Time</th>
                         <th colspan="3" class="text-center">Full Time</th>
                       </tr>
-                      <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
+                      <tr style="background-color: var(--brand-primary-light); color: white; font-weight: 500;">
                         <th class="data-col">1</th>
                         <th class="data-col">X</th>
                         <th class="data-col">2</th>

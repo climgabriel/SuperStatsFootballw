@@ -7,6 +7,8 @@
 [data-bs-theme='light'] {
   --brand-primary: #106147;
   --brand-primary-rgb: 16, 97, 71;
+  --brand-primary-darker: #005440;
+  --brand-primary-light: #1a8a6b;
   --brand-accent: #FFE418;
   --brand-accent-rgb: 255, 228, 24;
   --bs-primary: var(--brand-primary);
@@ -19,6 +21,10 @@
   --bs-border-color: #d5e7df;
   --bs-heading-color: #0a3828;
   --bs-focus-ring-color: rgba(var(--brand-primary-rgb), 0.3);
+  --table-row-odd: #E8F5E9;
+  --table-row-even: #F1F8F4;
+  --table-row-hover: #C8E6D0;
+  --table-border: #555555;
 }
 
 body {

@@ -188,7 +188,7 @@ $shotsData = [
                     text-align: center;
                     vertical-align: middle;
                     padding: 0.4rem 0.3rem;
-                    border: 1px solid #555555 !important;
+                    border: 1px solid var(--table-border) !important;
                   }
 
                   /* Sticky header row for vertical scrolling - only 3rd row */
@@ -205,7 +205,7 @@ $shotsData = [
                     left: 0;
                     z-index: 5;
                     background-color: inherit;
-                    border-right: 1px solid #555555 !important;
+                    border-right: 1px solid var(--table-border) !important;
                   }
 
                   .shots-table th:nth-child(4),
@@ -328,46 +328,46 @@ $shotsData = [
 
                   /* Alternating row colors - Green theme */
                   .shots-table tbody tr:nth-child(odd) {
-                    background-color: #E8F5E9;
+                    background-color: var(--table-row-odd);
                   }
                   .shots-table tbody tr:nth-child(even) {
-                    background-color: #F1F8F4;
+                    background-color: var(--table-row-even);
                   }
                   .shots-table tbody tr:hover {
-                    background-color: #C8E6D0;
+                    background-color: var(--table-row-hover);
                     transition: background-color 0.2s ease;
                   }
 
                   /* Background colors for sticky cells to match row colors */
                   .shots-table tbody tr:nth-child(odd) td:nth-child(3),
                   .shots-table tbody tr:nth-child(odd) td:nth-child(4) {
-                    background-color: #E8F5E9;
+                    background-color: var(--table-row-odd);
                   }
 
                   .shots-table tbody tr:nth-child(even) td:nth-child(3),
                   .shots-table tbody tr:nth-child(even) td:nth-child(4) {
-                    background-color: #F1F8F4;
+                    background-color: var(--table-row-even);
                   }
 
                   .shots-table tbody tr:hover td:nth-child(3),
                   .shots-table tbody tr:hover td:nth-child(4) {
-                    background-color: #C8E6D0;
+                    background-color: var(--table-row-hover);
                   }
 
                   /* Ensure sticky header cells maintain their background colors */
                   .shots-table thead tr:nth-child(1) th:nth-child(3),
                   .shots-table thead tr:nth-child(1) th:nth-child(4) {
-                    background-color: #106147;
+                    background-color: var(--brand-primary-darker);
                   }
 
                   .shots-table thead tr:nth-child(2) th:nth-child(3),
                   .shots-table thead tr:nth-child(2) th:nth-child(4) {
-                    background-color: #106147;
+                    background-color: var(--brand-primary);
                   }
 
                   .shots-table thead tr:nth-child(3) th:nth-child(3),
                   .shots-table thead tr:nth-child(3) th:nth-child(4) {
-                    background-color: #1a8a6b;
+                    background-color: var(--brand-primary-light);
                   }
 
                   /* Force white text for all header rows */
@@ -379,7 +379,7 @@ $shotsData = [
                 <div class="table-responsive">
                   <table class="table table-sm shots-table">
                     <thead>
-                      <tr style="background-color: #106147; color: white; font-weight: 700;">
+                      <tr style="background-color: var(--brand-primary-darker); color: white; font-weight: 700;">
                         <th rowspan="3" class="align-middle league-col">LEAGUE</th>
                         <th rowspan="3" class="align-middle date-col">DATE</th>
                         <th rowspan="3" class="align-middle team-col">1</th>
@@ -389,7 +389,7 @@ $shotsData = [
                         <th colspan="18" class="text-center">TOTAL SHOTS</th>
                         <th colspan="16" class="text-center">SHOTS ON TARGET</th>
                       </tr>
-                      <tr style="background-color: #106147; color: white; font-weight: 600;">
+                      <tr style="background-color: var(--brand-primary); color: white; font-weight: 600;">
                         <th colspan="3" class="text-center">Full Time</th>
                         <th colspan="3" class="text-center">Full Time</th>
                         <th colspan="8" class="text-center">Half Time</th>
@@ -397,7 +397,7 @@ $shotsData = [
                         <th colspan="6" class="text-center">Half Time</th>
                         <th colspan="10" class="text-center">Full Time</th>
                       </tr>
-                      <tr style="background-color: #1a8a6b; color: white; font-weight: 500;">
+                      <tr style="background-color: var(--brand-primary-light); color: white; font-weight: 500;">
                         <th class="data-col-sm">1</th>
                         <th class="data-col-sm">X</th>
                         <th class="data-col-sm">2</th>
