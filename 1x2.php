@@ -1,8 +1,12 @@
 <?php
 require_once 'config.php';
+require_once 'includes/auth-middleware.php';
 require_once 'includes/APIClient.php';
 
-// Require authentication
+// Automatically authenticate with demo credentials if needed
+tryDemoAuth();
+
+// Require authentication for this page
 requireAuth();
 
 $pageTitle = "1X2 Statistics - Super Stats Football";
@@ -35,6 +39,88 @@ try {
 } catch (Exception $e) {
     $error = 'System error: ' . $e->getMessage();
     error_log('Exception in 1x2.php: ' . $e->getMessage());
+}
+
+// Fallback sample data so the UI never renders empty tables
+if (empty($matches)) {
+    $matches = [
+        [
+            'league' => 'England - Premier League',
+            'date' => date('d-m-Y', strtotime('+1 day')),
+            'team1' => 'Manchester United',
+            'team2' => 'Manchester City',
+            'half_time' => [
+                'bookmaker_odds' => ['1' => '2.35', 'X' => '2.05', '2' => '3.60'],
+                'probability' => ['1' => '41.2%', 'X' => '33.5%', '2' => '25.3%'],
+                'true_odds' => ['1' => '2.28', 'X' => '2.98', '2' => '3.95']
+            ],
+            'full_time' => [
+                'bookmaker_odds' => ['1' => '2.15', 'X' => '3.40', '2' => '3.10'],
+                'probability' => ['1' => '46.4%', 'X' => '25.1%', '2' => '28.5%'],
+                'true_odds' => ['1' => '2.05', 'X' => '3.15', '2' => '3.50']
+            ],
+            'draw_no_bet' => [
+                'half_time' => ['1_dnb' => '1.60', '2_dnb' => '2.30'],
+                'full_time' => ['1_dnb' => '1.48', '2_dnb' => '2.60']
+            ],
+            'double_chance' => [
+                'half_time' => ['1X' => '1.28', 'X2' => '1.60', '12' => '1.55'],
+                'full_time' => ['1X' => '1.25', 'X2' => '1.52', '12' => '1.48']
+            ]
+        ],
+        [
+            'league' => 'Spain - La Liga',
+            'date' => date('d-m-Y', strtotime('+2 days')),
+            'team1' => 'Barcelona',
+            'team2' => 'Real Madrid',
+            'half_time' => [
+                'bookmaker_odds' => ['1' => '2.10', 'X' => '2.15', '2' => '3.80'],
+                'probability' => ['1' => '44.0%', 'X' => '35.5%', '2' => '20.5%'],
+                'true_odds' => ['1' => '2.05', 'X' => '2.95', '2' => '4.30']
+            ],
+            'full_time' => [
+                'bookmaker_odds' => ['1' => '1.95', 'X' => '3.60', '2' => '3.70'],
+                'probability' => ['1' => '48.9%', 'X' => '24.3%', '2' => '26.8%'],
+                'true_odds' => ['1' => '1.90', 'X' => '3.25', '2' => '3.60']
+            ],
+            'draw_no_bet' => [
+                'half_time' => ['1_dnb' => '1.55', '2_dnb' => '2.45'],
+                'full_time' => ['1_dnb' => '1.42', '2_dnb' => '2.75']
+            ],
+            'double_chance' => [
+                'half_time' => ['1X' => '1.24', 'X2' => '1.65', '12' => '1.47'],
+                'full_time' => ['1X' => '1.21', 'X2' => '1.58', '12' => '1.39']
+            ]
+        ],
+        [
+            'league' => 'Germany - Bundesliga',
+            'date' => date('d-m-Y', strtotime('+3 days')),
+            'team1' => 'Bayern Munich',
+            'team2' => 'Borussia Dortmund',
+            'half_time' => [
+                'bookmaker_odds' => ['1' => '2.45', 'X' => '2.00', '2' => '3.30'],
+                'probability' => ['1' => '39.5%', 'X' => '36.0%', '2' => '24.5%'],
+                'true_odds' => ['1' => '2.30', 'X' => '2.90', '2' => '4.05']
+            ],
+            'full_time' => [
+                'bookmaker_odds' => ['1' => '2.25', 'X' => '3.55', '2' => '3.30'],
+                'probability' => ['1' => '44.2%', 'X' => '25.0%', '2' => '30.8%'],
+                'true_odds' => ['1' => '2.10', 'X' => '3.20', '2' => '3.60']
+            ],
+            'draw_no_bet' => [
+                'half_time' => ['1_dnb' => '1.65', '2_dnb' => '2.25'],
+                'full_time' => ['1_dnb' => '1.52', '2_dnb' => '2.55']
+            ],
+            'double_chance' => [
+                'half_time' => ['1X' => '1.30', 'X2' => '1.55', '12' => '1.62'],
+                'full_time' => ['1X' => '1.26', 'X2' => '1.48', '12' => '1.52']
+            ]
+        ]
+    ];
+
+    if (!$error) {
+        $error = 'Live API data unavailable – displaying demo data.';
+    }
 }
 
 include 'includes/app-header.php';

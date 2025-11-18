@@ -1,3 +1,12 @@
+<?php
+require_once __DIR__ . '/../config.php';
+
+$isLoggedIn = isLoggedIn();
+$sessionUser = $_SESSION['user'] ?? [];
+$userName = $sessionUser['full_name'] ?? ($sessionUser['email'] ?? 'Guest');
+$userTierLabel = strtoupper($sessionUser['tier'] ?? 'FREE');
+$userEmail = $sessionUser['email'] ?? null;
+?>
 <!doctype html>
 
 <html lang="en" class="layout-content-navbar" data-assets-path="./assets/" data-template="navbar-only-template">
@@ -72,53 +81,57 @@
                     <i class="bx bx-user-circle" style="font-size: 2.5rem; color: #FFE418;"></i>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <i class="bx bx-user-circle" style="font-size: 2.5rem;"></i>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="mb-0">John Doe</h6>
-                            <small class="text-body-secondary">Admin</small>
-                          </div>
+                    <li class="px-3 py-2">
+                      <div class="d-flex align-items-start">
+                        <div class="flex-shrink-0 me-3">
+                          <i class="bx bx-user-circle" style="font-size: 2.5rem;"></i>
                         </div>
-                      </a>
+                        <div class="flex-grow-1">
+                          <h6 class="mb-0"><?php echo htmlspecialchars($userName); ?></h6>
+                          <small class="text-body-secondary">
+                            <?php echo $isLoggedIn ? strtoupper($userTierLabel) . ' TIER' : 'Guest access'; ?>
+                          </small>
+                          <?php if ($userEmail): ?>
+                            <div><small class="text-muted"><?php echo htmlspecialchars($userEmail); ?></small></div>
+                          <?php endif; ?>
+                        </div>
+                      </div>
                     </li>
-                    <li>
-                      <div class="dropdown-divider my-1"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="login.php">
-                        <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="register.php">
-                        <i class="icon-base bx bx-user-plus icon-md me-3"></i><span>Register</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="forgot-password.php">
-                        <i class="icon-base bx bx-key icon-md me-3"></i><span>Forgot Password</span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider my-1"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="account-settings.php">
-                        <i class="icon-base bx bx-user icon-md me-3"></i><span>Account Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider my-1"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="logout.php">
-                        <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
-                      </a>
-                    </li>
+                    <li><div class="dropdown-divider my-1"></div></li>
+                    <?php if (!$isLoggedIn): ?>
+                      <li>
+                        <a class="dropdown-item" href="login.php">
+                          <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="register.php">
+                          <i class="icon-base bx bx-user-plus icon-md me-3"></i><span>Register</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="forgot-password.php">
+                          <i class="icon-base bx bx-key icon-md me-3"></i><span>Forgot Password</span>
+                        </a>
+                      </li>
+                    <?php else: ?>
+                      <li>
+                        <a class="dropdown-item" href="account-settings.php">
+                          <i class="icon-base bx bx-user icon-md me-3"></i><span>Account Settings</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="plans.php">
+                          <i class="icon-base bx bx-bar-chart icon-md me-3"></i><span>Manage Plan</span>
+                        </a>
+                      </li>
+                      <li><div class="dropdown-divider my-1"></div></li>
+                      <li>
+                        <a class="dropdown-item" href="logout.php">
+                          <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                        </a>
+                      </li>
+                    <?php endif; ?>
                   </ul>
                 </li>
               </ul>

@@ -25,6 +25,17 @@ body {
   background-color: var(--bs-body-bg);
 }
 
+/* Keep footer visible even on short pages */
+.layout-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1 0 auto;
+}
+
 /* Navbar background color override */
 .bg-navbar-theme {
   background-color: #E6F3ED !important;

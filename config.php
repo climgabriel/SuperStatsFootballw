@@ -10,8 +10,14 @@ if (!defined('SSF_CONFIG')) {
     define('SSF_CONFIG', true);
 }
 
-// API Configuration
-define('API_BASE_URL', 'https://superstatsfootball-production.up.railway.app');
+// API Configuration (allow BACKEND_API_URL env override for local dev)
+$backendApiUrl = getenv('BACKEND_API_URL') ?: '';
+if (empty($backendApiUrl) && isset($_ENV['BACKEND_API_URL'])) {
+    $backendApiUrl = $_ENV['BACKEND_API_URL'];
+}
+$backendApiUrl = $backendApiUrl ? rtrim($backendApiUrl, '/') : 'https://superstatsfootball-production.up.railway.app';
+
+define('API_BASE_URL', $backendApiUrl);
 define('API_VERSION', 'v1');
 define('API_PREFIX', '/api/' . API_VERSION);
 

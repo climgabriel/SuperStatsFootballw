@@ -17,18 +17,20 @@ if (session_status() === PHP_SESSION_NONE) {
  *
  * @param string $redirectTo URL to redirect after login
  */
-function requireAuth($redirectTo = null) {
-    if (!isAuthenticated()) {
-        // Store the intended destination
-        if ($redirectTo) {
-            $_SESSION['redirect_after_login'] = $redirectTo;
-        } else {
-            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        }
+if (!function_exists('requireAuth')) {
+    function requireAuth($redirectTo = null) {
+        if (!isAuthenticated()) {
+            // Store the intended destination
+            if ($redirectTo) {
+                $_SESSION['redirect_after_login'] = $redirectTo;
+            } else {
+                $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+            }
 
-        // Redirect to login
-        header('Location: login.php');
-        exit;
+            // Redirect to login
+            header('Location: login.php');
+            exit;
+        }
     }
 }
 
