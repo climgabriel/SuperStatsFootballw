@@ -1,238 +1,200 @@
 <!doctype html>
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed" dir="ltr" data-theme="theme-default">
+
+<html lang="en" class="layout-content-navbar" data-assets-path="./assets/" data-template="navbar-only-template">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : APP_NAME; ?></title>
-    <meta name="description" content="<?php echo isset($pageDescription) ? htmlspecialchars($pageDescription) : 'Football Statistics and Predictions'; ?>" />
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/img/favicon/SuperStatsFootballLogo0.png" />
+  <title><?php echo isset($pageTitle) ? $pageTitle : 'Super Stats Football'; ?></title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <meta name="description" content="<?php echo isset($pageDescription) ? $pageDescription : 'Super Stats Football - Football Statistics Dashboard'; ?>" />
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="./assets/img/favicon/SuperStatsFootballLogo0.png" />
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet" />
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="./assets/vendor/fonts/iconify-icons.css" />
 
-    <!-- Custom Styles -->
-    <style>
-        :root {
-            --primary-color: #696cff;
-            --primary-hover: #5f61e6;
-            --success-color: #71dd37;
-            --danger-color: #ff3e1d;
-            --warning-color: #ffab00;
-            --info-color: #03c3ec;
-            --text-primary: #566a7f;
-            --text-heading: #384551;
-            --bg-body: #f5f5f9;
-            --sidebar-bg: #fff;
-            --navbar-bg: #fff;
-        }
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="./assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="./assets/css/demo.css?v=<?php echo time(); ?>" />
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" href="./assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            padding-top: 70px;
-        }
-
-        .navbar {
-            background-color: var(--navbar-bg);
-            box-shadow: 0 0.125rem 0.25rem rgba(75, 70, 92, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color) !important;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .navbar-brand svg {
-            width: 40px;
-            height: 40px;
-        }
-
-        .nav-link {
-            color: var(--text-primary);
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            transition: color 0.2s;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-color);
-        }
-
-        .badge-tier {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-free { background-color: #e7e7ff; color: #696cff; }
-        .badge-starter { background-color: #d4f4dd; color: #28a745; }
-        .badge-pro { background-color: #fff3cd; color: #ff9800; }
-        .badge-premium { background-color: #ffebee; color: #f44336; }
-        .badge-ultimate { background-color: #e1f5fe; color: #03a9f4; }
-
-        .dropdown-menu {
-            border: none;
-            box-shadow: 0 0.25rem 1rem rgba(75, 70, 92, 0.15);
-            border-radius: 0.5rem;
-        }
-
-        .dropdown-item {
-            padding: 0.75rem 1.25rem;
-            transition: background-color 0.2s;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f5f5f9;
-        }
-
-        .dropdown-divider {
-            margin: 0.5rem 0;
-        }
-
-        .card {
-            border: none;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.5rem rgba(75, 70, 92, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        .card-header {
-            background-color: transparent;
-            border-bottom: 1px solid #e7e7e7;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        h4 {
-            color: var(--text-heading);
-            font-weight: 600;
-        }
-
-        .table {
-            color: var(--text-primary);
-        }
-
-        .table thead th {
-            color: var(--text-heading);
-            font-weight: 600;
-            border-bottom: 2px solid #e7e7e7;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-        }
-
-        .container-xxl {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-        }
-
-        .spinner-border {
-            color: var(--primary-color);
-        }
-    </style>
+  <!-- Helpers -->
+  <script src="./assets/vendor/js/helpers.js"></script>
+  <script src="./assets/js/config.js"></script>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-xxl">
+  <!-- Layout wrapper -->
+  <div class="layout-wrapper layout-content-navbar layout-without-menu">
+    <div class="layout-container">
+
+      <!-- Layout page -->
+      <div class="layout-page">
+        <!-- Navbar -->
+
+        <nav
+          class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+          id="layout-navbar">
+          <div class="container-fluid">
             <!-- Brand -->
             <a class="navbar-brand" href="index.php">
-                <img src="assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football" width="40" height="40" />
-                <?php echo APP_NAME; ?>
+              <img src="./assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football Logo" height="40"
+                class="app-brand-logo" />
+              <span class="app-brand-text demo menu-text fw-bold ms-2">Super Stats Football</span>
             </a>
 
-            <!-- Navbar toggler for mobile -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Navbar content -->
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <!-- Navigation Links -->
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo (isset($activePage) && $activePage === '1x2') ? 'active' : ''; ?>" href="1x2.php">
-                            <i class='bx bx-bar-chart-alt-2 me-1'></i> Predictions
-                        </a>
+            <!-- Navbar Navigation -->
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Navigation Menu -->
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link fs-5" href="index.php">Super</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link fs-5" href="plans.php">Plans</a>
+                </li>
+                <!-- User Dropdown -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown ms-3">
+                  <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);"
+                    data-bs-toggle="dropdown">
+                    <i class="bx bx-user-circle" style="font-size: 2.5rem; color: #FFE418;"></i>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <i class="bx bx-user-circle" style="font-size: 2.5rem;"></i>
+                          </div>
+                          <div class="flex-grow-1">
+                            <h6 class="mb-0">John Doe</h6>
+                            <small class="text-body-secondary">Admin</small>
+                          </div>
+                        </div>
+                      </a>
                     </li>
-
-                    <!-- User Tier Badge -->
-                    <li class="nav-item">
-                        <span class="badge badge-tier badge-<?php echo strtolower(getUserTier()); ?>">
-                            <?php echo htmlspecialchars(getUserTier()); ?>
-                        </span>
+                    <li>
+                      <div class="dropdown-divider my-1"></div>
                     </li>
-
-                    <!-- User Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class='bx bx-user-circle' style="font-size: 1.5rem;"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <span class="dropdown-item-text">
-                                    <strong><?php echo htmlspecialchars($_SESSION['user']['full_name'] ?? $_SESSION['user']['email'] ?? 'User'); ?></strong><br>
-                                    <small class="text-muted"><?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?></small>
-                                </span>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="profile.php"><i class='bx bx-user me-2'></i> My Profile</a></li>
-                            <li><a class="dropdown-item" href="subscription.php"><i class='bx bx-crown me-2'></i> Subscription</a></li>
-                            <li><a class="dropdown-item" href="settings.php"><i class='bx bx-cog me-2'></i> Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="logout.php"><i class='bx bx-log-out me-2'></i> Logout</a></li>
-                        </ul>
+                    <li>
+                      <a class="dropdown-item" href="login.php">
+                        <i class="icon-base bx bx-log-in icon-md me-3"></i><span>Login</span>
+                      </a>
                     </li>
-                </ul>
+                    <li>
+                      <a class="dropdown-item" href="register.php">
+                        <i class="icon-base bx bx-user-plus icon-md me-3"></i><span>Register</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="forgot-password.php">
+                        <i class="icon-base bx bx-key icon-md me-3"></i><span>Forgot Password</span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="account-settings.php">
+                        <i class="icon-base bx bx-user icon-md me-3"></i><span>Account Settings</span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
-        </div>
-    </nav>
+          </div>
+        </nav>
 
-    <!-- Main Content Area -->
+        <!-- / Navbar -->
+
+        <!-- Functional Navbar -->
+        <nav class="bg-body-tertiary border-bottom">
+          <div class="container-xxl">
+            <ul class="nav nav-pills nav-fill py-3">
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == '1x2') ? ' active' : ''; ?>" href="1x2.php">1X2</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'goals') ? ' active' : ''; ?>" href="goals.php">GOALS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'corners') ? ' active' : ''; ?>" href="corners.php">CORNERS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'cards') ? ' active' : ''; ?>" href="cards.php">CARDS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'shots') ? ' active' : ''; ?>" href="shots.php">SHOTS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'faults') ? ' active' : ''; ?>" href="faults.php">FAULTS</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link<?php echo (isset($activePage) && $activePage == 'offsides') ? ' active' : ''; ?>" href="offsides.php">OFFSIDES</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <!-- / Functional Navbar -->
+
+        <!-- Ads Promo Bar -->
+        <div class="bg-body-tertiary border-bottom ads-promo-bar">
+          <div class="container-xxl">
+            <div class="ads-section-wrapper">
+              <!-- Top League Section -->
+              <div class="ads-top-league">
+                <h6 class="ads-top-league-title">TOP League</h6>
+                <div class="ads-league-grid">
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">I</div>
+                    <div class="ads-league-cell-content">Top 1 ad</div>
+                  </div>
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">II</div>
+                    <div class="ads-league-cell-content">Top 2 ad</div>
+                  </div>
+                  <div class="ads-league-cell">
+                    <div class="ads-league-cell-number">III</div>
+                    <div class="ads-league-cell-content">Top 3 ad</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Other Ads Section -->
+              <div class="ads-other-section">
+                <div class="ads-other-grid">
+                  <div class="ads-grid-item ads-cell">ad 4</div>
+                  <div class="ads-grid-item ads-cell">ad 5</div>
+                  <div class="ads-grid-item ads-cell">ad 6</div>
+                  <div class="ads-grid-item ads-cell">ad 7</div>
+                  <div class="ads-grid-item ads-cell">ad 8</div>
+                  <div class="ads-grid-item ads-cell">ad 9</div>
+                  <div class="ads-grid-item ads-cell">ad 10</div>
+                  <div class="ads-grid-item ads-cell">ad 11</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / Ads Promo Bar -->
