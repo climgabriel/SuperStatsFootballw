@@ -36,7 +36,7 @@ define('REFRESH_TOKEN_EXPIRY_DAYS', 7);
 // Application Settings
 define('APP_NAME', 'Super Stats Football');
 define('APP_VERSION', '1.0.0');
-define('ENVIRONMENT', 'development'); // 'development' or 'production' - TEMPORARILY SET TO DEVELOPMENT FOR DEBUGGING
+define('ENVIRONMENT', 'production'); // 'development' or 'production'
 
 // Error Reporting (disable in production)
 if (ENVIRONMENT === 'development') {

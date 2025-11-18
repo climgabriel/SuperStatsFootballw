@@ -3,7 +3,7 @@ $pageTitle = "Login - Super Stats Football";
 $pageDescription = "Login to Super Stats Football Dashboard";
 
 require_once 'config.php';
-require_once 'includes/api-helper.php';
+require_once 'includes/APIClient.php';
 
 // Handle login form submission
 $loginError = '';
@@ -13,17 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $response = loginUser($email, $password);
+    $api = new APIClient();
+    $result = $api->login($email, $password);
 
-    if ($response['success']) {
+    if ($result['success']) {
         $loginSuccess = true;
+        // Regenerate session ID for security
+        session_regenerate_id(true);
         // Redirect to intended page or dashboard
         $redirectTo = $_SESSION['redirect_after_login'] ?? 'index.php';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirectTo);
         exit;
     } else {
-        $loginError = $response['error'] ?? 'Invalid email or password';
+        $loginError = $result['error'] ?? 'Invalid email or password';
     }
 }
 
