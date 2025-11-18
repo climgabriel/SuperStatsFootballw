@@ -21,7 +21,7 @@ if ($dateTo) {
 }
 
 // Fetch data from backend API
-$apiResponse = getCardsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+$apiResponse = getCardsStatistics($daysAhead, $leagueFilter, 50, 0);
 
 // Process API response
 $cardsData = [];

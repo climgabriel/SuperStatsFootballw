@@ -1,48 +1,42 @@
 <?php
 /**
- * Shared Statistics Filter Modal Component
+ * Shared Statistics Filter Modal Component - Enhanced
  *
- * This modal is used across all statistics pages for filtering by league and date range
- * Includes user-based league selection limits
+ * Features:
+ * - Dynamic league loading from backend
+ * - User-based league selection limits
+ * - Prediction model selection based on subscription plan
+ * - Real-time validation
  */
 
-require_once __DIR__ . '/UserManager.php';
-require_once __DIR__ . '/LeagueList.php';
-// api-config.php is already included by api-helper.php - don't include it again
+require_once 'UserManager.php';
+require_once 'api-helper.php';
 
 // Get user limits
 $maxLeagues = UserManager::getMaxLeagues(UserManager::getUserRole());
 $userRole = UserManager::getUserRole();
+$userPlan = UserManager::getUserPlan();
+$availableModels = UserManager::getAvailableModels($userPlan);
+$modelNames = UserManager::getModelNames();
 
-$leagueFilePath = __DIR__ . '/../data/leagues.txt';
-$leagueGroups = LeagueList::loadFromFile($leagueFilePath);
-
-if (empty($leagueGroups)) {
-    $fallbackLeagues = [
-        ['display' => 'England - Premier League', 'value' => '152', 'id' => '152'],
-        ['display' => 'Spain - La Liga', 'value' => '140', 'id' => '140'],
-        ['display' => 'Italy - Serie A', 'value' => '207', 'id' => '207'],
-        ['display' => 'Germany - Bundesliga', 'value' => '78', 'id' => '78'],
-        ['display' => 'France - Ligue 1', 'value' => '61', 'id' => '61'],
-        ['display' => 'Netherlands - Eredivisie', 'value' => '244', 'id' => '244'],
-        ['display' => 'Portugal - Primeira Liga', 'value' => '264', 'id' => '264'],
-        ['display' => 'Belgium - Jupiler League', 'value' => '63', 'id' => '63'],
-        ['display' => 'Turkey - Super Lig', 'value' => '322', 'id' => '322'],
-        ['display' => 'Champions League', 'value' => '3', 'id' => '3'],
-    ];
-
-    $leagueGroups = [
-        [
-            'region' => 'Featured Leagues',
-            'leagues' => array_map(function ($league) {
-                return [
-                    'label' => $league['display'],
-                    'display' => $league['display'],
-                    'value' => $league['value'],
-                    'id' => $league['id'],
-                ];
-            }, $fallbackLeagues),
-        ],
+// Fetch available leagues from backend
+$leaguesResponse = getLeagues(true); // Use cache
+$leagues = [];
+if ($leaguesResponse['success'] && isset($leaguesResponse['data']['leagues'])) {
+    $leagues = $leaguesResponse['data']['leagues'];
+} else {
+    // Fallback to default leagues if API fails
+    $leagues = [
+        ['id' => 1, 'name' => 'England - Premier League', 'country' => 'England'],
+        ['id' => 2, 'name' => 'Spain - La Liga', 'country' => 'Spain'],
+        ['id' => 3, 'name' => 'Germany - Bundesliga', 'country' => 'Germany'],
+        ['id' => 4, 'name' => 'Italy - Serie A', 'country' => 'Italy'],
+        ['id' => 5, 'name' => 'France - Ligue 1', 'country' => 'France'],
+        ['id' => 6, 'name' => 'Netherlands - Eredivisie', 'country' => 'Netherlands'],
+        ['id' => 7, 'name' => 'Portugal - Primeira Liga', 'country' => 'Portugal'],
+        ['id' => 8, 'name' => 'Belgium - Jupiler League', 'country' => 'Belgium'],
+        ['id' => 9, 'name' => 'Turkey - Super Lig', 'country' => 'Turkey'],
+        ['id' => 10, 'name' => 'Russia - Premier League', 'country' => 'Russia']
     ];
 }
 ?>
@@ -52,36 +46,6 @@ if (empty($leagueGroups)) {
   <i class="bx bx-filter me-1"></i> Filter
 </button>
 
-<style>
-  .league-scroll {
-    max-height: 320px;
-    overflow-y: auto;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    background-color: #f9fbfa;
-  }
-
-  .league-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    column-gap: 1.5rem;
-  }
-
-  .league-group-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #106147;
-    text-transform: uppercase;
-    margin-bottom: 0.35rem;
-  }
-
-  .league-scroll .form-check-label small {
-    font-size: 0.7rem;
-    color: #6c757d;
-  }
-</style>
-
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true"
      data-max-leagues="<?php echo $maxLeagues; ?>"
@@ -90,200 +54,113 @@ if (empty($leagueGroups)) {
     <div class="modal-content">
       <div class="modal-header" style="background-color: #106147; color: white;">
         <h5 class="modal-title" id="filterModalLabel">
-          <i class="bx bx-filter me-2"></i>Filter Options
+          <i class="bx bx-filter me-2"></i>Filter & Prediction Options
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Days Ahead Filter -->
+
+        <!-- Prediction Models Section -->
+        <?php if (!empty($availableModels)): ?>
         <div class="mb-4">
           <label class="form-label fw-bold d-flex align-items-center">
-            <i class="bx bx-calendar me-2" style="color: #106147;"></i>Days Ahead
+            <i class="bx bx-brain me-2" style="color: #106147;"></i>Prediction Models
+            <span class="badge bg-success ms-2" style="font-size: 0.7rem; font-weight: 400;">
+              <?php echo count($availableModels); ?> Available
+            </span>
           </label>
+          <p class="text-muted small mb-3">Select prediction models to apply to your statistics analysis</p>
+
           <div class="row">
-            <div class="col-md-4">
-              <div class="form-check">
-                <input class="form-check-input filter-days" type="radio" name="daysAhead" value="7" id="days7" checked>
-                <label class="form-check-label" for="days7">Next 7 days</label>
+            <?php foreach ($availableModels as $modelKey): ?>
+            <div class="col-md-6">
+              <div class="form-check mb-2">
+                <input class="form-check-input prediction-model" type="checkbox"
+                       value="<?php echo $modelKey; ?>"
+                       id="model_<?php echo $modelKey; ?>">
+                <label class="form-check-label d-flex align-items-center" for="model_<?php echo $modelKey; ?>">
+                  <span><?php echo $modelNames[$modelKey]; ?></span>
+                  <?php if ($modelKey === UserManager::MODEL_POISSON): ?>
+                  <span class="badge bg-info ms-2" style="font-size: 0.65rem;">Default</span>
+                  <?php endif; ?>
+                </label>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="form-check">
-                <input class="form-check-input filter-days" type="radio" name="daysAhead" value="14" id="days14">
-                <label class="form-check-label" for="days14">Next 14 days</label>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-check">
-                <input class="form-check-input filter-days" type="radio" name="daysAhead" value="30" id="days30">
-                <label class="form-check-label" for="days30">Next 30 days</label>
-              </div>
-            </div>
+            <?php endforeach; ?>
           </div>
+
+          <?php if ($userPlan < UserManager::PLAN_ULTIMATE): ?>
+          <div class="alert alert-light border mt-3 mb-0" style="font-size: 0.85rem;">
+            <i class="bx bx-info-circle me-1"></i>
+            <small>Upgrade to unlock more prediction models.
+            <a href="pricing.php" class="alert-link">View plans</a></small>
+          </div>
+          <?php endif; ?>
         </div>
 
         <hr>
+        <?php endif; ?>
 
         <!-- Leagues Filter -->
         <div class="mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <label class="form-label fw-bold mb-0 d-flex align-items-center">
-              <i class="bx bx-trophy me-2" style="color: #106147;"></i>Leagues
-            </label>
-            <div>
-              <button type="button" class="btn btn-sm btn-outline-secondary me-1" id="selectAllLeagues">Select All</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllLeagues">Deselect All</button>
-            </div>
-          </div>
-          <div class="league-scroll">
-            <?php foreach ($leagueGroups as $groupIndex => $group): ?>
-              <div class="league-group mb-3">
-                <div class="league-group-title"><?php echo htmlspecialchars($group['region']); ?></div>
-                <div class="league-grid">
-                  <?php foreach ($group['leagues'] as $leagueIndex => $league): ?>
-                    <div class="form-check mb-2">
-                      <input
-                        class="form-check-input filter-league"
-                        type="checkbox"
-                        value="<?php echo htmlspecialchars($league['value']); ?>"
-                        id="league<?php echo $groupIndex; ?>_<?php echo $leagueIndex; ?>"
-                        data-league-id="<?php echo htmlspecialchars($league['id'] ?? ''); ?>"
-                        data-league-name="<?php echo htmlspecialchars($league['display']); ?>"
-                      >
-                      <label class="form-check-label" for="league<?php echo $groupIndex; ?>_<?php echo $leagueIndex; ?>">
-                        <?php echo htmlspecialchars($league['display']); ?>
-                        <?php if (!empty($league['id'])): ?>
-                          <small>#<?php echo htmlspecialchars($league['id']); ?></small>
-                        <?php endif; ?>
-                      </label>
-                    </div>
-                  <?php endforeach; ?>
-                </div>
-              </div>
-            <?php endforeach; ?>
-          </div>
-        </div>
+          <label class="form-label fw-bold d-flex align-items-center">
+            <i class="bx bx-trophy me-2" style="color: #106147;"></i>Leagues
+          </label>
 
-        <hr>
-
-        <!-- Season Filter -->
-        <div class="mb-4">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <label class="form-label fw-bold mb-0 d-flex align-items-center">
-              <i class="bx bx-time me-2" style="color: #106147;"></i>Season
-            </label>
-            <div>
-              <button type="button" class="btn btn-sm btn-outline-secondary me-1" id="selectAllSeasons">Select All</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllSeasons">Deselect All</button>
-            </div>
+          <!-- Search box for leagues -->
+          <div class="mb-3">
+            <input type="text" class="form-control form-control-sm" id="leagueSearch"
+                   placeholder="Search leagues...">
           </div>
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-season" type="checkbox" value="2024" id="season1" checked>
-                <label class="form-check-label" for="season1">2024/2025</label>
+
+          <div class="row" id="leaguesList">
+            <?php
+            $halfCount = ceil(count($leagues) / 2);
+            $leftLeagues = array_slice($leagues, 0, $halfCount);
+            $rightLeagues = array_slice($leagues, $halfCount);
+            ?>
+            <div class="col-md-6">
+              <?php foreach ($leftLeagues as $league): ?>
+              <div class="form-check mb-2 league-item" data-league-name="<?php echo strtolower($league['name']); ?>">
+                <input class="form-check-input filter-league" type="checkbox"
+                       value="<?php echo htmlspecialchars($league['name']); ?>"
+                       id="league<?php echo $league['id']; ?>">
+                <label class="form-check-label" for="league<?php echo $league['id']; ?>">
+                  <?php echo htmlspecialchars($league['name']); ?>
+                </label>
               </div>
+              <?php endforeach; ?>
             </div>
-            <div class="col-md-4">
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-season" type="checkbox" value="2023" id="season2">
-                <label class="form-check-label" for="season2">2023/2024</label>
+            <div class="col-md-6">
+              <?php foreach ($rightLeagues as $league): ?>
+              <div class="form-check mb-2 league-item" data-league-name="<?php echo strtolower($league['name']); ?>">
+                <input class="form-check-input filter-league" type="checkbox"
+                       value="<?php echo htmlspecialchars($league['name']); ?>"
+                       id="league<?php echo $league['id']; ?>">
+                <label class="form-check-label" for="league<?php echo $league['id']; ?>">
+                  <?php echo htmlspecialchars($league['name']); ?>
+                </label>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-season" type="checkbox" value="2022" id="season3">
-                <label class="form-check-label" for="season3">2022/2023</label>
-              </div>
+              <?php endforeach; ?>
             </div>
           </div>
         </div>
 
         <hr>
 
-        <!-- Analytics Model Filter -->
+        <!-- Date Range Filter -->
         <div class="mb-3">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <label class="form-label fw-bold mb-0 d-flex align-items-center">
-              <i class="bx bx-brain me-2" style="color: #106147;"></i>Analytics Models
-            </label>
-            <div>
-              <button type="button" class="btn btn-sm btn-outline-secondary me-1" id="selectAllModels">Select All</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllModels">Deselect All</button>
-            </div>
-          </div>
+          <label class="form-label fw-bold d-flex align-items-center">
+            <i class="bx bx-calendar me-2" style="color: #106147;"></i>Date Range
+          </label>
           <div class="row">
             <div class="col-md-6">
-              <!-- Statistical Models (Always available) -->
-              <small class="text-muted fw-bold">Statistical Models</small>
-              <div class="form-check mb-2 mt-1">
-                <input class="form-check-input filter-model" type="checkbox" value="poisson" id="model1" checked>
-                <label class="form-check-label" for="model1">Poisson</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-model" type="checkbox" value="dixon-coles" id="model2" checked>
-                <label class="form-check-label" for="model2">Dixon-Coles</label>
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input filter-model" type="checkbox" value="elo" id="model3" checked>
-                <label class="form-check-label" for="model3">Elo Rating</label>
-              </div>
-
-              <?php
-              // Get user tier to determine which ML models to show
-              // Support both session key formats for compatibility
-              $sessionUser = $_SESSION[SESSION_USER_KEY] ?? $_SESSION['user'] ?? null;
-              $userTier = $sessionUser['tier'] ?? 'free';
-              $tierModels = [
-                'free' => [],
-                'starter' => ['random-forest', 'gradient-boost'],
-                'pro' => ['random-forest', 'gradient-boost', 'xgboost', 'lightgbm'],
-                'premium' => ['random-forest', 'gradient-boost', 'xgboost', 'lightgbm', 'catboost', 'neural-network'],
-                'ultimate' => ['random-forest', 'gradient-boost', 'xgboost', 'lightgbm', 'catboost', 'neural-network', 'ensemble'],
-                'admin' => ['random-forest', 'gradient-boost', 'xgboost', 'lightgbm', 'catboost', 'neural-network', 'ensemble']
-              ];
-
-              $availableModels = $tierModels[$userTier] ?? [];
-              $allMlModels = [
-                'random-forest' => 'Random Forest',
-                'gradient-boost' => 'Gradient Boosting',
-                'xgboost' => 'XGBoost',
-                'lightgbm' => 'LightGBM',
-                'catboost' => 'CatBoost',
-                'neural-network' => 'Neural Network',
-                'ensemble' => 'Ensemble Model'
-              ];
-              ?>
-
-              <?php if (!empty($availableModels)): ?>
-              <small class="text-muted fw-bold">Machine Learning Models</small>
-              <?php foreach ($availableModels as $index => $modelKey): ?>
-                <?php if ($index < 3): // First 3 ML models in left column ?>
-              <div class="form-check mb-2 mt-1">
-                <input class="form-check-input filter-model" type="checkbox" value="<?php echo $modelKey; ?>" id="ml<?php echo $index; ?>">
-                <label class="form-check-label" for="ml<?php echo $index; ?>"><?php echo $allMlModels[$modelKey]; ?></label>
-              </div>
-                <?php endif; ?>
-              <?php endforeach; ?>
-              <?php endif; ?>
+              <label class="form-label">From</label>
+              <input type="date" class="form-control" id="dateFrom">
             </div>
-
             <div class="col-md-6">
-              <?php if (count($availableModels) > 3): ?>
-              <small class="text-muted fw-bold">Additional ML Models</small>
-              <?php foreach ($availableModels as $index => $modelKey): ?>
-                <?php if ($index >= 3): // Remaining ML models in right column ?>
-              <div class="form-check mb-2 mt-1">
-                <input class="form-check-input filter-model" type="checkbox" value="<?php echo $modelKey; ?>" id="ml<?php echo $index; ?>">
-                <label class="form-check-label" for="ml<?php echo $index; ?>"><?php echo $allMlModels[$modelKey]; ?></label>
-              </div>
-                <?php endif; ?>
-              <?php endforeach; ?>
-              <?php elseif (empty($availableModels)): ?>
-              <div class="alert alert-info mb-0">
-                <small><i class="bx bx-info-circle me-1"></i>Upgrade your plan to access ML prediction models!</small>
-              </div>
-              <?php endif; ?>
+              <label class="form-label">To</label>
+              <input type="date" class="form-control" id="dateTo">
             </div>
           </div>
         </div>
@@ -294,16 +171,15 @@ if (empty($leagueGroups)) {
           <i class="bx bx-info-circle me-2"></i>
           <small>You can select up to <strong><?php echo $maxLeagues; ?> leagues</strong>.
           <?php
-          $plan = UserManager::getUserPlan();
-          $planFeatures = UserManager::getPlanFeatures($plan);
+          $planFeatures = UserManager::getPlanFeatures($userPlan);
           ?>
-          Your plan includes <strong><?php echo $planFeatures['models']; ?> prediction model(s)</strong>.</small>
+          Your <strong><?php echo $planFeatures['name']; ?></strong> includes <strong><?php echo $planFeatures['models']; ?> prediction model(s)</strong>.</small>
         </div>
         <?php elseif ($userRole === 'admin'): ?>
         <div class="alert alert-success mt-3 mb-0" style="background-color: #e8f5f2; border-color: #106147;">
           <i class="bx bx-crown me-2"></i>
           <small><strong>Admin Access:</strong> You can select up to <strong><?php echo $maxLeagues; ?> leagues</strong>
-          with access to all prediction models.</small>
+          with access to all <?php echo count($modelNames); ?> prediction models.</small>
         </div>
         <?php endif; ?>
       </div>
@@ -319,5 +195,37 @@ if (empty($leagueGroups)) {
   </div>
 </div>
 
-<!-- Include Filter JavaScript -->
+<!-- Enhanced Filter JavaScript -->
 <script src="assets/js/statistics-filter.js"></script>
+<script>
+// Add league search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const leagueSearch = document.getElementById('leagueSearch');
+    if (leagueSearch) {
+        leagueSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const leagueItems = document.querySelectorAll('.league-item');
+
+            leagueItems.forEach(item => {
+                const leagueName = item.dataset.leagueName;
+                if (leagueName.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Auto-select Poisson model (default for all plans)
+    const poissonModel = document.getElementById('model_<?php echo UserManager::MODEL_POISSON; ?>');
+    if (poissonModel && !poissonModel.checked) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const models = urlParams.get('models');
+        if (!models) {
+            // Only auto-select if no models in URL
+            poissonModel.checked = true;
+        }
+    }
+});
+</script>

@@ -21,7 +21,7 @@ if ($dateTo) {
 }
 
 // Fetch data from backend API
-$apiResponse = getFoulsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+$apiResponse = getFoulsStatistics($daysAhead, $leagueFilter, 50, 0);
 
 // Process API response
 $faultsData = [];
