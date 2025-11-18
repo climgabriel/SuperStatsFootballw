@@ -349,6 +349,56 @@ class ApiRepository {
     }
 
     /**
+     * Get available leagues from backend
+     *
+     * @param bool $useCache Whether to use caching
+     * @return array API response with leagues list
+     */
+    public function getLeagues($useCache = true) {
+        return $this->request(API_ENDPOINTS['leagues'], 'GET', null, [], $useCache);
+    }
+
+    /**
+     * Get current user information
+     *
+     * @return array API response with user data
+     */
+    public function getCurrentUserInfo() {
+        return $this->request(API_ENDPOINTS['auth_me'], 'GET', null, [], false);
+    }
+
+    /**
+     * Register a new user
+     *
+     * @param string $email User email
+     * @param string $password User password
+     * @param string $fullName User's full name
+     * @param int $plan Subscription plan (1-5)
+     * @return array Registration response
+     */
+    public function registerUser($email, $password, $fullName, $plan = 1) {
+        $data = [
+            'email' => $email,
+            'password' => $password,
+            'full_name' => $fullName,
+            'plan' => $plan,
+            'role' => 'user' // Default role
+        ];
+
+        $response = $this->request(API_ENDPOINTS['auth_register'], 'POST', $data, [], false);
+
+        // Store token and user data if registration successful
+        if ($response['success'] && isset($response['data']['access_token'])) {
+            $_SESSION[SESSION_TOKEN_KEY] = $response['data']['access_token'];
+            $_SESSION[SESSION_USER_KEY] = $response['data']['user'] ?? null;
+
+            $this->logger->info("User registered successfully", ['email' => $email]);
+        }
+
+        return $response;
+    }
+
+    /**
      * Clear cache for specific endpoint or all
      */
     public function clearCache($endpoint = null) {

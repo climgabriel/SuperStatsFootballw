@@ -100,6 +100,27 @@ function loginUser($email, $password) {
 }
 
 /**
+ * Register new user - Now uses ApiRepository
+ */
+function registerUser($email, $password, $fullName, $plan = 1) {
+    return getApiRepository()->registerUser($email, $password, $fullName, $plan);
+}
+
+/**
+ * Get current user info from backend
+ */
+function getCurrentUserInfo() {
+    return getApiRepository()->getCurrentUserInfo();
+}
+
+/**
+ * Get available leagues from backend
+ */
+function getLeagues($useCache = true) {
+    return getApiRepository()->getLeagues($useCache);
+}
+
+/**
  * Logout user and clear session
  */
 function logoutUser() {

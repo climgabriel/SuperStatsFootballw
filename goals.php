@@ -23,7 +23,8 @@ if ($dateTo) {
 }
 
 // Fetch data from backend API
-$apiResponse = getGoalsStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+// Pass all selected leagues (not just the first one)
+$apiResponse = getGoalsStatistics($daysAhead, $leagueFilter, 50, 0);
 
 // Process API response
 $goalsData = [];

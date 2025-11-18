@@ -22,7 +22,7 @@ if ($dateTo) {
 }
 
 // Fetch data from backend API
-$apiResponse = getCornersStatistics($daysAhead, $leagueFilter ? $leagueFilter[0] : null, 50, 0);
+$apiResponse = getCornersStatistics($daysAhead, $leagueFilter, 50, 0);
 
 // Process API response
 $cornersData = [];
