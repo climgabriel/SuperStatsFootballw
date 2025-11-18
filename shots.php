@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 $pageTitle = "Shots Statistics - Super Stats Football";
 $pageDescription = "Shots on Target Statistics";
 $activePage = "shots";

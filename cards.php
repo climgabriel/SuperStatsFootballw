@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 $pageTitle = "Cards Statistics - Super Stats Football";
 $pageDescription = "Yellow and Red Cards Statistics";
 $activePage = "cards";

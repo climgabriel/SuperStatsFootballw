@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 $pageTitle = "Corners Statistics - Super Stats Football";
 $pageDescription = "Corners Statistics and Analysis";
 $activePage = "corners";

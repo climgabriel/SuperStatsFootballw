@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 $pageTitle = "Offsides Statistics - Super Stats Football";
 $pageDescription = "Offside Statistics and Analysis";
 $activePage = "offsides";

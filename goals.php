@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 $pageTitle = "Goals Statistics - Super Stats Football";
 $pageDescription = "Goals Statistics and Analysis";
 $activePage = "goals";
@@ -6,7 +8,6 @@ $activePage = "goals";
 // Include API helper and authentication
 require_once 'includes/api-helper.php';
 require_once 'includes/auth-middleware.php';
-require_once 'includes/UserManager.php';
 
 // Try demo authentication for seamless UX
 tryDemoAuth();

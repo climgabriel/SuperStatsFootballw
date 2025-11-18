@@ -7,16 +7,79 @@
  */
 
 require_once 'UserManager.php';
+require_once 'LeagueList.php';
 
 // Get user limits
 $maxLeagues = UserManager::getMaxLeagues(UserManager::getUserRole());
 $userRole = UserManager::getUserRole();
+
+$leagueFilePath = __DIR__ . '/../data/leagues.txt';
+$leagueGroups = LeagueList::loadFromFile($leagueFilePath);
+
+if (empty($leagueGroups)) {
+    $fallbackLeagues = [
+        ['display' => 'England - Premier League', 'value' => '152', 'id' => '152'],
+        ['display' => 'Spain - La Liga', 'value' => '140', 'id' => '140'],
+        ['display' => 'Italy - Serie A', 'value' => '207', 'id' => '207'],
+        ['display' => 'Germany - Bundesliga', 'value' => '78', 'id' => '78'],
+        ['display' => 'France - Ligue 1', 'value' => '61', 'id' => '61'],
+        ['display' => 'Netherlands - Eredivisie', 'value' => '244', 'id' => '244'],
+        ['display' => 'Portugal - Primeira Liga', 'value' => '264', 'id' => '264'],
+        ['display' => 'Belgium - Jupiler League', 'value' => '63', 'id' => '63'],
+        ['display' => 'Turkey - Super Lig', 'value' => '322', 'id' => '322'],
+        ['display' => 'Champions League', 'value' => '3', 'id' => '3'],
+    ];
+
+    $leagueGroups = [
+        [
+            'region' => 'Featured Leagues',
+            'leagues' => array_map(function ($league) {
+                return [
+                    'label' => $league['display'],
+                    'display' => $league['display'],
+                    'value' => $league['value'],
+                    'id' => $league['id'],
+                ];
+            }, $fallbackLeagues),
+        ],
+    ];
+}
 ?>
 
 <!-- Filter Button -->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal" style="background-color: #106147; border-color: #106147;">
   <i class="bx bx-filter me-1"></i> Filter
 </button>
+
+<style>
+  .league-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background-color: #f9fbfa;
+  }
+
+  .league-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    column-gap: 1.5rem;
+  }
+
+  .league-group-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #106147;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .league-scroll .form-check-label small {
+    font-size: 0.7rem;
+    color: #6c757d;
+  }
+</style>
 
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true"
@@ -71,51 +134,32 @@ $userRole = UserManager::getUserRole();
               <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllLeagues">Deselect All</button>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="England - Premier League" id="league1">
-                <label class="form-check-label" for="league1">England - Premier League</label>
+          <div class="league-scroll">
+            <?php foreach ($leagueGroups as $groupIndex => $group): ?>
+              <div class="league-group mb-3">
+                <div class="league-group-title"><?php echo htmlspecialchars($group['region']); ?></div>
+                <div class="league-grid">
+                  <?php foreach ($group['leagues'] as $leagueIndex => $league): ?>
+                    <div class="form-check mb-2">
+                      <input
+                        class="form-check-input filter-league"
+                        type="checkbox"
+                        value="<?php echo htmlspecialchars($league['value']); ?>"
+                        id="league<?php echo $groupIndex; ?>_<?php echo $leagueIndex; ?>"
+                        data-league-id="<?php echo htmlspecialchars($league['id'] ?? ''); ?>"
+                        data-league-name="<?php echo htmlspecialchars($league['display']); ?>"
+                      >
+                      <label class="form-check-label" for="league<?php echo $groupIndex; ?>_<?php echo $leagueIndex; ?>">
+                        <?php echo htmlspecialchars($league['display']); ?>
+                        <?php if (!empty($league['id'])): ?>
+                          <small>#<?php echo htmlspecialchars($league['id']); ?></small>
+                        <?php endif; ?>
+                      </label>
+                    </div>
+                  <?php endforeach; ?>
+                </div>
               </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Spain - La Liga" id="league2">
-                <label class="form-check-label" for="league2">Spain - La Liga</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Italy - Serie A" id="league3">
-                <label class="form-check-label" for="league3">Italy - Serie A</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Germany - Bundesliga" id="league4">
-                <label class="form-check-label" for="league4">Germany - Bundesliga</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="France - Ligue 1" id="league5">
-                <label class="form-check-label" for="league5">France - Ligue 1</label>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Netherlands - Eredivisie" id="league6">
-                <label class="form-check-label" for="league6">Netherlands - Eredivisie</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Portugal - Primeira Liga" id="league7">
-                <label class="form-check-label" for="league7">Portugal - Primeira Liga</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Belgium - Jupiler League" id="league8">
-                <label class="form-check-label" for="league8">Belgium - Jupiler League</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Turkey - Super Lig" id="league9">
-                <label class="form-check-label" for="league9">Turkey - Super Lig</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input filter-league" type="checkbox" value="Champions League" id="league10">
-                <label class="form-check-label" for="league10">Champions League</label>
-              </div>
-            </div>
+            <?php endforeach; ?>
           </div>
         </div>
 
