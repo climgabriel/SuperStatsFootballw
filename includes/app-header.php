@@ -184,10 +184,7 @@
         <div class="container-xxl">
             <!-- Brand -->
             <a class="navbar-brand" href="index.php">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke="#696cff" stroke-width="2" fill="none"/>
-                    <path d="M12 2L14 8H20L15 12L17 18L12 14L7 18L9 12L4 8H10L12 2Z" fill="#696cff"/>
-                </svg>
+                <img src="assets/img/favicon/SuperStatsFootballLogo0.png" alt="Super Stats Football" width="40" height="40" />
                 <?php echo APP_NAME; ?>
             </a>
 
