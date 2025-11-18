@@ -9,13 +9,16 @@
 // PRODUCTION: Update this to your actual backend URL when deploying
 // Only define if not already defined in main config.php
 if (!defined('API_BASE_URL')) {
-    define('API_BASE_URL', getenv('BACKEND_API_URL') ?: 'https://superstatsfootball-production.up.railway.app');
+    // Check for API_BASE_URL first (GreenGeeks), then BACKEND_API_URL (local dev)
+    $envApiUrl = getenv('API_BASE_URL') ?: getenv('BACKEND_API_URL') ?: '';
+    define('API_BASE_URL', $envApiUrl ?: 'https://superstatsfootball-production.up.railway.app');
 }
 if (!defined('API_VERSION')) {
     define('API_VERSION', 'v1');
 }
 if (!defined('API_PREFIX')) {
-    define('API_PREFIX', API_BASE_URL . '/api/' . API_VERSION);
+    // API_PREFIX should be just the path, not the full URL
+    define('API_PREFIX', '/api/' . API_VERSION);
 }
 
 // API Endpoints

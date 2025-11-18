@@ -13,11 +13,15 @@ if (!defined('SSF_CONFIG')) {
 // Include API configuration to ensure constants are available
 require_once __DIR__ . '/includes/api-config.php';
 
-// API Configuration (allow BACKEND_API_URL env override for local dev)
-$backendApiUrl = getenv('BACKEND_API_URL') ?: '';
-if (empty($backendApiUrl) && isset($_ENV['BACKEND_API_URL'])) {
+// API Configuration (allow environment variable override)
+// Check for API_BASE_URL first (GreenGeeks hosting), then BACKEND_API_URL (local dev)
+$backendApiUrl = getenv('API_BASE_URL') ?: getenv('BACKEND_API_URL') ?: '';
+if (empty($backendApiUrl) && isset($_ENV['API_BASE_URL'])) {
+    $backendApiUrl = $_ENV['API_BASE_URL'];
+} elseif (empty($backendApiUrl) && isset($_ENV['BACKEND_API_URL'])) {
     $backendApiUrl = $_ENV['BACKEND_API_URL'];
 }
+// Default to production Railway backend
 $backendApiUrl = $backendApiUrl ? rtrim($backendApiUrl, '/') : 'https://superstatsfootball-production.up.railway.app';
 
 // Only define if api-config.php hasn't already defined them

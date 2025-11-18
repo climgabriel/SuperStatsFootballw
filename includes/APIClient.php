@@ -33,35 +33,36 @@ class APIClient {
             $headers[] = 'Authorization: Bearer ' . $this->accessToken;
         }
 
-        $options = [
-            'http' => [
-                'method' => $method,
-                'header' => implode("\r\n", $headers),
-                'timeout' => 30,
-                'ignore_errors' => true
-            ]
-        ];
+        // Initialize cURL
+        $ch = curl_init();
 
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
+        // Add request body for POST/PUT/PATCH
         if ($data && in_array($method, ['POST', 'PUT', 'PATCH'])) {
-            $options['http']['content'] = json_encode($data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
 
-        $context = stream_context_create($options);
-        $response = @file_get_contents($url, false, $context);
+        // Execute request
+        $response = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
 
-        if ($response === false) {
+        // Handle connection errors
+        if ($response === false || $error) {
             return [
                 'success' => false,
-                'error' => 'Failed to connect to API',
+                'error' => 'Failed to connect to API: ' . ($error ?: 'Unknown error'),
                 'data' => null
             ];
-        }
-
-        // Parse HTTP response code
-        $statusCode = 200;
-        if (isset($http_response_header) && count($http_response_header) > 0) {
-            preg_match('/HTTP\/\d\.\d\s+(\d+)/', $http_response_header[0], $matches);
-            $statusCode = isset($matches[1]) ? (int)$matches[1] : 200;
         }
 
         $decoded = json_decode($response, true);
