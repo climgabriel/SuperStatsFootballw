@@ -3,9 +3,6 @@ require_once 'config.php';
 require_once 'includes/auth-middleware.php';
 require_once 'includes/APIClient.php';
 
-// Automatically authenticate with demo credentials if needed
-tryDemoAuth();
-
 // Require authentication for this page
 requireAuth();
 

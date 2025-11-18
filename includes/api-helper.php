@@ -6,8 +6,8 @@
  * This maintains existing API for legacy code while using the improved architecture
  */
 
-require_once 'api-config.php';
-require_once 'ApiRepository.php';
+require_once __DIR__ . '/api-config.php';
+require_once __DIR__ . '/ApiRepository.php';
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {

@@ -9,9 +9,6 @@ $activePage = "corners";
 require_once 'includes/api-helper.php';
 require_once 'includes/auth-middleware.php';
 
-// Try demo authentication for seamless UX
-tryDemoAuth();
-
 // Get filter parameters from URL
 $leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;

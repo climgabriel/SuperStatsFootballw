@@ -6,8 +6,9 @@
  * Includes user-based league selection limits
  */
 
-require_once 'UserManager.php';
-require_once 'LeagueList.php';
+require_once __DIR__ . '/UserManager.php';
+require_once __DIR__ . '/LeagueList.php';
+// api-config.php is already included by api-helper.php - don't include it again
 
 // Get user limits
 $maxLeagues = UserManager::getMaxLeagues(UserManager::getUserRole());
@@ -230,7 +231,9 @@ if (empty($leagueGroups)) {
 
               <?php
               // Get user tier to determine which ML models to show
-              $userTier = getUserTier();
+              // Support both session key formats for compatibility
+              $sessionUser = $_SESSION[SESSION_USER_KEY] ?? $_SESSION['user'] ?? null;
+              $userTier = $sessionUser['tier'] ?? 'free';
               $tierModels = [
                 'free' => [],
                 'starter' => ['random-forest', 'gradient-boost'],

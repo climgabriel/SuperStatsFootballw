@@ -10,6 +10,9 @@ if (!defined('SSF_CONFIG')) {
     define('SSF_CONFIG', true);
 }
 
+// Include API configuration to ensure constants are available
+require_once __DIR__ . '/includes/api-config.php';
+
 // API Configuration (allow BACKEND_API_URL env override for local dev)
 $backendApiUrl = getenv('BACKEND_API_URL') ?: '';
 if (empty($backendApiUrl) && isset($_ENV['BACKEND_API_URL'])) {
@@ -17,32 +20,56 @@ if (empty($backendApiUrl) && isset($_ENV['BACKEND_API_URL'])) {
 }
 $backendApiUrl = $backendApiUrl ? rtrim($backendApiUrl, '/') : 'https://superstatsfootball-production.up.railway.app';
 
-define('API_BASE_URL', $backendApiUrl);
-define('API_VERSION', 'v1');
-define('API_PREFIX', '/api/' . API_VERSION);
+// Only define if api-config.php hasn't already defined them
+if (!defined('API_BASE_URL')) {
+    define('API_BASE_URL', $backendApiUrl);
+}
+if (!defined('API_VERSION')) {
+    define('API_VERSION', 'v1');
+}
+if (!defined('API_PREFIX')) {
+    define('API_PREFIX', '/api/' . API_VERSION);
+}
 
-// API Endpoints
-define('API_AUTH_LOGIN', API_BASE_URL . API_PREFIX . '/auth/login');
-define('API_AUTH_REGISTER', API_BASE_URL . API_PREFIX . '/auth/register');
-define('API_AUTH_REFRESH', API_BASE_URL . API_PREFIX . '/auth/refresh');
-define('API_AUTH_LOGOUT', API_BASE_URL . API_PREFIX . '/auth/logout');
-
-define('API_PREDICTIONS_ODDS', API_BASE_URL . API_PREFIX . '/combined/fixtures/predictions-with-odds');
-define('API_FIXTURES', API_BASE_URL . API_PREFIX . '/fixtures');
-define('API_LEAGUES', API_BASE_URL . API_PREFIX . '/leagues');
-define('API_USER_PROFILE', API_BASE_URL . API_PREFIX . '/users/me');
+// API Endpoints (only if not already defined)
+if (!defined('API_AUTH_LOGIN')) {
+    define('API_AUTH_LOGIN', API_BASE_URL . API_PREFIX . '/auth/login');
+    define('API_AUTH_REGISTER', API_BASE_URL . API_PREFIX . '/auth/register');
+    define('API_AUTH_REFRESH', API_BASE_URL . API_PREFIX . '/auth/refresh');
+    define('API_AUTH_LOGOUT', API_BASE_URL . API_PREFIX . '/auth/logout');
+    define('API_PREDICTIONS_ODDS', API_BASE_URL . API_PREFIX . '/combined/fixtures/predictions-with-odds');
+    define('API_FIXTURES', API_BASE_URL . API_PREFIX . '/fixtures');
+    define('API_LEAGUES', API_BASE_URL . API_PREFIX . '/leagues');
+    define('API_USER_PROFILE', API_BASE_URL . API_PREFIX . '/users/me');
+}
 
 // Session Configuration
-define('SESSION_NAME', 'ssf_session');
-define('TOKEN_COOKIE_NAME', 'ssf_access_token');
-define('REFRESH_TOKEN_COOKIE_NAME', 'ssf_refresh_token');
-define('TOKEN_EXPIRY_MINUTES', 30);
-define('REFRESH_TOKEN_EXPIRY_DAYS', 7);
+if (!defined('SESSION_NAME')) {
+    define('SESSION_NAME', 'ssf_session');
+}
+if (!defined('TOKEN_COOKIE_NAME')) {
+    define('TOKEN_COOKIE_NAME', 'ssf_access_token');
+}
+if (!defined('REFRESH_TOKEN_COOKIE_NAME')) {
+    define('REFRESH_TOKEN_COOKIE_NAME', 'ssf_refresh_token');
+}
+if (!defined('TOKEN_EXPIRY_MINUTES')) {
+    define('TOKEN_EXPIRY_MINUTES', 30);
+}
+if (!defined('REFRESH_TOKEN_EXPIRY_DAYS')) {
+    define('REFRESH_TOKEN_EXPIRY_DAYS', 7);
+}
 
 // Application Settings
-define('APP_NAME', 'Super Stats Football');
-define('APP_VERSION', '1.0.0');
-define('ENVIRONMENT', 'production'); // 'development' or 'production'
+if (!defined('APP_NAME')) {
+    define('APP_NAME', 'Super Stats Football');
+}
+if (!defined('APP_VERSION')) {
+    define('APP_VERSION', '1.0.0');
+}
+if (!defined('ENVIRONMENT')) {
+    define('ENVIRONMENT', 'production'); // 'development' or 'production'
+}
 
 // Error Reporting (disable in production)
 if (ENVIRONMENT === 'development') {
@@ -78,9 +105,11 @@ function redirectToLogin() {
     exit;
 }
 
-function requireAuth() {
-    if (!isLoggedIn()) {
-        redirectToLogin();
+if (!function_exists('requireAuth')) {
+    function requireAuth() {
+        if (!isLoggedIn()) {
+            redirectToLogin();
+        }
     }
 }
 

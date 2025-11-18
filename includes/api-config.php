@@ -53,5 +53,9 @@ define('API_TIMEOUT', 10);
 define('API_SSL_VERIFY', true);
 
 // Session key for storing auth token
-define('SESSION_TOKEN_KEY', 'api_auth_token');
-define('SESSION_USER_KEY', 'api_user_data');
+if (!defined('SESSION_TOKEN_KEY')) {
+    define('SESSION_TOKEN_KEY', 'api_auth_token');
+}
+if (!defined('SESSION_USER_KEY')) {
+    define('SESSION_USER_KEY', 'api_user_data');
+}
