@@ -2,6 +2,7 @@
 $pageTitle = "Login - Super Stats Football";
 $pageDescription = "Login to Super Stats Football Dashboard";
 
+require_once 'config.php';
 require_once 'includes/api-helper.php';
 
 // Handle login form submission
