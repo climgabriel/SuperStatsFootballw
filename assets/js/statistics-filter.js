@@ -32,6 +32,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // ===== SELECT ALL / DESELECT ALL FUNCTIONALITY =====
+
+    // Leagues Select All/Deselect All
+    const selectAllLeagues = document.getElementById('selectAllLeagues');
+    const deselectAllLeagues = document.getElementById('deselectAllLeagues');
+
+    if (selectAllLeagues) {
+        selectAllLeagues.addEventListener('click', function() {
+            document.querySelectorAll('.filter-league').forEach(cb => cb.checked = true);
+            validateLeagueSelection();
+            updateSelectedCount();
+        });
+    }
+
+    if (deselectAllLeagues) {
+        deselectAllLeagues.addEventListener('click', function() {
+            document.querySelectorAll('.filter-league').forEach(cb => cb.checked = false);
+            validateLeagueSelection();
+            updateSelectedCount();
+        });
+    }
+
+    // Seasons Select All/Deselect All
+    const selectAllSeasons = document.getElementById('selectAllSeasons');
+    const deselectAllSeasons = document.getElementById('deselectAllSeasons');
+
+    if (selectAllSeasons) {
+        selectAllSeasons.addEventListener('click', function() {
+            document.querySelectorAll('.filter-season').forEach(cb => cb.checked = true);
+        });
+    }
+
+    if (deselectAllSeasons) {
+        deselectAllSeasons.addEventListener('click', function() {
+            document.querySelectorAll('.filter-season').forEach(cb => cb.checked = false);
+        });
+    }
+
+    // Models Select All/Deselect All
+    const selectAllModels = document.getElementById('selectAllModels');
+    const deselectAllModels = document.getElementById('deselectAllModels');
+
+    if (selectAllModels) {
+        selectAllModels.addEventListener('click', function() {
+            document.querySelectorAll('.filter-model').forEach(cb => cb.checked = true);
+        });
+    }
+
+    if (deselectAllModels) {
+        deselectAllModels.addEventListener('click', function() {
+            document.querySelectorAll('.filter-model').forEach(cb => cb.checked = false);
+        });
+    }
+
     /**
      * Get selected league IDs from checkboxes
      */
@@ -40,6 +94,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const leagues = [];
         checkboxes.forEach(cb => leagues.push(cb.value));
         return leagues;
+    }
+
+    /**
+     * Get selected days ahead value
+     */
+    function getDaysAhead() {
+        const selected = document.querySelector('.filter-days:checked');
+        return selected ? selected.value : '7'; // Default to 7 days
+    }
+
+    /**
+     * Get selected seasons
+     */
+    function getSelectedSeasons() {
+        const checkboxes = document.querySelectorAll('.filter-season:checked');
+        const seasons = [];
+        checkboxes.forEach(cb => seasons.push(cb.value));
+        return seasons;
+    }
+
+    /**
+     * Get selected analytics models
+     */
+    function getSelectedModels() {
+        const checkboxes = document.querySelectorAll('.filter-model:checked');
+        const models = [];
+        checkboxes.forEach(cb => models.push(cb.value));
+        return models;
     }
 
     /**
@@ -135,15 +217,35 @@ document.addEventListener('DOMContentLoaded', function() {
             return; // Stop if validation fails
         }
 
+        const daysAhead = getDaysAhead();
+        const selectedSeasons = getSelectedSeasons();
+        const selectedModels = getSelectedModels();
         const dateRange = getDateRange();
 
         // Build query parameters
         const params = new URLSearchParams();
 
+        // Add days ahead
+        if (daysAhead) {
+            params.append('days', daysAhead);
+        }
+
+        // Add leagues
         if (selectedLeagues.length > 0) {
             params.append('leagues', selectedLeagues.join(','));
         }
 
+        // Add seasons
+        if (selectedSeasons.length > 0) {
+            params.append('seasons', selectedSeasons.join(','));
+        }
+
+        // Add analytics models
+        if (selectedModels.length > 0) {
+            params.append('models', selectedModels.join(','));
+        }
+
+        // Add date range (if still needed)
         if (dateRange.from) {
             params.append('date_from', dateRange.from);
         }
@@ -166,8 +268,22 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     if (clearFiltersBtn) {
         clearFiltersBtn.addEventListener('click', function() {
+            // Reset days ahead to default (7 days)
+            const days7 = document.getElementById('days7');
+            if (days7) days7.checked = true;
+
             // Uncheck all league checkboxes
             document.querySelectorAll('.filter-league').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Uncheck all season checkboxes
+            document.querySelectorAll('.filter-season').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Uncheck all model checkboxes
+            document.querySelectorAll('.filter-model').forEach(cb => {
                 cb.checked = false;
             });
 
@@ -195,6 +311,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
 
+        // Load days ahead
+        const days = params.get('days');
+        if (days) {
+            const daysRadio = document.querySelector(`.filter-days[value="${days}"]`);
+            if (daysRadio) daysRadio.checked = true;
+        }
+
         // Load leagues
         const leagues = params.get('leagues');
         if (leagues) {
@@ -206,6 +329,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Validate after loading
             validateLeagueSelection();
+        }
+
+        // Load seasons
+        const seasons = params.get('seasons');
+        if (seasons) {
+            const seasonList = seasons.split(',');
+            seasonList.forEach(season => {
+                const checkbox = document.querySelector(`.filter-season[value="${season}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+
+        // Load analytics models
+        const models = params.get('models');
+        if (models) {
+            const modelList = models.split(',');
+            modelList.forEach(model => {
+                const checkbox = document.querySelector(`.filter-model[value="${CSS.escape(model)}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
         }
 
         // Load dates

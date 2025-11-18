@@ -52,9 +52,6 @@ include 'includes/app-header.php';
                   Showing: <strong><?php echo count($matches); ?> matches</strong>
                 </small>
               </div>
-              <button type="button" class="btn btn-primary me-3" data-bs-toggle="modal" data-bs-target="#filterModal" style="background-color: #106147; border-color: #106147;">
-                <i class="bx bx-filter me-1"></i> Filter
-              </button>
             </div>
 
             <?php if ($error): ?>
@@ -65,67 +62,8 @@ include 'includes/app-header.php';
             </div>
             <?php endif; ?>
 
-            <!-- Filter Modal -->
-            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header" style="background-color: #106147; color: white;">
-                    <h5 class="modal-title" id="filterModalLabel">
-                      <i class="bx bx-filter me-2"></i>Filter Options
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <form method="GET" action="1x2.php" id="filterForm">
-                      <!-- Days Ahead Filter -->
-                      <div class="mb-4">
-                        <label class="form-label fw-bold d-flex align-items-center">
-                          <i class="bx bx-calendar me-2" style="color: #106147;"></i>Days Ahead
-                        </label>
-                        <select class="form-select" name="days">
-                          <option value="7" <?php echo $daysAhead == 7 ? 'selected' : ''; ?>>Next 7 days</option>
-                          <option value="14" <?php echo $daysAhead == 14 ? 'selected' : ''; ?>>Next 14 days</option>
-                          <option value="30" <?php echo $daysAhead == 30 ? 'selected' : ''; ?>>Next 30 days</option>
-                        </select>
-                      </div>
-
-                      <hr>
-
-                      <!-- League Filter (populated dynamically) -->
-                      <div class="mb-4">
-                        <label class="form-label fw-bold d-flex align-items-center">
-                          <i class="bx bx-trophy me-2" style="color: #106147;"></i>League
-                        </label>
-                        <select class="form-select" name="league_id">
-                          <option value="">All Leagues</option>
-                          <!-- TODO: Populate from API /leagues/accessible/me -->
-                        </select>
-                      </div>
-
-                      <hr>
-
-                      <!-- Results Limit -->
-                      <div class="mb-3">
-                        <label class="form-label fw-bold">Results per page</label>
-                        <select class="form-select" name="limit">
-                          <option value="50" <?php echo $limit == 50 ? 'selected' : ''; ?>>50</option>
-                          <option value="100" <?php echo $limit == 100 ? 'selected' : ''; ?>>100</option>
-                          <option value="200" <?php echo $limit == 200 ? 'selected' : ''; ?>>200</option>
-                        </select>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="location.href='1x2.php'">
-                      <i class="bx bx-x me-1"></i>Clear Filters
-                    </button>
-                    <button type="submit" form="filterForm" class="btn btn-primary" style="background-color: #106147; border-color: #106147;">
-                      <i class="bx bx-check me-1"></i>Apply Filters
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!-- Include Shared Filter Modal Component -->
+            <?php include 'includes/statistics-filter-modal.php'; ?>
 
             <!-- Single Comprehensive Table -->
             <div class="card">

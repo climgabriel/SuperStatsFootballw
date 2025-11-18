@@ -264,37 +264,6 @@ include 'includes/app-header.php';
               <?php include 'includes/statistics-filter-modal.php'; ?>
             </div>
 
-                    <hr>
-
-                    <!-- Date Range Filter -->
-                    <div class="mb-3">
-                      <label class="form-label fw-bold d-flex align-items-center">
-                        <i class="bx bx-calendar me-2" style="color: #106147;"></i>Date Range
-                      </label>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <label class="form-label">From</label>
-                          <input type="date" class="form-control" id="dateFrom">
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">To</label>
-                          <input type="date" class="form-control" id="dateTo">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="clearFilters">
-                      <i class="bx bx-x me-1"></i>Clear All
-                    </button>
-                    <button type="button" class="btn btn-primary" id="applyFilters" style="background-color: #106147; border-color: #106147;">
-                      <i class="bx bx-check me-1"></i>Apply Filters
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <!-- Shots Table -->
             <div class="card">
               <div class="card-body">
