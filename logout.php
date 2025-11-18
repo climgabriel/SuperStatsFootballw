@@ -4,11 +4,12 @@
  */
 
 require_once 'config.php';
+require_once 'includes/APIClient.php';
 
 // Try to logout from API first (while session is still active)
 try {
     $api = new APIClient();
-    $result = $api->makeRequest('POST', '/auth/logout', null, true);
+    $result = $api->logout();
 } catch (Exception $e) {
     // Ignore API errors during logout
 }
