@@ -1,0 +1,264 @@
+================================================================================
+PROJECT STRUCTURE: SuperStatsFootball
+================================================================================
+
+/home/user/SuperStatsFootballw/
+│
+├── GENERATED DOCUMENTATION (Created during exploration)
+│   ├── BACKEND_ANALYSIS.md              - 26 KB comprehensive analysis
+│   ├── API_QUICK_REFERENCE.md           - 4.5 KB quick lookup guide
+│   └── EXPLORATION_SUMMARY.txt          - 16 KB this summary
+│
+├── CORE APPLICATION FILES
+│   ├── index.php                        - Dashboard homepage
+│   ├── login.php                        - User login page
+│   ├── register.php                     - User registration
+│   ├── forgot-password.php              - Password recovery
+│   ├── account-settings.php             - User account management
+│   ├── plans.php                        - Subscription plans page
+│   ├── payment-offers.php               - Payment options page
+│   │
+│   ├── STATISTICS PAGES (All use ApiRepository)
+│   ├── goals.php                        - Goals statistics & probabilities
+│   ├── corners.php                      - Corners under/over statistics
+│   ├── cards.php                        - Cards (yellow/red) statistics
+│   ├── shots.php                        - Shots on target statistics
+│   ├── faults.php                       - Fouls/faults statistics
+│   ├── offsides.php                     - Offsides statistics
+│   ├── 1x2.php                          - Match predictions (1x2 odds)
+│   │
+│   ├── POLICY PAGES
+│   ├── terms-and-conditions.php
+│   └── privacy-policy.php
+│
+├── includes/                            - Core application logic
+│   │
+│   ├── API & HTTP
+│   ├── api-config.php                   - API endpoint definitions
+│   ├── api-helper.php                   - Legacy wrapper functions
+│   ├── ApiRepository.php                - Main API client (Repository Pattern)
+│   │
+│   ├── AUTHENTICATION & USERS
+│   ├── auth-middleware.php              - Authentication checks
+│   ├── UserManager.php                  - Roles, plans, permissions
+│   │
+│   ├── PERFORMANCE & MONITORING
+│   ├── CacheManager.php                 - File-based caching (5 min TTL)
+│   ├── Logger.php                       - Request logging & monitoring
+│   │
+│   ├── UI COMPONENTS
+│   ├── app-header.php                   - Main navigation header
+│   ├── app-footer.php                   - Footer template
+│   ├── auth-header.php                  - Login/register page header
+│   ├── auth-footer.php                  - Auth page footer
+│   └── statistics-filter-modal.php      - Shared filter component
+│
+├── assets/                              - Static files
+│   │
+│   ├── js/                              - JavaScript files
+│   │   ├── config.js                    - Theme & color configuration
+│   │   ├── main.js                      - Main application logic
+│   │   ├── statistics-filter.js         - Filter modal validation
+│   │   └── 1x2-filter.js                - 1x2 specific filtering
+│   │
+│   ├── css/                             - Stylesheets
+│   │   └── demo.css                     - Custom styles
+│   │
+│   ├── img/                             - Images & icons
+│   │   ├── favicon/                     - Logo & favicon files
+│   │   ├── avatars/                     - User avatar images
+│   │   └── icons/                       - Icon sets
+│   │
+│   └── vendor/                          - Third-party libraries
+│       ├── css/                         - Bootstrap, Perfect Scrollbar CSS
+│       ├── js/                          - Bootstrap, jQuery, Popper, helpers
+│       ├── libs/                        - jQuery, Popper libraries
+│       └── fonts/                       - Icon fonts
+│
+├── cache/                               - Application cache (auto-created)
+│   └── *.cache                          - Cached API responses
+│
+├── logs/                                - Application logs (auto-created)
+│   └── app_YYYY-MM-DD.log              - Daily log files
+│
+├── fonts/                               - Font files
+│
+├── 1x2_data.json                        - Sample 1x2 data
+│
+├── README.md                            - Project README
+│
+└── .git/                                - Git repository
+
+================================================================================
+ARCHITECTURE DIAGRAM
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│                     Frontend (React/Vue/etc)                    │
+│                    (To be implemented)                          │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │
+                               │ HTTP Requests
+                               │ (Bearer Token)
+                               ↓
+┌─────────────────────────────────────────────────────────────────┐
+│          PHP Application (SuperStatsFootball)                  │
+│                                                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  Request Handling                                          │ │
+│  │  - Authentication (login/register)                        │ │
+│  │  - User validation (roles, plans)                         │ │
+│  │  - Request filtering                                      │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                               │                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  API Repository (ApiRepository.php)                        │ │
+│  │  - cURL HTTP client                                       │ │
+│  │  - Response standardization                               │ │
+│  │  - Error handling                                         │ │
+│  └───────────────────────────────────────────────────────────┘ │
+│                               │                                 │
+│  ┌───────────────────────────────────────────────────────────┐ │
+│  │  Performance Layer                                         │ │
+│  │  - Cache Manager (5 min TTL)                             │ │
+│  │  - Logger (request tracking)                             │ │
+│  └───────────────────────────────────────────────────────────┘ │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │
+                               │ HTTP Requests
+                               │ (Bearer Token)
+                               ↓
+┌─────────────────────────────────────────────────────────────────┐
+│     FastAPI Backend (superstatsfootball-production.up.railway)  │
+│                                                                 │
+│  - Authentication (/auth/login, /auth/register)               │
+│  - Statistics (/statistics/goals, /corners, etc.)             │
+│  - Odds (/odds/upcoming)                                      │
+│  - Predictions (/predictions, /combined)                      │
+│  - Data (/leagues, /fixtures)                                 │
+│                                                                 │
+│  Returns: JSON responses with probabilities & odds             │
+└─────────────────────────────────────────────────────────────────┘
+
+================================================================================
+API FLOW EXAMPLE: Getting Goals Statistics
+================================================================================
+
+1. Frontend User clicks "Goals Statistics"
+   └─> Calls goals.php
+
+2. goals.php executes:
+   - require_once 'includes/api-helper.php'
+   - $response = getGoalsStatistics($daysAhead, $leagueId, $limit, $offset)
+
+3. api-helper.php:
+   - Calls: getApiRepository()->getGoalsStatistics(...)
+
+4. ApiRepository.php:
+   - Validates user league limit (5 for user, 10 for admin)
+   - Builds endpoint: /api/v1/statistics/goals?days_ahead=7&limit=50&offset=0
+   - Checks cache (5-minute TTL)
+   - If no cache, makes cURL request to FastAPI
+   - Logs request (endpoint, method, duration, HTTP code)
+   - Caches response
+   - Returns standardized response:
+     {
+       'success': true,
+       'data': {...},
+       'error': null,
+       'http_code': 200
+     }
+
+5. goals.php receives response and transforms data:
+   - Converts probabilities to percentages (0.694 -> 69.4%)
+   - Builds HTML table from fixture data
+   - Displays with Bootstrap styling
+
+6. Frontend renders:
+   - League selector
+   - Filter button
+   - Data table with probabilities and odds
+   - Pagination controls
+
+================================================================================
+FILE RELATIONSHIPS
+================================================================================
+
+AUTHENTICATION FLOW:
+  login.php → api-helper.php → ApiRepository::loginUser()
+         → auth-middleware.php (protection on protected pages)
+
+STATISTICS FLOW:
+  goals.php (+ corners, cards, shots, etc.)
+    → api-helper.php (getGoalsStatistics)
+    → ApiRepository::getGoalsStatistics()
+    → CacheManager (check/store cache)
+    → Logger (log request details)
+
+USER VALIDATION:
+  All API calls validate user limits via:
+    → UserManager::validateLeagueSelection()
+    → UserManager::getUserRole()
+    → UserManager::getUserPlan()
+
+FILTERING & UI:
+  Statistics pages → statistics-filter-modal.php
+                 → assets/js/statistics-filter.js (validation)
+                 → URL parameters passed back to PHP
+
+================================================================================
+KEY COMPONENTS SUMMARY
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│ COMPONENT               │ LANGUAGE  │ PURPOSE                   │
+├─────────────────────────────────────────────────────────────────┤
+│ ApiRepository.php       │ PHP       │ Main API client           │
+│ UserManager.php         │ PHP       │ Role & permission control │
+│ CacheManager.php        │ PHP       │ Response caching          │
+│ Logger.php              │ PHP       │ Request logging           │
+│ auth-middleware.php     │ PHP       │ Page protection           │
+│ api-config.php          │ PHP       │ Endpoint definitions      │
+│ [pages].php             │ PHP+HTML  │ UI rendering              │
+│ statistics-filter.js    │ JavaScript│ Filter validation         │
+│ config.js               │ JavaScript│ Theme configuration       │
+│ Bootstrap 5             │ CSS/JS    │ UI framework              │
+│ jQuery                  │ JavaScript│ DOM manipulation          │
+└─────────────────────────────────────────────────────────────────┘
+
+================================================================================
+DEPLOYMENT REQUIREMENTS
+================================================================================
+
+ENVIRONMENT:
+  - PHP 7.4+ (with cURL, JSON extensions)
+  - Writable directories: /cache, /logs
+  - Session support enabled
+
+ENVIRONMENT VARIABLES:
+  - BACKEND_API_URL
+  - DEMO_USER_EMAIL
+  - DEMO_USER_PASSWORD
+
+EXTERNAL DEPENDENCIES:
+  - FastAPI backend at: https://superstatsfootball-production.up.railway.app
+  - Bootstrap 5 (included in assets/vendor)
+  - jQuery (included in assets/vendor)
+
+================================================================================
+NEXT IMPLEMENTATION STEPS
+================================================================================
+
+For frontend developers:
+  1. Study BACKEND_ANALYSIS.md (comprehensive guide)
+  2. Reference API_QUICK_REFERENCE.md (during development)
+  3. Implement authentication UI (login/register)
+  4. Implement statistics pages with data tables
+  5. Implement filter modal with league selection
+  6. Add pagination controls
+  7. Implement error handling
+  8. Add loading states
+  9. Implement logout functionality
+  10. Test with provided API endpoints
+
+================================================================================
