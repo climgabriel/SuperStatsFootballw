@@ -50,9 +50,9 @@ include 'includes/auth-header.php';
 
             <form id="formAuthentication" class="mb-6" action="login.php" method="POST">
               <div class="mb-6">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="text" class="form-control" id="email" name="email-username"
-                  placeholder="Enter your email or username" autofocus />
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"
+                  placeholder="Enter your email" autofocus required />
               </div>
               <div class="mb-6 form-password-toggle">
                 <label class="form-label" for="password">Password</label>
