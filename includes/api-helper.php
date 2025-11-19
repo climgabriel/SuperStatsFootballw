@@ -8,6 +8,7 @@
 
 require_once __DIR__ . '/api-config.php';
 require_once __DIR__ . '/ApiRepository.php';
+require_once __DIR__ . '/UserManager.php';
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
@@ -170,11 +171,19 @@ function getUserTier() {
 
 /**
  * Check if user has access to premium statistics (non-1X2 pages)
+ * Admin users have full access
  * Free tier only has access to 1X2 page
  *
  * @return bool True if user can access premium statistics
  */
 function hasPremiumStatsAccess() {
+    // Admin users have full access to all statistics
+    $userRole = UserManager::getUserRole();
+    if ($userRole === UserManager::ROLE_ADMIN) {
+        return true;
+    }
+
+    // For regular users, check tier
     $tier = getUserTier();
     // Free tier users cannot access premium statistics
     return $tier !== 'free';
