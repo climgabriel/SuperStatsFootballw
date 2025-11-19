@@ -13,9 +13,7 @@ $validationErrors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['password'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm_password'] ?? '';
     $fullName = trim($_POST['full_name'] ?? '');
-    $plan = (int)($_POST['plan'] ?? UserManager::PLAN_FREE);
 
     // Validation
     if (empty($email)) {
@@ -30,21 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $validationErrors[] = 'Password must be at least 8 characters';
     }
 
-    if ($password !== $confirmPassword) {
-        $validationErrors[] = 'Passwords do not match';
-    }
-
     if (empty($fullName)) {
         $validationErrors[] = 'Full name is required';
     }
 
-    if ($plan < UserManager::PLAN_FREE || $plan > UserManager::PLAN_ULTIMATE) {
-        $validationErrors[] = 'Invalid plan selected';
-    }
-
     // If no validation errors, attempt registration
     if (empty($validationErrors)) {
-        $response = registerUser($email, $password, $fullName, $plan);
+        $response = registerUser($email, $password, $fullName);
 
         if ($response['success']) {
             $registerSuccess = true;
@@ -59,15 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $registerError = implode('<br>', $validationErrors);
     }
 }
-
-// Get plan information for display
-$plans = [
-    UserManager::PLAN_FREE => UserManager::getPlanFeatures(UserManager::PLAN_FREE),
-    UserManager::PLAN_BASIC => UserManager::getPlanFeatures(UserManager::PLAN_BASIC),
-    UserManager::PLAN_STANDARD => UserManager::getPlanFeatures(UserManager::PLAN_STANDARD),
-    UserManager::PLAN_PREMIUM => UserManager::getPlanFeatures(UserManager::PLAN_PREMIUM),
-    UserManager::PLAN_ULTIMATE => UserManager::getPlanFeatures(UserManager::PLAN_ULTIMATE),
-];
 
 include 'includes/auth-header.php';
 ?>
@@ -133,40 +114,6 @@ include 'includes/auth-header.php';
                 <div class="invalid-feedback">Password must be at least 8 characters with uppercase, lowercase, and digit</div>
               </div>
 
-              <!-- Confirm Password -->
-              <div class="mb-6 form-password-toggle">
-                <label class="form-label" for="confirm_password">Confirm Password</label>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="confirm_password" class="form-control" name="confirm_password"
-                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                    aria-describedby="confirm_password" required />
-                  <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
-                </div>
-                <div class="invalid-feedback">Passwords do not match</div>
-              </div>
-
-              <!-- Subscription Plan -->
-              <div class="mb-6">
-                <label for="plan" class="form-label d-flex align-items-center">
-                  <i class="bx bx-crown me-2" style="color: #106147;"></i>
-                  Select Your Plan
-                </label>
-                <select class="form-select" id="plan" name="plan" required>
-                  <?php foreach ($plans as $planId => $planInfo): ?>
-                  <option value="<?php echo $planId; ?>"
-                          <?php echo (isset($_POST['plan']) && (int)$_POST['plan'] === $planId) ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($planInfo['name']); ?> -
-                    <?php echo $planInfo['models']; ?> Model(s),
-                    <?php echo $planInfo['leagues']; ?> Leagues
-                    <?php if ($planId === UserManager::PLAN_FREE): ?>
-                      (Free)
-                    <?php endif; ?>
-                  </option>
-                  <?php endforeach; ?>
-                </select>
-                <small class="text-muted">You can upgrade your plan anytime from your account settings</small>
-              </div>
-
               <!-- Terms and Conditions -->
               <div class="mb-6">
                 <div class="form-check mb-0">
@@ -193,43 +140,6 @@ include 'includes/auth-header.php';
                 <span>Sign in instead</span>
               </a>
             </p>
-
-            <!-- Plan Comparison Info -->
-            <div class="mt-6 pt-6 border-top">
-              <p class="text-center text-muted mb-4">
-                <small><i class="bx bx-info-circle me-1"></i>Choose the plan that fits your needs</small>
-              </p>
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="card border" style="border-color: #106147 !important;">
-                    <div class="card-body p-3">
-                      <h6 class="mb-2" style="color: #106147;">
-                        <i class="bx bx-gift me-1"></i>Free Plan
-                      </h6>
-                      <ul class="list-unstyled mb-0 small">
-                        <li><i class="bx bx-check text-success me-1"></i> 1 Prediction Model</li>
-                        <li><i class="bx bx-check text-success me-1"></i> 5 Leagues Max</li>
-                        <li><i class="bx bx-check text-success me-1"></i> Basic Statistics</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="card border" style="border-color: #106147 !important;">
-                    <div class="card-body p-3">
-                      <h6 class="mb-2" style="color: #106147;">
-                        <i class="bx bx-crown me-1"></i>Ultimate Plan
-                      </h6>
-                      <ul class="list-unstyled mb-0 small">
-                        <li><i class="bx bx-check text-success me-1"></i> All 5 Prediction Models</li>
-                        <li><i class="bx bx-check text-success me-1"></i> 5 Leagues Max</li>
-                        <li><i class="bx bx-check text-success me-1"></i> Advanced Analytics</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <!-- /Register -->
@@ -246,7 +156,6 @@ include 'includes/auth-header.php';
 
     const form = document.getElementById('formRegistration');
     const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm_password');
 
     // Password strength indicator
     passwordInput.addEventListener('input', function() {
@@ -263,30 +172,11 @@ include 'includes/auth-header.php';
       }
     });
 
-    // Password match validation
-    confirmPasswordInput.addEventListener('input', function() {
-      if (this.value !== passwordInput.value) {
-        this.classList.add('is-invalid');
-        this.classList.remove('is-valid');
-      } else if (this.value.length >= 8) {
-        this.classList.remove('is-invalid');
-        this.classList.add('is-valid');
-      }
-    });
-
     // Form submission validation
     form.addEventListener('submit', function(event) {
       if (!form.checkValidity()) {
         event.preventDefault();
         event.stopPropagation();
-      }
-
-      // Check password match
-      if (passwordInput.value !== confirmPasswordInput.value) {
-        event.preventDefault();
-        confirmPasswordInput.classList.add('is-invalid');
-        alert('Passwords do not match!');
-        return false;
       }
 
       // Check password length
