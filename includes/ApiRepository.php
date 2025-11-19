@@ -170,6 +170,11 @@ class ApiRepository {
      * @return string Full endpoint with query string
      */
     private function buildEndpoint($baseEndpoint, $params = []) {
+        // Add base URL if not already present
+        if (strpos($baseEndpoint, 'http') !== 0) {
+            $baseEndpoint = API_BASE_URL . $baseEndpoint;
+        }
+
         $params = array_filter($params, function($value) {
             return $value !== null;
         });
@@ -335,7 +340,7 @@ class ApiRepository {
             'password' => $password
         ];
 
-        $response = $this->request(API_ENDPOINTS['auth_login'], 'POST', $data, [], false);
+        $response = $this->request(API_BASE_URL . API_ENDPOINTS['auth_login'], 'POST', $data, [], false);
 
         // Store token and user data in session
         if ($response['success'] && isset($response['data']['access_token'])) {
@@ -355,7 +360,7 @@ class ApiRepository {
      * @return array API response with leagues list
      */
     public function getLeagues($useCache = true) {
-        return $this->request(API_ENDPOINTS['leagues'], 'GET', null, [], $useCache);
+        return $this->request(API_BASE_URL . API_ENDPOINTS['leagues'], 'GET', null, [], $useCache);
     }
 
     /**
@@ -364,7 +369,7 @@ class ApiRepository {
      * @return array API response with user data
      */
     public function getCurrentUserInfo() {
-        return $this->request(API_ENDPOINTS['auth_me'], 'GET', null, [], false);
+        return $this->request(API_BASE_URL . API_ENDPOINTS['auth_me'], 'GET', null, [], false);
     }
 
     /**
@@ -385,7 +390,7 @@ class ApiRepository {
             'role' => 'user' // Default role
         ];
 
-        $response = $this->request(API_ENDPOINTS['auth_register'], 'POST', $data, [], false);
+        $response = $this->request(API_BASE_URL . API_ENDPOINTS['auth_register'], 'POST', $data, [], false);
 
         // Store token and user data if registration successful
         if ($response['success'] && isset($response['data']['access_token'])) {
