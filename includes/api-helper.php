@@ -131,11 +131,22 @@ function logoutUser() {
 
 /**
  * Check if user is authenticated
+ * Checks both api_auth_token and access_token for backwards compatibility
  *
  * @return bool
  */
 function isAuthenticated() {
-    return isset($_SESSION[SESSION_TOKEN_KEY]) && !empty($_SESSION[SESSION_TOKEN_KEY]);
+    // Check new token format (ApiRepository)
+    if (isset($_SESSION[SESSION_TOKEN_KEY]) && !empty($_SESSION[SESSION_TOKEN_KEY])) {
+        return true;
+    }
+
+    // Check legacy token format (APIClient) for backwards compatibility
+    if (isset($_SESSION['access_token']) && !empty($_SESSION['access_token'])) {
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -145,4 +156,26 @@ function isAuthenticated() {
  */
 function getCurrentUser() {
     return $_SESSION[SESSION_USER_KEY] ?? null;
+}
+
+/**
+ * Get user's pricing tier
+ *
+ * @return string User tier (free, starter, pro, premium, ultimate)
+ */
+function getUserTier() {
+    $user = getCurrentUser();
+    return $user['tier'] ?? 'free';
+}
+
+/**
+ * Check if user has access to premium statistics (non-1X2 pages)
+ * Free tier only has access to 1X2 page
+ *
+ * @return bool True if user can access premium statistics
+ */
+function hasPremiumStatsAccess() {
+    $tier = getUserTier();
+    // Free tier users cannot access premium statistics
+    return $tier !== 'free';
 }

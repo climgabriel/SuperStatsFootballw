@@ -12,6 +12,10 @@ require_once 'includes/auth-middleware.php';
 // Require authentication for this page
 requireAuth();
 
+// Check if user has access to premium statistics
+$hasAccess = hasPremiumStatsAccess();
+$userTier = getUserTier();
+
 // Get filter parameters from URL
 $leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
@@ -23,51 +27,55 @@ if ($dateTo) {
     $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
 }
 
-// Fetch data from backend API
-// Pass all selected leagues (not just the first one)
-$apiResponse = getGoalsStatistics($daysAhead, $leagueFilter, 50, 0);
-
 // Process API response
 $goalsData = [];
-if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
-    // Transform backend data to match our table format
-    foreach ($apiResponse['data']['fixtures'] as $fixture) {
-        $goalsData[] = [
-            'league' => $fixture['league_name'] ?? '-',
-            'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
-            'team1' => $fixture['home_team'] ?? '-',
-            'team2' => $fixture['away_team'] ?? '-',
-            'bts' => [
-                'ht_yes' => isset($fixture['bts_ht_yes']) ? round($fixture['bts_ht_yes'] * 100, 1) . '%' : '-',
-                'ht_no' => isset($fixture['bts_ht_no']) ? round($fixture['bts_ht_no'] * 100, 1) . '%' : '-',
-                'ft_yes' => isset($fixture['bts_ft_yes']) ? round($fixture['bts_ft_yes'] * 100, 1) . '%' : '-',
-                'ft_no' => isset($fixture['bts_ft_no']) ? round($fixture['bts_ft_no'] * 100, 1) . '%' : '-'
-            ],
-            'goals_ht' => [
-                'u05' => isset($fixture['goals_ht_u05']) ? round($fixture['goals_ht_u05'] * 100, 1) . '%' : '-',
-                'u15' => isset($fixture['goals_ht_u15']) ? round($fixture['goals_ht_u15'] * 100, 1) . '%' : '-',
-                'u25' => isset($fixture['goals_ht_u25']) ? round($fixture['goals_ht_u25'] * 100, 1) . '%' : '-',
-                'o05' => isset($fixture['goals_ht_o05']) ? round($fixture['goals_ht_o05'] * 100, 1) . '%' : '-',
-                'o15' => isset($fixture['goals_ht_o15']) ? round($fixture['goals_ht_o15'] * 100, 1) . '%' : '-',
-                'o25' => isset($fixture['goals_ht_o25']) ? round($fixture['goals_ht_o25'] * 100, 1) . '%' : '-'
-            ],
-            'goals_ft' => [
-                'u15' => isset($fixture['goals_ft_u15']) ? round($fixture['goals_ft_u15'] * 100, 1) . '%' : '-',
-                'u25' => isset($fixture['goals_ft_u25']) ? round($fixture['goals_ft_u25'] * 100, 1) . '%' : '-',
-                'u35' => isset($fixture['goals_ft_u35']) ? round($fixture['goals_ft_u35'] * 100, 1) . '%' : '-',
-                'o15' => isset($fixture['goals_ft_o15']) ? round($fixture['goals_ft_o15'] * 100, 1) . '%' : '-',
-                'o25' => isset($fixture['goals_ft_o25']) ? round($fixture['goals_ft_o25'] * 100, 1) . '%' : '-',
-                'o35' => isset($fixture['goals_ft_o35']) ? round($fixture['goals_ft_o35'] * 100, 1) . '%' : '-'
-            ],
-            'bookmaker' => [
-                'u25' => $fixture['bookmaker_u25'] ?? '-',
-                'o25' => $fixture['bookmaker_o25'] ?? '-'
-            ],
-            'true_odds' => [
-                'u25' => $fixture['true_odds_u25'] ?? '-',
-                'o25' => $fixture['true_odds_o25'] ?? '-'
-            ]
-        ];
+
+// Only fetch data if user has access
+if ($hasAccess) {
+    // Fetch data from backend API
+    // Pass all selected leagues (not just the first one)
+    $apiResponse = getGoalsStatistics($daysAhead, $leagueFilter, 50, 0);
+
+    if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+        // Transform backend data to match our table format
+        foreach ($apiResponse['data']['fixtures'] as $fixture) {
+            $goalsData[] = [
+                'league' => $fixture['league_name'] ?? '-',
+                'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
+                'team1' => $fixture['home_team'] ?? '-',
+                'team2' => $fixture['away_team'] ?? '-',
+                'bts' => [
+                    'ht_yes' => isset($fixture['bts_ht_yes']) ? round($fixture['bts_ht_yes'] * 100, 1) . '%' : '-',
+                    'ht_no' => isset($fixture['bts_ht_no']) ? round($fixture['bts_ht_no'] * 100, 1) . '%' : '-',
+                    'ft_yes' => isset($fixture['bts_ft_yes']) ? round($fixture['bts_ft_yes'] * 100, 1) . '%' : '-',
+                    'ft_no' => isset($fixture['bts_ft_no']) ? round($fixture['bts_ft_no'] * 100, 1) . '%' : '-'
+                ],
+                'goals_ht' => [
+                    'u05' => isset($fixture['goals_ht_u05']) ? round($fixture['goals_ht_u05'] * 100, 1) . '%' : '-',
+                    'u15' => isset($fixture['goals_ht_u15']) ? round($fixture['goals_ht_u15'] * 100, 1) . '%' : '-',
+                    'u25' => isset($fixture['goals_ht_u25']) ? round($fixture['goals_ht_u25'] * 100, 1) . '%' : '-',
+                    'o05' => isset($fixture['goals_ht_o05']) ? round($fixture['goals_ht_o05'] * 100, 1) . '%' : '-',
+                    'o15' => isset($fixture['goals_ht_o15']) ? round($fixture['goals_ht_o15'] * 100, 1) . '%' : '-',
+                    'o25' => isset($fixture['goals_ht_o25']) ? round($fixture['goals_ht_o25'] * 100, 1) . '%' : '-'
+                ],
+                'goals_ft' => [
+                    'u15' => isset($fixture['goals_ft_u15']) ? round($fixture['goals_ft_u15'] * 100, 1) . '%' : '-',
+                    'u25' => isset($fixture['goals_ft_u25']) ? round($fixture['goals_ft_u25'] * 100, 1) . '%' : '-',
+                    'u35' => isset($fixture['goals_ft_u35']) ? round($fixture['goals_ft_u35'] * 100, 1) . '%' : '-',
+                    'o15' => isset($fixture['goals_ft_o15']) ? round($fixture['goals_ft_o15'] * 100, 1) . '%' : '-',
+                    'o25' => isset($fixture['goals_ft_o25']) ? round($fixture['goals_ft_o25'] * 100, 1) . '%' : '-',
+                    'o35' => isset($fixture['goals_ft_o35']) ? round($fixture['goals_ft_o35'] * 100, 1) . '%' : '-'
+                ],
+                'bookmaker' => [
+                    'u25' => $fixture['bookmaker_u25'] ?? '-',
+                    'o25' => $fixture['bookmaker_o25'] ?? '-'
+                ],
+                'true_odds' => [
+                    'u25' => $fixture['true_odds_u25'] ?? '-',
+                    'o25' => $fixture['true_odds_o25'] ?? '-'
+                ]
+            ];
+        }
     }
 }
 
@@ -634,6 +642,21 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
+                      <?php if (!$hasAccess): ?>
+                        <tr>
+                          <td colspan="26" class="text-center py-5">
+                            <div class="alert alert-warning" role="alert">
+                              <h4 class="alert-heading"><i class="bx bx-lock-alt me-2"></i>Premium Feature</h4>
+                              <p class="mb-2">Goals Statistics are available for <strong>Starter plan</strong> and above.</p>
+                              <p class="mb-0">
+                                <a href="plans.php" class="btn btn-warning">
+                                  <i class="bx bx-rocket me-1"></i>Upgrade Now
+                                </a>
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      <?php else: ?>
                       <?php foreach ($goalsData as $match): ?>
                         <tr>
                           <td class="league-col"><?php echo htmlspecialchars($match['league']); ?></td>
@@ -672,6 +695,7 @@ include 'includes/app-header.php';
                           <td class="data-col"><?php echo htmlspecialchars($match['true_odds']['o25']); ?></td>
                         </tr>
                       <?php endforeach; ?>
+                      <?php endif; ?>
                     </tbody>
                   </table>
                 </div>
