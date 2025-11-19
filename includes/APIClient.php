@@ -99,10 +99,9 @@ class APIClient {
                 $result['data']['refresh_token'] ?? null
             );
 
-            // Store user info in session
+            // Store user info in session (new + legacy keys for compatibility)
             $_SESSION['user'] = $result['data']['user'] ?? [];
-            $_SESSION['access_token'] = $result['data']['access_token'];
-            $_SESSION['refresh_token'] = $result['data']['refresh_token'] ?? null;
+            $_SESSION[SESSION_USER_KEY] = $_SESSION['user'];
         }
 
         return $result;
@@ -149,11 +148,6 @@ class APIClient {
                 $result['data']['access_token'],
                 $result['data']['refresh_token'] ?? $this->refreshToken
             );
-
-            $_SESSION['access_token'] = $result['data']['access_token'];
-            if (isset($result['data']['refresh_token'])) {
-                $_SESSION['refresh_token'] = $result['data']['refresh_token'];
-            }
         }
 
         return $result;
@@ -205,29 +199,35 @@ class APIClient {
      */
     private function setTokens($accessToken, $refreshToken = null) {
         $this->accessToken = $accessToken;
+        $_SESSION[SESSION_TOKEN_KEY] = $accessToken;
+        $_SESSION['access_token'] = $accessToken;
 
         // Set cookies for token persistence
+        $secure = (defined('ENVIRONMENT') && ENVIRONMENT === 'production');
         setcookie(
             TOKEN_COOKIE_NAME,
             $accessToken,
             time() + (TOKEN_EXPIRY_MINUTES * 60),
             '/',
             '',
-            true,  // HTTPS only
+            $secure,
             true   // HTTP only (no JavaScript access)
         );
 
         if ($refreshToken) {
             $this->refreshToken = $refreshToken;
+            $_SESSION['refresh_token'] = $refreshToken;
             setcookie(
                 REFRESH_TOKEN_COOKIE_NAME,
                 $refreshToken,
                 time() + (REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60),
                 '/',
                 '',
-                true,
+                $secure,
                 true
             );
+        } else {
+            unset($_SESSION['refresh_token']);
         }
     }
 
@@ -239,13 +239,12 @@ class APIClient {
         $this->refreshToken = null;
 
         // Clear cookies
-        setcookie(TOKEN_COOKIE_NAME, '', time() - 3600, '/');
-        setcookie(REFRESH_TOKEN_COOKIE_NAME, '', time() - 3600, '/');
+        $secure = (defined('ENVIRONMENT') && ENVIRONMENT === 'production');
+        setcookie(TOKEN_COOKIE_NAME, '', time() - 3600, '/', '', $secure, true);
+        setcookie(REFRESH_TOKEN_COOKIE_NAME, '', time() - 3600, '/', '', $secure, true);
 
         // Clear session
-        unset($_SESSION['user']);
-        unset($_SESSION['access_token']);
-        unset($_SESSION['refresh_token']);
+        unset($_SESSION['user'], $_SESSION[SESSION_USER_KEY], $_SESSION['access_token'], $_SESSION[SESSION_TOKEN_KEY], $_SESSION['refresh_token']);
     }
 
     /**

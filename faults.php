@@ -15,9 +15,14 @@ requireAuth();
 // Check if user has access to premium statistics
 $hasAccess = hasPremiumStatsAccess();
 $userTier = getUserTier();
+$accessDenied = false;
 
 // Get filter parameters from URL
-$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$leagueFilter = null;
+if (isset($_GET['leagues']) && $_GET['leagues'] !== '') {
+    $selectedLeagues = array_filter(array_map('intval', explode(',', $_GET['leagues'])));
+    $leagueFilter = !empty($selectedLeagues) ? $selectedLeagues : null;
+}
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
 $dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
 
@@ -29,15 +34,14 @@ if ($dateTo) {
 
 // Process API response
 $faultsData = [];
+$error = null;
 
-// Only fetch data if user has access
-if ($hasAccess) {
-    // Fetch data from backend API
-    $apiResponse = getFoulsStatistics($daysAhead, $leagueFilter, 50, 0);
+// Fetch data from backend API regardless of tier (backend enforces access)
+$apiResponse = getFoulsStatistics($daysAhead, $leagueFilter, 50, 0);
 
-    if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
-        // Transform backend data to match our table format
-        foreach ($apiResponse['data']['fixtures'] as $fixture) {
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
         $faultsData[] = [
             'league' => $fixture['league_name'] ?? '-',
             'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
@@ -64,7 +68,12 @@ if ($hasAccess) {
                 'o275' => isset($fixture['faults_ft_o275']) ? round($fixture['faults_ft_o275'] * 100, 1) . '%' : '-'
             ]
         ];
-        }
+    }
+} else {
+    if (($apiResponse['http_code'] ?? null) === 403) {
+        $accessDenied = true;
+    } elseif (!empty($apiResponse['error'])) {
+        $error = $apiResponse['error'];
     }
 }
 
@@ -287,7 +296,7 @@ if (empty($faultsData)) {
         'faults_ht' => ['u85' => '48.6%', 'u95' => '50.0%', 'u105' => '74.1%', 'o85' => '70.2%', 'o95' => '44.9%', 'o105' => '32.7%'],
         'faults_ft' => ['u235' => '20.4%', 'u245' => '63.3%', 'u255' => '74.1%', 'u265' => '63.3%', 'u275' => '74.1%', 'o235' => '70.2%', 'o245' => '54.1%', 'o255' => '70.2%', 'o265' => '54.1%', 'o275' => '70.9%']
     ]
-];
+    ];
 }
 
 include 'includes/app-header.php';
@@ -382,7 +391,7 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
-                      <?php if (!$hasAccess): ?>
+                      <?php if ($accessDenied): ?>
                         <tr>
                           <td colspan="23" class="text-center py-5">
                             <div class="alert alert-warning" role="alert">

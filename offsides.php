@@ -15,9 +15,14 @@ requireAuth();
 // Check if user has access to premium statistics
 $hasAccess = hasPremiumStatsAccess();
 $userTier = getUserTier();
+$accessDenied = false;
 
 // Get filter parameters from URL
-$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$leagueFilter = null;
+if (isset($_GET['leagues']) && $_GET['leagues'] !== '') {
+    $selectedLeagues = array_filter(array_map('intval', explode(',', $_GET['leagues'])));
+    $leagueFilter = !empty($selectedLeagues) ? $selectedLeagues : null;
+}
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
 $dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
 
@@ -29,15 +34,14 @@ if ($dateTo) {
 
 // Process API response
 $offsidesData = [];
+$error = null;
 
-// Only fetch data if user has access
-if ($hasAccess) {
-    // Fetch data from backend API
-    $apiResponse = getOffsidesStatistics($daysAhead, $leagueFilter, 50, 0);
+// Fetch data from backend API regardless of tier (backend enforces access)
+$apiResponse = getOffsidesStatistics($daysAhead, $leagueFilter, 50, 0);
 
-    if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
-        // Transform backend data to match our table format
-        foreach ($apiResponse['data']['fixtures'] as $fixture) {
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
         $offsidesData[] = [
             'league' => $fixture['league_name'] ?? '-',
             'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
@@ -58,7 +62,12 @@ if ($hasAccess) {
                 'o45' => isset($fixture['offsides_ft_o45']) ? round($fixture['offsides_ft_o45'] * 100, 1) . '%' : '-'
             ]
         ];
-        }
+    }
+} else {
+    if (($apiResponse['http_code'] ?? null) === 403) {
+        $accessDenied = true;
+    } elseif (!empty($apiResponse['error'])) {
+        $error = $apiResponse['error'];
     }
 }
 
@@ -281,7 +290,7 @@ if (empty($offsidesData)) {
         'offsides_ht' => ['u15' => '48.6%', 'u25' => '50.0%', 'o15' => '44.9%', 'o25' => '32.7%'],
         'offsides_ft' => ['u25' => '20.4%', 'u35' => '63.3%', 'u45' => '74.1%', 'o25' => '70.2%', 'o35' => '54.1%', 'o45' => '70.9%']
     ]
-];
+    ];
 }
 
 include 'includes/app-header.php';
@@ -370,7 +379,7 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
-                      <?php if (!$hasAccess): ?>
+                      <?php if ($accessDenied): ?>
                         <tr>
                           <td colspan="17" class="text-center py-5">
                             <div class="alert alert-warning" role="alert">

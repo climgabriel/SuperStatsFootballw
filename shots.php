@@ -15,9 +15,14 @@ requireAuth();
 // Check if user has access to premium statistics
 $hasAccess = hasPremiumStatsAccess();
 $userTier = getUserTier();
+$accessDenied = false;
 
 // Get filter parameters from URL
-$leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
+$leagueFilter = null;
+if (isset($_GET['leagues']) && $_GET['leagues'] !== '') {
+    $selectedLeagues = array_filter(array_map('intval', explode(',', $_GET['leagues'])));
+    $leagueFilter = !empty($selectedLeagues) ? $selectedLeagues : null;
+}
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
 $dateTo = isset($_GET['date_to']) ? $_GET['date_to'] : null;
 
@@ -29,15 +34,14 @@ if ($dateTo) {
 
 // Process API response
 $shotsData = [];
+$error = null;
 
-// Only fetch data if user has access
-if ($hasAccess) {
-    // Fetch data from backend API
-    $apiResponse = getShotsStatistics($daysAhead, $leagueFilter, 50, 0);
+// Fetch data from backend API regardless of tier (backend enforces access)
+$apiResponse = getShotsStatistics($daysAhead, $leagueFilter, 50, 0);
 
-    if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
-        // Transform backend data to match our table format
-        foreach ($apiResponse['data']['fixtures'] as $fixture) {
+if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+    // Transform backend data to match our table format
+    foreach ($apiResponse['data']['fixtures'] as $fixture) {
         $shotsData[] = [
             'league' => $fixture['league_name'] ?? '-',
             'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
@@ -96,7 +100,12 @@ if ($hasAccess) {
                 'o105' => isset($fixture['sot_ft_o105']) ? round($fixture['sot_ft_o105'] * 100, 1) . '%' : '-'
             ]
         ];
-        }
+    }
+} else {
+    if (($apiResponse['http_code'] ?? null) === 403) {
+        $accessDenied = true;
+    } elseif (!empty($apiResponse['error'])) {
+        $error = $apiResponse['error'];
     }
 }
 
@@ -259,7 +268,7 @@ if (empty($shotsData)) {
         'sot_ht' => ['u25' => '-', 'u35' => '-', 'u45' => '-', 'o25' => '-', 'o35' => '-', 'o45' => '-'],
         'sot_ft_ou' => ['u65' => '-', 'u75' => '-', 'u85' => '-', 'u95' => '-', 'u105' => '-', 'o65' => '-', 'o75' => '-', 'o85' => '-', 'o95' => '-', 'o105' => '-']
     ]
-];
+    ];
 }
 
 include 'includes/app-header.php';
@@ -542,7 +551,7 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
-                      <?php if (!$hasAccess): ?>
+                      <?php if ($accessDenied): ?>
                         <tr>
                           <td colspan="55" class="text-center py-5">
                             <div class="alert alert-warning" role="alert">

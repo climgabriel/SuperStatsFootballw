@@ -88,25 +88,63 @@ if (ENVIRONMENT === 'development') {
 date_default_timezone_set('UTC');
 
 // Helper Functions
-function isLoggedIn() {
-    return isset($_SESSION['user']) && isset($_SESSION['access_token']);
+if (!function_exists('ssf_get_session_user')) {
+    function ssf_get_session_user() {
+        if (isset($_SESSION[SESSION_USER_KEY]) && is_array($_SESSION[SESSION_USER_KEY])) {
+            return $_SESSION[SESSION_USER_KEY];
+        }
+        if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+        return null;
+    }
 }
 
-function getUserTier() {
-    return $_SESSION['user']['tier'] ?? 'free';
+if (!function_exists('isLoggedIn')) {
+    function isLoggedIn() {
+        return ssf_get_session_user() !== null && getAccessToken() !== null;
+    }
 }
 
-function getAccessToken() {
-    return $_SESSION['access_token'] ?? $_COOKIE[TOKEN_COOKIE_NAME] ?? null;
+if (!function_exists('getUserTier')) {
+    function getUserTier() {
+        $user = ssf_get_session_user();
+        return $user['tier'] ?? 'free';
+    }
 }
 
-function getRefreshToken() {
-    return $_SESSION['refresh_token'] ?? $_COOKIE[REFRESH_TOKEN_COOKIE_NAME] ?? null;
+if (!function_exists('getAccessToken')) {
+    function getAccessToken() {
+        if (!empty($_SESSION[SESSION_TOKEN_KEY] ?? null)) {
+            return $_SESSION[SESSION_TOKEN_KEY];
+        }
+        if (!empty($_SESSION['access_token'] ?? null)) {
+            return $_SESSION['access_token'];
+        }
+        if (!empty($_COOKIE[TOKEN_COOKIE_NAME] ?? null)) {
+            return $_COOKIE[TOKEN_COOKIE_NAME];
+        }
+        return null;
+    }
 }
 
-function redirectToLogin() {
-    header('Location: login.php');
-    exit;
+if (!function_exists('getRefreshToken')) {
+    function getRefreshToken() {
+        if (!empty($_SESSION['refresh_token'] ?? null)) {
+            return $_SESSION['refresh_token'];
+        }
+        if (!empty($_COOKIE[REFRESH_TOKEN_COOKIE_NAME] ?? null)) {
+            return $_COOKIE[REFRESH_TOKEN_COOKIE_NAME];
+        }
+        return null;
+    }
+}
+
+if (!function_exists('redirectToLogin')) {
+    function redirectToLogin() {
+        header('Location: login.php');
+        exit;
+    }
 }
 
 if (!function_exists('requireAuth')) {

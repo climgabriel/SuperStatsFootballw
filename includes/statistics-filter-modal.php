@@ -123,7 +123,7 @@ if ($leaguesResponse['success'] && isset($leaguesResponse['data']['leagues'])) {
               <?php foreach ($leftLeagues as $league): ?>
               <div class="form-check mb-2 league-item" data-league-name="<?php echo strtolower($league['name']); ?>">
                 <input class="form-check-input filter-league" type="checkbox"
-                       value="<?php echo htmlspecialchars($league['name']); ?>"
+                       value="<?php echo htmlspecialchars($league['id']); ?>"
                        id="league<?php echo $league['id']; ?>">
                 <label class="form-check-label" for="league<?php echo $league['id']; ?>">
                   <?php echo htmlspecialchars($league['name']); ?>
@@ -135,7 +135,7 @@ if ($leaguesResponse['success'] && isset($leaguesResponse['data']['leagues'])) {
               <?php foreach ($rightLeagues as $league): ?>
               <div class="form-check mb-2 league-item" data-league-name="<?php echo strtolower($league['name']); ?>">
                 <input class="form-check-input filter-league" type="checkbox"
-                       value="<?php echo htmlspecialchars($league['name']); ?>"
+                       value="<?php echo htmlspecialchars($league['id']); ?>"
                        id="league<?php echo $league['id']; ?>">
                 <label class="form-check-label" for="league<?php echo $league['id']; ?>">
                   <?php echo htmlspecialchars($league['name']); ?>

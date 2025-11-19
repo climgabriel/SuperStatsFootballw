@@ -15,6 +15,10 @@ require_once 'CacheManager.php';
 require_once 'Logger.php';
 require_once 'UserManager.php';
 
+if (!defined('SSF_CONFIG')) {
+    require_once __DIR__ . '/../config.php';
+}
+
 class ApiRepository {
 
     private $cache;
@@ -56,8 +60,14 @@ class ApiRepository {
             }
         }
 
-        // Get auth token from session
-        $token = $_SESSION[SESSION_TOKEN_KEY] ?? null;
+        // Get auth token from helpers/session
+        $token = null;
+        if (function_exists('getAccessToken')) {
+            $token = getAccessToken();
+        }
+        if (!$token) {
+            $token = $_SESSION[SESSION_TOKEN_KEY] ?? ($_SESSION['access_token'] ?? ($_COOKIE[TOKEN_COOKIE_NAME] ?? null));
+        }
 
         // Prepare headers
         $defaultHeaders = [
@@ -176,14 +186,35 @@ class ApiRepository {
         }
 
         $params = array_filter($params, function($value) {
-            return $value !== null;
+            if (is_array($value)) {
+                return !empty($value);
+            }
+            return $value !== null && $value !== '';
         });
 
         if (empty($params)) {
             return $baseEndpoint;
         }
 
-        return $baseEndpoint . '?' . http_build_query($params);
+        $queryParts = [];
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $item) {
+                    if ($item === null || $item === '') {
+                        continue;
+                    }
+                    $queryParts[] = rawurlencode($key) . '=' . rawurlencode($item);
+                }
+            } else {
+                $queryParts[] = rawurlencode($key) . '=' . rawurlencode($value);
+            }
+        }
+
+        if (empty($queryParts)) {
+            return $baseEndpoint;
+        }
+
+        return $baseEndpoint . '?' . implode('&', $queryParts);
     }
 
     /**
@@ -199,6 +230,9 @@ class ApiRepository {
 
         // Convert to array
         $leagues = is_array($leagueIds) ? $leagueIds : [$leagueIds];
+        $leagues = array_values(array_filter(array_map('intval', $leagues), function($value) {
+            return $value > 0;
+        }));
 
         // Get user role and limits
         $userRole = UserManager::getUserRole();
@@ -253,7 +287,7 @@ class ApiRepository {
 
         // Add league filter if provided
         if (!empty($leagueValidation['leagues'])) {
-            $params['league_id'] = implode(',', $leagueValidation['leagues']);
+            $params['league_ids'] = $leagueValidation['leagues'];
         }
 
         $fullEndpoint = $this->buildEndpoint(API_ENDPOINTS[$endpoint], $params);
@@ -324,7 +358,7 @@ class ApiRepository {
         ];
 
         if (!empty($leagueValidation['leagues'])) {
-            $params['league_id'] = implode(',', $leagueValidation['leagues']);
+            $params['league_ids'] = $leagueValidation['leagues'];
         }
 
         $endpoint = $this->buildEndpoint(API_ENDPOINTS['odds_upcoming'], $params);
@@ -336,7 +370,7 @@ class ApiRepository {
      */
     public function loginUser($email, $password) {
         $data = [
-            'username' => $email,
+            'email' => $email,
             'password' => $password
         ];
 
@@ -344,8 +378,7 @@ class ApiRepository {
 
         // Store token and user data in session
         if ($response['success'] && isset($response['data']['access_token'])) {
-            $_SESSION[SESSION_TOKEN_KEY] = $response['data']['access_token'];
-            $_SESSION[SESSION_USER_KEY] = $response['data']['user'] ?? null;
+            $this->persistSessionAuth($response['data']);
 
             $this->logger->info("User logged in", ['email' => $email]);
         }
@@ -394,8 +427,7 @@ class ApiRepository {
 
         // Store token and user data if registration successful
         if ($response['success'] && isset($response['data']['access_token'])) {
-            $_SESSION[SESSION_TOKEN_KEY] = $response['data']['access_token'];
-            $_SESSION[SESSION_USER_KEY] = $response['data']['user'] ?? null;
+            $this->persistSessionAuth($response['data']);
 
             $this->logger->info("User registered successfully", ['email' => $email]);
         }
@@ -427,5 +459,48 @@ class ApiRepository {
      */
     public function getLoggerStats() {
         return $this->logger->getStats();
+    }
+
+    /**
+     * Persist authenticated session data across both legacy and new keys.
+     *
+     * @param array $data Authentication payload from backend
+     */
+    private function persistSessionAuth(array $data): void {
+        $secure = (defined('ENVIRONMENT') && ENVIRONMENT === 'production');
+
+        if (isset($data['user'])) {
+            $_SESSION['user'] = $data['user'];
+            $_SESSION[SESSION_USER_KEY] = $data['user'];
+        }
+
+        if (!empty($data['access_token'])) {
+            $_SESSION[SESSION_TOKEN_KEY] = $data['access_token'];
+            $_SESSION['access_token'] = $data['access_token'];
+
+            setcookie(
+                TOKEN_COOKIE_NAME,
+                $data['access_token'],
+                time() + (TOKEN_EXPIRY_MINUTES * 60),
+                '/',
+                '',
+                $secure,
+                true
+            );
+        }
+
+        if (!empty($data['refresh_token'])) {
+            $_SESSION['refresh_token'] = $data['refresh_token'];
+
+            setcookie(
+                REFRESH_TOKEN_COOKIE_NAME,
+                $data['refresh_token'],
+                time() + (REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60),
+                '/',
+                '',
+                $secure,
+                true
+            );
+        }
     }
 }

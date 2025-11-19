@@ -10,6 +10,10 @@ require_once __DIR__ . '/api-config.php';
 require_once __DIR__ . '/ApiRepository.php';
 require_once __DIR__ . '/UserManager.php';
 
+if (!defined('SSF_CONFIG')) {
+    require_once __DIR__ . '/../config.php';
+}
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -125,8 +129,10 @@ function getLeagues($useCache = true) {
  * Logout user and clear session
  */
 function logoutUser() {
-    unset($_SESSION[SESSION_TOKEN_KEY]);
-    unset($_SESSION[SESSION_USER_KEY]);
+    unset($_SESSION[SESSION_TOKEN_KEY], $_SESSION[SESSION_USER_KEY], $_SESSION['user'], $_SESSION['access_token'], $_SESSION['refresh_token']);
+    $secure = (defined('ENVIRONMENT') && ENVIRONMENT === 'production');
+    setcookie(TOKEN_COOKIE_NAME, '', time() - 3600, '/', '', $secure, true);
+    setcookie(REFRESH_TOKEN_COOKIE_NAME, '', time() - 3600, '/', '', $secure, true);
     session_destroy();
 }
 
@@ -137,13 +143,19 @@ function logoutUser() {
  * @return bool
  */
 function isAuthenticated() {
-    // Check new token format (ApiRepository)
-    if (isset($_SESSION[SESSION_TOKEN_KEY]) && !empty($_SESSION[SESSION_TOKEN_KEY])) {
+    if (function_exists('isLoggedIn')) {
+        return isLoggedIn();
+    }
+
+    if (!empty($_SESSION[SESSION_TOKEN_KEY] ?? null)) {
         return true;
     }
 
-    // Check legacy token format (APIClient) for backwards compatibility
-    if (isset($_SESSION['access_token']) && !empty($_SESSION['access_token'])) {
+    if (!empty($_SESSION['access_token'] ?? null)) {
+        return true;
+    }
+
+    if (!empty($_COOKIE[TOKEN_COOKIE_NAME] ?? null)) {
         return true;
     }
 
@@ -156,17 +168,27 @@ function isAuthenticated() {
  * @return array|null
  */
 function getCurrentUser() {
-    return $_SESSION[SESSION_USER_KEY] ?? null;
+    if (function_exists('ssf_get_session_user')) {
+        return ssf_get_session_user();
+    }
+
+    if (isset($_SESSION[SESSION_USER_KEY]) && is_array($_SESSION[SESSION_USER_KEY])) {
+        return $_SESSION[SESSION_USER_KEY];
+    }
+
+    return $_SESSION['user'] ?? null;
 }
 
-/**
- * Get user's pricing tier
- *
- * @return string User tier (free, starter, pro, premium, ultimate)
- */
-function getUserTier() {
-    $user = getCurrentUser();
-    return $user['tier'] ?? 'free';
+if (!function_exists('getUserTier')) {
+    /**
+     * Get user's pricing tier
+     *
+     * @return string User tier (free, starter, pro, premium, ultimate)
+     */
+    function getUserTier() {
+        $user = getCurrentUser();
+        return $user['tier'] ?? 'free';
+    }
 }
 
 /**
