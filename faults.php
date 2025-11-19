@@ -12,6 +12,10 @@ require_once 'includes/auth-middleware.php';
 // Require authentication for this page
 requireAuth();
 
+// Check if user has access to premium statistics
+$hasAccess = hasPremiumStatsAccess();
+$userTier = getUserTier();
+
 // Get filter parameters from URL
 $leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
@@ -23,14 +27,17 @@ if ($dateTo) {
     $daysAhead = max(1, ceil((strtotime($dateTo) - time()) / 86400));
 }
 
-// Fetch data from backend API
-$apiResponse = getFoulsStatistics($daysAhead, $leagueFilter, 50, 0);
-
 // Process API response
 $faultsData = [];
-if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
-    // Transform backend data to match our table format
-    foreach ($apiResponse['data']['fixtures'] as $fixture) {
+
+// Only fetch data if user has access
+if ($hasAccess) {
+    // Fetch data from backend API
+    $apiResponse = getFoulsStatistics($daysAhead, $leagueFilter, 50, 0);
+
+    if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
+        // Transform backend data to match our table format
+        foreach ($apiResponse['data']['fixtures'] as $fixture) {
         $faultsData[] = [
             'league' => $fixture['league_name'] ?? '-',
             'date' => isset($fixture['fixture_date']) ? date('d-m-Y', strtotime($fixture['fixture_date'])) : '-',
@@ -57,6 +64,7 @@ if ($apiResponse['success'] && isset($apiResponse['data']['fixtures'])) {
                 'o275' => isset($fixture['faults_ft_o275']) ? round($fixture['faults_ft_o275'] * 100, 1) . '%' : '-'
             ]
         ];
+        }
     }
 }
 
@@ -374,6 +382,21 @@ include 'includes/app-header.php';
                       </tr>
                     </thead>
                     <tbody>
+                      <?php if (!$hasAccess): ?>
+                        <tr>
+                          <td colspan="23" class="text-center py-5">
+                            <div class="alert alert-warning" role="alert">
+                              <h4 class="alert-heading"><i class="bx bx-lock-alt me-2"></i>Premium Feature</h4>
+                              <p class="mb-2">Faults Statistics are available for <strong>Starter plan</strong> and above.</p>
+                              <p class="mb-0">
+                                <a href="plans.php" class="btn btn-warning">
+                                  <i class="bx bx-rocket me-1"></i>Upgrade Now
+                                </a>
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      <?php else: ?>
                       <?php foreach ($faultsData as $match): ?>
                       <tr>
                         <td><?php echo htmlspecialchars($match['league']); ?></td>
@@ -400,6 +423,7 @@ include 'includes/app-header.php';
                         <td><?php echo htmlspecialchars($match['faults_ft']['o275']); ?></td>
                       </tr>
                       <?php endforeach; ?>
+                      <?php endif; ?>
                     </tbody>
                   </table>
                 </div>
