@@ -179,17 +179,7 @@ function getCurrentUser() {
     return $_SESSION['user'] ?? null;
 }
 
-if (!function_exists('getUserTier')) {
-    /**
-     * Get user's pricing tier
-     *
-     * @return string User tier (free, starter, pro, premium, ultimate)
-     */
-    function getUserTier() {
-        $user = getCurrentUser();
-        return $user['tier'] ?? 'free';
-    }
-}
+// getUserTier() is now declared in config.php
 
 /**
  * Check if user has access to premium statistics (non-1X2 pages)

@@ -1,9 +1,38 @@
 <?php
+// Enable error logging (disable in production later)
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
+// Catch any fatal errors
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        // Log to a file we can read
+        file_put_contents(__DIR__ . '/debug_register_error.log',
+            date('Y-m-d H:i:s') . " - " . $error['message'] . " in " . $error['file'] . ":" . $error['line'] . "\n",
+            FILE_APPEND
+        );
+        // Show user-friendly error
+        http_response_code(500);
+        echo '<!DOCTYPE html><html><body style="font-family: monospace; padding: 20px;">';
+        echo '<h1>Registration Error</h1>';
+        echo '<p><strong>Error:</strong> ' . htmlspecialchars($error['message']) . '</p>';
+        echo '<p><strong>File:</strong> ' . htmlspecialchars($error['file']) . ':' . $error['line'] . '</p>';
+        echo '<p><a href="register.php">Try Again</a></p>';
+        echo '</body></html>';
+    }
+});
+
 $pageTitle = "Register - Super Stats Football";
 $pageDescription = "Create your Super Stats Football account";
 
-require_once 'includes/api-helper.php';
-require_once 'includes/UserManager.php';
+try {
+    require_once 'includes/api-helper.php';
+    require_once 'includes/UserManager.php';
+} catch (Exception $e) {
+    die("Failed to load dependencies: " . $e->getMessage());
+}
 
 // Handle registration form submission
 $registerError = '';
@@ -34,16 +63,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
 
     // If no validation errors, attempt registration
     if (empty($validationErrors)) {
-        $response = registerUser($email, $password, $fullName);
+        try {
+            $response = registerUser($email, $password, $fullName);
 
-        if ($response['success']) {
-            $registerSuccess = true;
-            // Redirect to dashboard or intended page
-            $redirectTo = 'index.php';
-            header('Location: ' . $redirectTo);
-            exit;
-        } else {
-            $registerError = $response['error'] ?? 'Registration failed. Please try again.';
+            if ($response['success']) {
+                $registerSuccess = true;
+                // Redirect to dashboard or intended page
+                $redirectTo = 'index.php';
+                header('Location: ' . $redirectTo);
+                exit;
+            } else {
+                // Include HTTP code in error message for debugging
+                $httpCode = $response['http_code'] ?? 'unknown';
+                $errorDetail = $response['error'] ?? 'Registration failed. Please try again.';
+                $registerError = "Error (HTTP {$httpCode}): {$errorDetail}";
+
+                // Store detailed error info for debug panel
+                if (session_status() === PHP_SESSION_ACTIVE) {
+                    $_SESSION['debug_last_registration_error'] = [
+                        'email' => $email,
+                        'http_code' => $httpCode,
+                        'error' => $errorDetail,
+                        'full_response' => $response,
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ];
+                }
+            }
+        } catch (Exception $e) {
+            $registerError = "Exception: " . $e->getMessage();
+            error_log("Registration exception: " . $e->getMessage());
+
+            // Store exception for debug panel
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['debug_last_registration_error'] = [
+                    'email' => $email,
+                    'exception' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                    'timestamp' => date('Y-m-d H:i:s')
+                ];
+            }
         }
     } else {
         $registerError = implode('<br>', $validationErrors);

@@ -37,6 +37,9 @@ $lastApiError = $_SESSION['debug_last_api_error'] ?? null;
 
 // Get registration error from current request
 $currentError = $registerError ?? null;
+
+// Get detailed registration error from session
+$detailedRegError = $_SESSION['debug_last_registration_error'] ?? null;
 ?>
 
 <style>
@@ -272,6 +275,23 @@ $currentError = $registerError ?? null;
             <div class="debug-error-box">
                 <?php echo $currentError; ?>
             </div>
+            <?php if ($detailedRegError): ?>
+                <div class="debug-error-box" style="margin-top: 5px; background: #ffe5e5;">
+                    <strong>Details:</strong><br>
+                    <?php if (isset($detailedRegError['http_code'])): ?>
+                        HTTP Code: <?php echo $detailedRegError['http_code']; ?><br>
+                    <?php endif; ?>
+                    <?php if (isset($detailedRegError['exception'])): ?>
+                        Exception: <?php echo htmlspecialchars($detailedRegError['exception']); ?><br>
+                    <?php endif; ?>
+                    <?php if (isset($detailedRegError['full_response'])): ?>
+                        <details style="margin-top: 5px;">
+                            <summary style="cursor: pointer; font-weight: bold;">Full Response</summary>
+                            <pre style="margin: 5px 0 0 0; font-size: 9px; overflow-x: auto;"><?php echo htmlspecialchars(json_encode($detailedRegError['full_response'], JSON_PRETTY_PRINT)); ?></pre>
+                        </details>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
 

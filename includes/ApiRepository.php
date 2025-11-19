@@ -120,6 +120,18 @@ class ApiRepository {
         // Log API request
         $this->logger->logApiRequest($endpoint, $method, $httpCode, $duration);
 
+        // Store for debug panel (only if session exists)
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['debug_last_api_call'] = [
+                'endpoint' => $endpoint,
+                'method' => $method,
+                'status' => $httpCode,
+                'duration' => round($duration * 1000) . 'ms',
+                'timestamp' => date('H:i:s'),
+                'response' => $response ? json_decode($response, true) : null
+            ];
+        }
+
         // Handle cURL errors
         if ($error) {
             $this->logger->error("API request failed", [
@@ -127,6 +139,16 @@ class ApiRepository {
                 'error' => $error,
                 'http_code' => $httpCode
             ]);
+
+            // Store error for debug panel (only if session exists)
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                $_SESSION['debug_last_api_error'] = [
+                    'endpoint' => $endpoint,
+                    'method' => $method,
+                    'error' => $error,
+                    'timestamp' => date('H:i:s')
+                ];
+            }
 
             return [
                 'success' => false,
