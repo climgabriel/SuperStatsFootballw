@@ -382,12 +382,12 @@ class ApiRepository {
      * @return array Registration response
      */
     public function registerUser($email, $password, $fullName, $plan = 1) {
+        // Backend only accepts email, password, and full_name
+        // Plan is set to 'free' by default on the backend
         $data = [
             'email' => $email,
             'password' => $password,
-            'full_name' => $fullName,
-            'plan' => $plan,
-            'role' => 'user' // Default role
+            'full_name' => $fullName
         ];
 
         $response = $this->request(API_BASE_URL . API_ENDPOINTS['auth_register'], 'POST', $data, [], false);

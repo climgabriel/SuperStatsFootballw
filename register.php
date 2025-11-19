@@ -129,8 +129,8 @@ include 'includes/auth-header.php';
                     aria-describedby="password" required />
                   <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
                 </div>
-                <small class="text-muted">Minimum 8 characters</small>
-                <div class="invalid-feedback">Password must be at least 8 characters</div>
+                <small class="text-muted">Minimum 8 characters, must include uppercase, lowercase, and digit</small>
+                <div class="invalid-feedback">Password must be at least 8 characters with uppercase, lowercase, and digit</div>
               </div>
 
               <!-- Confirm Password -->
