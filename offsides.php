@@ -9,6 +9,9 @@ $activePage = "offsides";
 require_once 'includes/api-helper.php';
 require_once 'includes/auth-middleware.php';
 
+// Require authentication for this page
+requireAuth();
+
 // Get filter parameters from URL
 $leagueFilter = isset($_GET['leagues']) ? explode(',', $_GET['leagues']) : null;
 $dateFrom = isset($_GET['date_from']) ? $_GET['date_from'] : null;
