@@ -55,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         $validationErrors[] = 'Password is required';
     } elseif (strlen($password) < 8) {
         $validationErrors[] = 'Password must be at least 8 characters';
+    } elseif (strlen($password) > 72) {
+        $validationErrors[] = 'Password must be 72 characters or less';
     }
 
     if (empty($fullName)) {
@@ -165,11 +167,11 @@ include 'includes/auth-header.php';
                 <div class="input-group input-group-merge">
                   <input type="password" id="password" class="form-control" name="password"
                     placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                    aria-describedby="password" required />
+                    aria-describedby="password" maxlength="72" required />
                   <span class="input-group-text cursor-pointer"><i class="icon-base bx bx-hide"></i></span>
                 </div>
-                <small class="text-muted">Minimum 8 characters, must include uppercase, lowercase, and digit</small>
-                <div class="invalid-feedback">Password must be at least 8 characters with uppercase, lowercase, and digit</div>
+                <small class="text-muted">8-72 characters, must include uppercase, lowercase, and digit</small>
+                <div class="invalid-feedback">Password must be 8-72 characters with uppercase, lowercase, and digit</div>
               </div>
 
               <!-- Terms and Conditions -->
@@ -242,6 +244,13 @@ include 'includes/auth-header.php';
         event.preventDefault();
         passwordInput.classList.add('is-invalid');
         alert('Password must be at least 8 characters long!');
+        return false;
+      }
+
+      if (passwordInput.value.length > 72) {
+        event.preventDefault();
+        passwordInput.classList.add('is-invalid');
+        alert('Password must be 72 characters or less!');
         return false;
       }
 

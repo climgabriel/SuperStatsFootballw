@@ -47,8 +47,8 @@ $detailedRegError = $_SESSION['debug_last_registration_error'] ?? null;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 350px;
-    max-height: 600px;
+    width: 400px;
+    max-height: 80vh;
     background: #fff;
     border: 2px solid #106147;
     border-radius: 8px;
@@ -82,7 +82,7 @@ $detailedRegError = $_SESSION['debug_last_registration_error'] ?? null;
 
 #debug-panel-body {
     padding: 15px;
-    max-height: 550px;
+    max-height: calc(80vh - 60px);
     overflow-y: auto;
     display: block;
 }
@@ -196,7 +196,10 @@ $detailedRegError = $_SESSION['debug_last_registration_error'] ?? null;
                 <span id="api-status-text-mini">Checking...</span>
             </span>
         </div>
-        <span id="debug-toggle-icon">▼</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="copy-logs-btn" onclick="copyAllDebugInfo(event)" title="Copy all debug information">📋 Copy All</button>
+            <span id="debug-toggle-icon">▼</span>
+        </div>
     </div>
     <div id="debug-panel-body">
 
@@ -331,10 +334,7 @@ $detailedRegError = $_SESSION['debug_last_registration_error'] ?? null;
 
         <!-- JavaScript API Call Log -->
         <div class="debug-section">
-            <div class="debug-section-header">
-                <div class="debug-section-title" style="margin-bottom: 0;">🔄 Live API Calls</div>
-                <button class="copy-logs-btn" onclick="copyAllLogs(event)">📋 Copy All</button>
-            </div>
+            <div class="debug-section-title">🔄 Live API Calls</div>
             <div id="live-api-calls" style="max-height: 150px; overflow-y: auto; font-size: 10px;">
                 <div style="color: #999; padding: 5px;">Waiting for API calls...</div>
             </div>
@@ -481,46 +481,180 @@ function updateLiveApiCalls(logEntry) {
     }
 }
 
-// Copy all logs to clipboard
-function copyAllLogs(event) {
+// Copy all debug panel information to clipboard
+function copyAllDebugInfo(event) {
     event.stopPropagation(); // Prevent panel toggle
 
-    const apiCalls = window.debugGetApiCalls ? window.debugGetApiCalls() : [];
-
-    if (apiCalls.length === 0) {
-        alert('No API calls to copy yet');
-        return;
-    }
-
-    const logsText = apiCalls.map((log, index) => {
-        let output = `\n=== API Call #${index + 1} ===\n`;
-        output += `Time: ${log.timestamp}\n`;
-        output += `Method: ${log.method}\n`;
-        output += `URL: ${log.url}\n`;
-        output += `Status: ${log.status} ${log.statusText || ''}\n`;
-        output += `Duration: ${log.duration}ms\n`;
-
-        if (log.requestBody) {
-            output += `\nRequest Body:\n${JSON.stringify(log.requestBody, null, 2)}\n`;
-        }
-
-        if (log.response) {
-            output += `\nResponse:\n${typeof log.response === 'object' ? JSON.stringify(log.response, null, 2) : log.response}\n`;
-        }
-
-        if (log.error) {
-            output += `\nError: ${log.error}\n`;
-        }
-
-        return output;
-    }).join('\n');
-
-    const fullLog = `=== Super Stats Football - Debug Logs ===
+    // Gather all debug information
+    let debugInfo = `=== Super Stats Football - Complete Debug Report ===
 Generated: ${new Date().toLocaleString()}
-Total API Calls: ${apiCalls.length}
-${logsText}`;
+Page: ${document.title}
+URL: ${window.location.href}
 
-    navigator.clipboard.writeText(fullLog).then(() => {
+`;
+
+    // API Status
+    debugInfo += `🌐 API STATUS
+`;
+    const apiHealth = document.getElementById('api-health-status')?.textContent.trim() || 'Unknown';
+    const apiResponseTime = document.getElementById('api-response-time')?.textContent.trim() || 'N/A';
+    const apiDbStatus = document.getElementById('api-db-status')?.textContent.trim() || 'Unknown';
+    debugInfo += `Backend: ${apiHealth}
+`;
+    debugInfo += `Base URL: <?php echo addslashes($apiBaseUrl); ?>
+`;
+    debugInfo += `Response Time: ${apiResponseTime}
+`;
+    debugInfo += `Database: ${apiDbStatus}
+
+`;
+
+    // User Session
+    debugInfo += `👤 USER SESSION
+`;
+    debugInfo += `Status: <?php echo $isLoggedIn ? 'Logged In' : 'Not Logged In'; ?>
+`;
+    <?php if ($isLoggedIn): ?>
+    debugInfo += `Email: <?php echo addslashes($userEmail); ?>
+`;
+    debugInfo += `Tier: <?php echo addslashes($userTier); ?>
+`;
+    <?php endif; ?>
+    debugInfo += `Session ID: <?php echo substr($sessionId, 0, 12); ?>...
+
+`;
+
+    // Page Info
+    debugInfo += `📄 PAGE INFO
+`;
+    debugInfo += `Current Page: <?php echo addslashes($currentPage); ?>
+`;
+    debugInfo += `URL Path: <?php echo addslashes($currentUrl); ?>
+`;
+    debugInfo += `Method: <?php echo addslashes($_SERVER['REQUEST_METHOD']); ?>
+
+`;
+
+    // Registration Error
+    <?php if ($currentError): ?>
+    debugInfo += `❌ REGISTRATION ERROR
+`;
+    debugInfo += `<?php echo addslashes($currentError); ?>
+
+`;
+    <?php if ($detailedRegError): ?>
+    debugInfo += `Details:
+`;
+    <?php if (isset($detailedRegError['http_code'])): ?>
+    debugInfo += `HTTP Code: <?php echo $detailedRegError['http_code']; ?>
+`;
+    <?php endif; ?>
+    <?php if (isset($detailedRegError['exception'])): ?>
+    debugInfo += `Exception: <?php echo addslashes($detailedRegError['exception']); ?>
+`;
+    <?php endif; ?>
+    <?php if (isset($detailedRegError['full_response'])): ?>
+    debugInfo += `Full Response: <?php echo addslashes(json_encode($detailedRegError['full_response'])); ?>
+`;
+    <?php endif; ?>
+    debugInfo += `
+`;
+    <?php endif; ?>
+    <?php endif; ?>
+
+    // Last API Call
+    debugInfo += `📡 LAST API CALL
+`;
+    <?php if ($lastApiCall): ?>
+    debugInfo += `Endpoint: <?php echo addslashes($lastApiCall['endpoint']); ?>
+`;
+    debugInfo += `Method: <?php echo addslashes($lastApiCall['method']); ?>
+`;
+    debugInfo += `Status: <?php echo $lastApiCall['status']; ?>
+`;
+    debugInfo += `Duration: <?php echo addslashes($lastApiCall['duration']); ?>
+`;
+    debugInfo += `Timestamp: <?php echo addslashes($lastApiCall['timestamp']); ?>
+`;
+    <?php if (isset($lastApiCall['response'])): ?>
+    debugInfo += `Response: <?php echo addslashes(json_encode($lastApiCall['response'], JSON_PRETTY_PRINT)); ?>
+`;
+    <?php endif; ?>
+    <?php else: ?>
+    debugInfo += `No API calls yet
+`;
+    <?php endif; ?>
+    debugInfo += `
+`;
+
+    // Live API Calls (JavaScript)
+    const apiCalls = window.debugGetApiCalls ? window.debugGetApiCalls() : [];
+    debugInfo += `🔄 LIVE API CALLS (${apiCalls.length})
+`;
+
+    if (apiCalls.length > 0) {
+        apiCalls.forEach((log, index) => {
+            debugInfo += `
+--- API Call #${index + 1} ---
+`;
+            debugInfo += `Time: ${log.timestamp}
+`;
+            debugInfo += `Method: ${log.method}
+`;
+            debugInfo += `URL: ${log.url}
+`;
+            debugInfo += `Status: ${log.status} ${log.statusText || ''}
+`;
+            debugInfo += `Duration: ${log.duration}ms
+`;
+
+            if (log.requestBody) {
+                debugInfo += `Request Body: ${JSON.stringify(log.requestBody, null, 2)}
+`;
+            }
+
+            if (log.response) {
+                debugInfo += `Response: ${typeof log.response === 'object' ? JSON.stringify(log.response, null, 2) : log.response}
+`;
+            }
+
+            if (log.error) {
+                debugInfo += `Error: ${log.error}
+`;
+            }
+        });
+    } else {
+        debugInfo += `No live API calls recorded yet
+`;
+    }
+    debugInfo += `
+`;
+
+    // PHP Errors
+    <?php if ($hasPhpError): ?>
+    debugInfo += `⚠️ PHP ERRORS
+`;
+    debugInfo += `Type: <?php echo $lastError['type']; ?>
+`;
+    debugInfo += `Message: <?php echo addslashes($lastError['message']); ?>
+`;
+    debugInfo += `File: <?php echo addslashes($lastError['file']); ?>:<?php echo $lastError['line']; ?>
+
+`;
+    <?php endif; ?>
+
+    // Environment
+    debugInfo += `⚙️ ENVIRONMENT
+`;
+    debugInfo += `PHP Version: <?php echo PHP_VERSION; ?>
+`;
+    debugInfo += `Server: <?php echo addslashes($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'); ?>
+`;
+    debugInfo += `Timestamp: ${new Date().toLocaleTimeString()}
+`;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(debugInfo).then(() => {
         const btn = event.target;
         const originalText = btn.innerHTML;
         btn.innerHTML = '✅ Copied!';
@@ -531,8 +665,8 @@ ${logsText}`;
             btn.style.background = '#106147';
         }, 2000);
     }).catch(err => {
-        console.error('Failed to copy logs:', err);
-        alert('Failed to copy logs. Check console for details.');
+        console.error('Failed to copy debug info:', err);
+        alert('Failed to copy. Check console for details.');
     });
 }
 
